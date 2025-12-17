@@ -432,8 +432,31 @@
 
     </div>
 
+    <!-- Action Buttons -->
+    <section class="mt-12">
+      <div class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-2 text-center">Trilha 1: Fundamentos de BD e SQL</h3>
+        <p class="text-neutral-400 text-sm text-center mb-4">Acesse o resumo da trilha ou veja em formato modal</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button onclick="openTrilhaModal()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            Ver em Modal
+          </button>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Trilha Completa
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- Navigation -->
-    <div class="mt-12 flex justify-between items-center">
+    <div class="mt-8 flex justify-between items-center">
       <a href="../index.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -534,6 +557,14 @@
         document.getElementById('modal-iframe').src = '';
         document.body.style.overflow = '';
       }
+    }
+
+    // Open Trilha modal
+    function openTrilhaModal() {
+      document.getElementById('modal-title').textContent = 'Trilha 1: Fundamentos de BD e SQL';
+      document.getElementById('modal-iframe').src = '../index.html';
+      document.getElementById('modal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     // Close modal on Escape key
