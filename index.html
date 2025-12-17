@@ -46,8 +46,16 @@
           <span class="text-3xl">🗄️</span>
           <span class="text-xl font-bold text-primary">Oracle DBA</span>
         </div>
+        <div class="hidden md:flex items-center space-x-4">
+          <a href="trilhas/introducao/index.html" class="text-neutral-400 hover:text-blue-400 transition-colors text-sm">Trilha 0</a>
+          <a href="trilhas/modulo-1/index.html" class="text-neutral-400 hover:text-emerald-400 transition-colors text-sm">Trilha 1</a>
+          <a href="trilhas/modulo-2/index.html" class="text-neutral-400 hover:text-cyan-400 transition-colors text-sm">Trilha 2</a>
+          <a href="trilhas/modulo-3/index.html" class="text-neutral-400 hover:text-purple-400 transition-colors text-sm">Trilha 3</a>
+          <a href="trilhas/modulo-4/index.html" class="text-neutral-400 hover:text-orange-400 transition-colors text-sm">Trilha 4</a>
+          <a href="trilhas/modulo-5/index.html" class="text-neutral-400 hover:text-red-400 transition-colors text-sm">Trilha 5</a>
+          <a href="trilhas/recursos/index.html" class="text-neutral-400 hover:text-amber-400 transition-colors text-sm">Recursos</a>
+        </div>
         <div class="flex items-center space-x-4">
-          <a href="trilhas/recursos/index.html" class="text-neutral-400 hover:text-primary transition-colors">Recursos</a>
           <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
             <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
@@ -125,7 +133,7 @@
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- Trilha: Introdução -->
+        <!-- Trilha 0: Introdução -->
         <a href="trilhas/introducao/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-blue-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mr-4">
@@ -147,14 +155,41 @@
           </div>
         </a>
 
-        <!-- Trilha: Módulo 1 -->
+        <!-- Trilha: Recursos (coluna do meio) -->
+        <a href="trilhas/recursos/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-amber-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">📚</span>
+            </div>
+            <div>
+              <span class="text-xs text-amber-400 font-semibold">RECURSOS</span>
+              <h3 class="text-lg font-bold text-neutral-100">Materiais de Apoio</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Scripts SQL práticos, diagramas de arquitetura, materiais de apoio e referências.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Scripts</span>
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Diagramas</span>
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Downloads</span>
+          </div>
+          <div class="flex items-center text-amber-400 text-sm font-semibold">
+            <span>Ver Recursos</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha 1: Fundamentos SQL -->
         <a href="trilhas/modulo-1/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-emerald-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mr-4">
               <span class="text-2xl">📊</span>
             </div>
             <div>
-              <span class="text-xs text-emerald-400 font-semibold">MÓDULO 1</span>
+              <span class="text-xs text-emerald-400 font-semibold">TRILHA 1</span>
               <h3 class="text-lg font-bold text-neutral-100">Fundamentos SQL</h3>
             </div>
           </div>
@@ -174,14 +209,14 @@
           </div>
         </a>
 
-        <!-- Trilha: Módulo 2 -->
+        <!-- Trilha 2: Admin Básico -->
         <a href="trilhas/modulo-2/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-cyan-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mr-4">
               <span class="text-2xl">⚙️</span>
             </div>
             <div>
-              <span class="text-xs text-cyan-400 font-semibold">MÓDULO 2</span>
+              <span class="text-xs text-cyan-400 font-semibold">TRILHA 2</span>
               <h3 class="text-lg font-bold text-neutral-100">Admin Básico</h3>
             </div>
           </div>
@@ -201,14 +236,14 @@
           </div>
         </a>
 
-        <!-- Trilha: Módulo 3 -->
+        <!-- Trilha 3: Admin Avançado -->
         <a href="trilhas/modulo-3/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-purple-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mr-4">
               <span class="text-2xl">🔒</span>
             </div>
             <div>
-              <span class="text-xs text-purple-400 font-semibold">MÓDULO 3</span>
+              <span class="text-xs text-purple-400 font-semibold">TRILHA 3</span>
               <h3 class="text-lg font-bold text-neutral-100">Admin Avançado</h3>
             </div>
           </div>
@@ -228,14 +263,14 @@
           </div>
         </a>
 
-        <!-- Trilha: Módulo 4 -->
+        <!-- Trilha 4: Performance -->
         <a href="trilhas/modulo-4/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-orange-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mr-4">
               <span class="text-2xl">⚡</span>
             </div>
             <div>
-              <span class="text-xs text-orange-400 font-semibold">MÓDULO 4</span>
+              <span class="text-xs text-orange-400 font-semibold">TRILHA 4</span>
               <h3 class="text-lg font-bold text-neutral-100">Performance</h3>
             </div>
           </div>
@@ -255,14 +290,14 @@
           </div>
         </a>
 
-        <!-- Trilha: Módulo 5 -->
+        <!-- Trilha 5: Alta Disponibilidade -->
         <a href="trilhas/modulo-5/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-red-500/50 block">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mr-4">
               <span class="text-2xl">🛡️</span>
             </div>
             <div>
-              <span class="text-xs text-red-400 font-semibold">MÓDULO 5</span>
+              <span class="text-xs text-red-400 font-semibold">TRILHA 5</span>
               <h3 class="text-lg font-bold text-neutral-100">Alta Disponibilidade</h3>
             </div>
           </div>
@@ -276,33 +311,6 @@
           </div>
           <div class="flex items-center text-red-400 text-sm font-semibold">
             <span>Acessar</span>
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
-        </a>
-
-        <!-- Trilha: Recursos -->
-        <a href="trilhas/recursos/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-amber-500/50 block md:col-span-2 lg:col-span-1">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center mr-4">
-              <span class="text-2xl">📚</span>
-            </div>
-            <div>
-              <span class="text-xs text-amber-400 font-semibold">EXTRAS</span>
-              <h3 class="text-lg font-bold text-neutral-100">Recursos</h3>
-            </div>
-          </div>
-          <p class="text-neutral-400 text-sm mb-4">
-            Scripts SQL práticos, diagramas de arquitetura, materiais de apoio e referências.
-          </p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Scripts</span>
-            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Diagramas</span>
-            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Downloads</span>
-          </div>
-          <div class="flex items-center text-amber-400 text-sm font-semibold">
-            <span>Ver Recursos</span>
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
