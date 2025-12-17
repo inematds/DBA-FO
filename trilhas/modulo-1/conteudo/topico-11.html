@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCL - Transaction Control Language | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 11</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">11</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">TCL - Transaction Control Language</h1>
+          <p class="text-neutral-400">COMMIT, ROLLBACK, SAVEPOINT e controle de transações</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: O que é uma Transação -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">O que é uma Transação?</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Definição</h3>
+        <p class="text-neutral-300 mb-4">
+          Uma <strong class="text-emerald-400">transação</strong> é uma unidade lógica de trabalho que consiste em
+          <strong>uma ou mais operações SQL</strong> que devem ser executadas como um todo indivisível.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          A transação garante que todas as operações sejam concluídas com sucesso ou, em caso de falha,
+          todas sejam desfeitas (tudo ou nada).
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Propriedades ACID:</h4>
+          <ul class="space-y-2 text-neutral-300">
+            <li><strong class="text-emerald-400">Atomicidade:</strong> Tudo é executado ou nada é executado</li>
+            <li><strong class="text-cyan-400">Consistência:</strong> O banco passa de um estado válido para outro estado válido</li>
+            <li><strong class="text-purple-400">Isolamento:</strong> Transações concorrentes não interferem entre si</li>
+            <li><strong class="text-amber-400">Durabilidade:</strong> Uma vez confirmada (COMMIT), a transação é permanente</li>
+          </ul>
+        </div>
+
+        <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500 mt-4">
+          <h4 class="font-semibold text-emerald-400 mb-2">Exemplo Real: Transferência Bancária</h4>
+          <p class="text-neutral-300 text-sm mb-2">
+            Transferir R$ 1.000 da conta A para conta B envolve duas operações:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-300 text-sm space-y-1">
+            <li>Debitar R$ 1.000 da conta A</li>
+            <li>Creditar R$ 1.000 na conta B</li>
+          </ol>
+          <p class="text-neutral-300 text-sm mt-2">
+            Se a operação 1 suceder mas a 2 falhar, o dinheiro "desaparece". Uma transação garante que
+            <strong>ambas aconteçam ou nenhuma aconteça</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Início e Fim de uma Transação no Oracle</h3>
+        <p class="text-neutral-300 mb-4">
+          No Oracle, uma transação:
+        </p>
+        <ul class="list-disc list-inside text-neutral-300 space-y-2">
+          <li><strong>Inicia automaticamente</strong> com a primeira instrução DML (INSERT, UPDATE, DELETE)</li>
+          <li><strong>Termina</strong> com COMMIT (confirma) ou ROLLBACK (cancela)</li>
+          <li><strong>Também termina</strong> com comandos DDL (CREATE, ALTER, DROP) - que fazem COMMIT implícito</li>
+          <li><strong>Também termina</strong> ao desconectar da sessão</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Seção 2: COMMIT -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">COMMIT - Confirmar Alterações</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Como funciona o COMMIT</h3>
+        <p class="text-neutral-300 mb-4">
+          O comando <code class="text-emerald-400">COMMIT</code> torna <strong>permanentes</strong> todas as alterações
+          feitas na transação atual. Após o COMMIT:
+        </p>
+        <ul class="list-disc list-inside text-neutral-300 space-y-2 mb-4">
+          <li>As alterações são gravadas definitivamente no banco de dados</li>
+          <li>Outros usuários podem ver as alterações</li>
+          <li>Os locks (bloqueios) são liberados</li>
+          <li>Uma nova transação começa automaticamente</li>
+        </ul>
+
+        <pre><code class="language-sql">-- Exemplo básico de COMMIT
+UPDATE funcionarios
+SET salario = salario * 1.10
+WHERE departamento_id = 10;
+
+-- Verificar quantas linhas foram afetadas
+-- (5 linhas atualizadas)
+
+COMMIT;  -- Confirma as alterações
+
+-- Agora as alterações são permanentes e visíveis para todos</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">COMMIT Implícito (Autocommit)</h3>
+        <p class="text-neutral-300 mb-4">
+          Alguns comandos fazem COMMIT automático no Oracle:
+        </p>
+
+        <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500">
+          <h4 class="font-semibold text-amber-400 mb-2">Comandos que causam COMMIT implícito:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-1">
+            <li><strong>DDL:</strong> CREATE, ALTER, DROP, TRUNCATE, RENAME</li>
+            <li><strong>DCL:</strong> GRANT, REVOKE</li>
+            <li><strong>Saída normal:</strong> EXIT ou desconexão normal</li>
+          </ul>
+          <pre class="mt-3"><code class="language-sql">-- Exemplo de COMMIT implícito
+UPDATE funcionarios SET salario = 5000 WHERE id = 10;  -- Transação iniciada
+
+CREATE TABLE teste (id NUMBER);  -- DDL faz COMMIT automático!
+-- A atualização acima foi confirmada automaticamente
+
+ROLLBACK;  -- Não vai desfazer o UPDATE, pois já foi commitado!</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: ROLLBACK -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">↩️</span>
+        </div>
+        <h2 class="text-xl font-bold text-red-400">ROLLBACK - Desfazer Alterações</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Como funciona o ROLLBACK</h3>
+        <p class="text-neutral-300 mb-4">
+          O comando <code class="text-red-400">ROLLBACK</code> <strong>desfaz</strong> todas as alterações
+          feitas na transação atual desde o último COMMIT. Após o ROLLBACK:
+        </p>
+        <ul class="list-disc list-inside text-neutral-300 space-y-2 mb-4">
+          <li>Todas as alterações são descartadas</li>
+          <li>O banco retorna ao estado anterior ao início da transação</li>
+          <li>Os locks são liberados</li>
+          <li>Uma nova transação começa automaticamente</li>
+        </ul>
+
+        <pre><code class="language-sql">-- Exemplo básico de ROLLBACK
+UPDATE funcionarios
+SET salario = salario * 2
+WHERE departamento_id = 10;
+
+SELECT salario FROM funcionarios WHERE departamento_id = 10;
+-- Salários dobrados (ainda não confirmado)
+
+ROLLBACK;  -- Desfaz as alterações
+
+SELECT salario FROM funcionarios WHERE departamento_id = 10;
+-- Salários voltaram aos valores originais</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Quando usar ROLLBACK</h3>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">1. Erro detectado manualmente</h4>
+            <pre><code class="language-sql">DELETE FROM funcionarios WHERE departamento_id = 10;
+-- Ops! Queria excluir apenas um funcionário!
+
+ROLLBACK;  -- Desfaz a exclusão</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">2. Erro de constraint</h4>
+            <pre><code class="language-sql">INSERT INTO funcionarios VALUES (1, 'João', 'joao@email.com', SYSDATE, 5000, 99);
+-- ORA-02291: parent key not found (departamento 99 não existe)
+
+ROLLBACK;  -- Descarta a tentativa de inserção</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">3. ROLLBACK automático</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              O Oracle faz ROLLBACK automático se:
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>A sessão é encerrada anormalmente (crash, perda de conexão)</li>
+              <li>Ocorre um erro grave no sistema</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: SAVEPOINT -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔖</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">SAVEPOINT - Pontos de Salvamento</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é um SAVEPOINT?</h3>
+        <p class="text-neutral-300 mb-4">
+          Um <code class="text-purple-400">SAVEPOINT</code> é um <strong>marcador</strong> dentro de uma transação
+          que permite fazer ROLLBACK parcial, sem desfazer toda a transação.
+        </p>
+
+        <pre><code class="language-sql">-- Criando savepoints
+INSERT INTO departamentos VALUES (40, 'Marketing', 'Rio de Janeiro', 150000);
+SAVEPOINT sp1;  -- Primeiro ponto de salvamento
+
+UPDATE funcionarios SET salario = salario * 1.05 WHERE departamento_id = 10;
+SAVEPOINT sp2;  -- Segundo ponto de salvamento
+
+DELETE FROM funcionarios WHERE id_funcionario = 999;
+SAVEPOINT sp3;  -- Terceiro ponto de salvamento
+
+-- Desfazer apenas até sp2 (mantém INSERT e UPDATE, desfaz DELETE)
+ROLLBACK TO SAVEPOINT sp2;
+
+-- Ou desfazer até sp1 (mantém apenas INSERT)
+ROLLBACK TO SAVEPOINT sp1;
+
+-- Ou desfazer tudo
+ROLLBACK;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Exemplo Prático: Processo de Migração de Dados</h3>
+
+        <pre><code class="language-sql">-- Processo complexo com múltiplos passos
+BEGIN
+    -- Passo 1: Criar novos registros
+    INSERT INTO departamentos_novo
+    SELECT * FROM departamentos_antigo;
+    SAVEPOINT passo1_completo;
+
+    -- Passo 2: Atualizar referências
+    UPDATE funcionarios
+    SET departamento_id = departamento_id + 1000;
+    SAVEPOINT passo2_completo;
+
+    -- Passo 3: Validar dados
+    UPDATE funcionarios
+    SET status = 'MIGRADO';
+
+    -- Se algo deu errado no passo 3, voltar para passo2
+    -- ROLLBACK TO SAVEPOINT passo2_completo;
+
+    -- Se tudo OK, confirmar tudo
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;  -- Desfaz tudo em caso de erro
+        RAISE;
+END;
+/</code></pre>
+
+        <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500 mt-4">
+          <h4 class="font-semibold text-purple-400 mb-2">Dica</h4>
+          <p class="text-neutral-300 text-sm">
+            Savepoints são muito úteis em procedures e processos longos onde você quer manter controle
+            granular sobre o que foi feito, sem perder todo o trabalho em caso de erro.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 5: Isolamento de Transações -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔒</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Isolamento de Transações</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Conceito de Isolamento</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-cyan-400">isolamento</strong> garante que transações simultâneas não interfiram entre si.
+          O Oracle usa <strong>locks (bloqueios)</strong> e <strong>controle de concorrência multiversão (MVCC)</strong>.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Como o Oracle gerencia concorrência:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Leitores não bloqueiam escritores</strong> (queries não travam updates)</li>
+            <li><strong>Escritores não bloqueiam leitores</strong> (updates não travam queries)</li>
+            <li><strong>Escritores bloqueiam escritores</strong> (updates concorrentes na mesma linha esperam)</li>
+            <li><strong>Consistência de leitura:</strong> queries veem snapshot consistente do banco</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Exemplo de Concorrência</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-3">Sessão 1</h4>
+            <pre><code class="language-sql">-- T1: Iniciar transação
+UPDATE funcionarios
+SET salario = 6000
+WHERE id = 10;
+
+-- Aguardando...
+-- (não fez COMMIT ainda)
+
+
+-- T3: Confirmar
+COMMIT;</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-3">Sessão 2</h4>
+            <pre><code class="language-sql">-- T2: Tentar atualizar
+-- mesma linha
+UPDATE funcionarios
+SET salario = 7000
+WHERE id = 10;
+
+-- ESPERA! Sessão 1 tem lock
+
+-- T4: Após COMMIT da Sessão 1
+-- Agora executa e pega lock</code></pre>
+          </div>
+        </div>
+
+        <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500 mt-4">
+          <h4 class="font-semibold text-cyan-400 mb-2">Observação Importante</h4>
+          <p class="text-neutral-300 text-sm">
+            Enquanto isso, outras sessões fazendo SELECT na linha veem o valor ANTIGO (antes do UPDATE),
+            garantindo consistência de leitura. Após o COMMIT, elas veem o novo valor.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exemplos Práticos -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Exemplos Práticos Completos</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Exemplo 1: Transferência entre Contas</h3>
+
+        <pre><code class="language-sql">-- Transferir R$ 1000 da conta 100 para conta 200
+SAVEPOINT inicio_transferencia;
+
+-- Debitar conta origem
+UPDATE contas
+SET saldo = saldo - 1000
+WHERE numero_conta = 100;
+
+-- Verificar se ficou negativo
+SELECT saldo INTO v_saldo
+FROM contas
+WHERE numero_conta = 100;
+
+IF v_saldo < 0 THEN
+    ROLLBACK TO SAVEPOINT inicio_transferencia;
+    RAISE_APPLICATION_ERROR(-20001, 'Saldo insuficiente');
+END IF;
+
+-- Creditar conta destino
+UPDATE contas
+SET saldo = saldo + 1000
+WHERE numero_conta = 200;
+
+-- Registrar histórico
+INSERT INTO historico_transferencias VALUES
+    (seq_transf.NEXTVAL, 100, 200, 1000, SYSDATE);
+
+-- Confirmar toda a transação
+COMMIT;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Exemplo 2: Importação de Dados com Validação</h3>
+
+        <pre><code class="language-sql">-- Importar dados em lote com validação
+DECLARE
+    v_erros NUMBER := 0;
+BEGIN
+    SAVEPOINT inicio_importacao;
+
+    -- Inserir dados temporários
+    INSERT INTO funcionarios_temp
+    SELECT * FROM arquivo_externo;
+
+    -- Validar dados
+    SELECT COUNT(*) INTO v_erros
+    FROM funcionarios_temp
+    WHERE email NOT LIKE '%@%'
+       OR salario <= 0
+       OR departamento_id NOT IN (SELECT id_departamento FROM departamentos);
+
+    IF v_erros > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Encontrados ' || v_erros || ' registros inválidos');
+        ROLLBACK TO SAVEPOINT inicio_importacao;
+    ELSE
+        -- Mover dados validados para tabela final
+        INSERT INTO funcionarios
+        SELECT * FROM funcionarios_temp;
+
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Importação concluída com sucesso');
+    END IF;
+END;
+/</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Exemplo 3: Atualização com Auditoria</h3>
+
+        <pre><code class="language-sql">-- Atualizar salários com registro de auditoria
+BEGIN
+    -- Registrar estado anterior
+    INSERT INTO auditoria_salarios
+    SELECT id_funcionario, salario, USER, SYSDATE, 'ANTES'
+    FROM funcionarios
+    WHERE departamento_id = 10;
+
+    SAVEPOINT antes_atualizacao;
+
+    -- Aplicar aumento
+    UPDATE funcionarios
+    SET salario = salario * 1.10
+    WHERE departamento_id = 10;
+
+    -- Registrar estado posterior
+    INSERT INTO auditoria_salarios
+    SELECT id_funcionario, salario, USER, SYSDATE, 'DEPOIS'
+    FROM funcionarios
+    WHERE departamento_id = 10;
+
+    -- Verificar se ultrapassou orçamento
+    SELECT SUM(salario) INTO v_total
+    FROM funcionarios
+    WHERE departamento_id = 10;
+
+    IF v_total > v_orcamento_depto THEN
+        ROLLBACK TO SAVEPOINT antes_atualizacao;
+        RAISE_APPLICATION_ERROR(-20002, 'Orçamento ultrapassado');
+    ELSE
+        COMMIT;
+    END IF;
+END;
+/</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Entender transações</h4>
+                <p class="text-neutral-400 text-sm">Conceito de transação e propriedades ACID</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar COMMIT corretamente</h4>
+                <p class="text-neutral-400 text-sm">Saber quando confirmar alterações</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar ROLLBACK efetivamente</h4>
+                <p class="text-neutral-400 text-sm">Desfazer alterações quando necessário</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar SAVEPOINTs</h4>
+                <p class="text-neutral-400 text-sm">Controlar transações complexas com pontos intermediários</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Entender isolamento</h4>
+                <p class="text-neutral-400 text-sm">Conceitos de locks e concorrência</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Evitar commits implícitos</h4>
+                <p class="text-neutral-400 text-sm">Conhecer comandos que fazem autocommit</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Simular Erro e Rollback</h3>
+          <p class="text-neutral-300 mb-4">
+            Execute uma série de INSERTs em uma tabela, depois faça ROLLBACK e verifique que os dados não foram salvos.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Inserir dados de teste
+INSERT INTO funcionarios VALUES (1000, 'Teste 1', 'teste1@email.com', SYSDATE, 3000, 10);
+INSERT INTO funcionarios VALUES (1001, 'Teste 2', 'teste2@email.com', SYSDATE, 3500, 10);
+
+-- Verificar inserção
+SELECT * FROM funcionarios WHERE id_funcionario >= 1000;
+-- (2 linhas retornadas)
+
+-- Desfazer
+ROLLBACK;
+
+-- Verificar que não foram salvos
+SELECT * FROM funcionarios WHERE id_funcionario >= 1000;
+-- (0 linhas - dados desapareceram)</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Usar SAVEPOINTs</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie 3 savepoints em uma transação e faça rollback parcial para diferentes pontos.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Passo 1
+INSERT INTO departamentos VALUES (50, 'Vendas', 'Curitiba', 180000);
+SAVEPOINT passo1;
+
+-- Passo 2
+INSERT INTO departamentos VALUES (60, 'Suporte', 'Brasília', 120000);
+SAVEPOINT passo2;
+
+-- Passo 3
+INSERT INTO departamentos VALUES (70, 'Logística', 'Manaus', 100000);
+SAVEPOINT passo3;
+
+-- Desfazer apenas passo 3
+ROLLBACK TO SAVEPOINT passo2;
+SELECT * FROM departamentos WHERE id_departamento >= 50;
+-- (Apenas 50 e 60 existem)
+
+-- Confirmar
+COMMIT;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Transação Bancária</h3>
+          <p class="text-neutral-300 mb-4">
+            Implemente uma transferência entre duas contas com validação de saldo e rollback em caso de erro.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">DECLARE
+    v_saldo_origem NUMBER;
+    v_valor_transf NUMBER := 500;
+BEGIN
+    SAVEPOINT inicio_transf;
+
+    -- Verificar saldo
+    SELECT saldo INTO v_saldo_origem
+    FROM contas
+    WHERE numero_conta = 1001;
+
+    IF v_saldo_origem < v_valor_transf THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Saldo insuficiente');
+    END IF;
+
+    -- Débito
+    UPDATE contas
+    SET saldo = saldo - v_valor_transf
+    WHERE numero_conta = 1001;
+
+    -- Crédito
+    UPDATE contas
+    SET saldo = saldo + v_valor_transf
+    WHERE numero_conta = 1002;
+
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Transferência realizada com sucesso');
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK TO SAVEPOINT inicio_transf;
+        DBMS_OUTPUT.PUT_LINE('Erro: ' || SQLERRM);
+END;
+/</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-10.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: SELECT Avançado</span>
+      </a>
+      <a href="topico-12.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Funções SQL</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 11</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

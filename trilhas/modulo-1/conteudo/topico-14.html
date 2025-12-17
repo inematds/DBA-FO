@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Views e Synonyms | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 14</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">14</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Views e Synonyms</h1>
+          <p class="text-neutral-400">Consultas virtuais e aliases para objetos do banco de dados</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é uma VIEW?</h3>
+        <p class="text-neutral-300 mb-4">
+          Uma <strong class="text-emerald-400">VIEW</strong> é uma consulta SQL armazenada que atua como uma
+          <strong>tabela virtual</strong>. Ela não armazena dados fisicamente, mas apresenta dados de uma ou mais
+          tabelas base através de uma consulta SELECT predefinida.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Características Principais:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Tabela virtual:</strong> Apresenta dados sem armazená-los fisicamente</li>
+            <li><strong>Simplificação:</strong> Oculta complexidade de consultas com múltiplos JOINs</li>
+            <li><strong>Segurança:</strong> Restringe acesso a colunas ou linhas específicas</li>
+            <li><strong>Consistência:</strong> Garante que todos usem a mesma lógica de consulta</li>
+            <li><strong>Independência:</strong> Protege aplicações de mudanças na estrutura das tabelas</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é um SYNONYM?</h3>
+        <p class="text-neutral-300 mb-4">
+          Um <strong class="text-emerald-400">SYNONYM</strong> é um <strong>alias ou apelido</strong> para um objeto
+          do banco de dados (tabela, view, sequence, etc.). Facilita o acesso a objetos com nomes longos ou
+          localizados em outros schemas.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Tipos de Synonyms:</h4>
+          <div class="grid md:grid-cols-2 gap-4 mt-2">
+            <div class="bg-dark-800 rounded p-3">
+              <h5 class="font-semibold text-emerald-400 text-sm mb-1">SYNONYM Privado</h5>
+              <p class="text-neutral-300 text-xs">Visível apenas para o usuário que o criou</p>
+            </div>
+            <div class="bg-dark-800 rounded p-3">
+              <h5 class="font-semibold text-cyan-400 text-sm mb-1">PUBLIC SYNONYM</h5>
+              <p class="text-neutral-300 text-xs">Visível para todos os usuários do banco</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando Views Simples</h3>
+
+        <pre><code class="language-sql">-- VIEW simples: funcionários ativos com informações básicas
+CREATE VIEW vw_funcionarios_ativos AS
+SELECT
+    id_funcionario,
+    nome,
+    email,
+    cargo_id,
+    departamento_id,
+    salario,
+    data_admissao
+FROM funcionarios
+WHERE status = 'ATIVO';
+
+-- Usando a VIEW como se fosse uma tabela
+SELECT * FROM vw_funcionarios_ativos;
+SELECT nome, salario FROM vw_funcionarios_ativos WHERE departamento_id = 10;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Views Complexas com JOINs</h3>
+
+        <pre><code class="language-sql">-- VIEW complexa: relatório completo de funcionários
+CREATE VIEW vw_funcionarios_completo AS
+SELECT
+    f.id_funcionario,
+    f.nome AS funcionario,
+    f.email,
+    f.salario,
+    f.data_admissao,
+    d.nome_departamento,
+    d.localizacao,
+    c.titulo_cargo,
+    c.salario_minimo AS cargo_salario_min,
+    c.salario_maximo AS cargo_salario_max,
+    m.nome AS gerente,
+    CASE
+        WHEN f.salario < c.salario_minimo THEN 'Abaixo do mínimo'
+        WHEN f.salario > c.salario_maximo THEN 'Acima do máximo'
+        ELSE 'Dentro da faixa'
+    END AS situacao_salarial
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.departamento_id = d.id_departamento
+LEFT JOIN cargos c ON f.cargo_id = c.id_cargo
+LEFT JOIN funcionarios m ON f.gerente_id = m.id_funcionario
+WHERE f.status = 'ATIVO';
+
+-- Consulta simplificada usando a VIEW
+SELECT funcionario, departamento, salario, situacao_salarial
+FROM vw_funcionarios_completo
+WHERE situacao_salarial = 'Abaixo do mínimo';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">CREATE OR REPLACE VIEW</h3>
+
+        <p class="text-neutral-300 mb-4">
+          Use <strong class="text-emerald-400">CREATE OR REPLACE</strong> para modificar uma VIEW existente
+          sem perder as permissões concedidas.
+        </p>
+
+        <pre><code class="language-sql">-- Substituir VIEW existente (mantém permissões)
+CREATE OR REPLACE VIEW vw_funcionarios_ativos AS
+SELECT
+    id_funcionario,
+    nome,
+    email,
+    cargo_id,
+    departamento_id,
+    ROUND(salario, 0) AS salario,  -- Arredonda salário
+    data_admissao,
+    FLOOR(MONTHS_BETWEEN(SYSDATE, data_admissao) / 12) AS anos_empresa
+FROM funcionarios
+WHERE status = 'ATIVO';
+
+-- Se usar DROP VIEW e depois CREATE VIEW, perde as permissões:
+-- DROP VIEW vw_funcionarios_ativos;  -- ❌ Evite isso!
+-- CREATE VIEW vw_funcionarios_ativos AS ...;  -- Perdeu GRANTS!</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">WITH CHECK OPTION</h3>
+
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-emerald-400">WITH CHECK OPTION</strong> impede que operações DML
+          (INSERT, UPDATE, DELETE) violem a condição WHERE da VIEW.
+        </p>
+
+        <pre><code class="language-sql">-- VIEW com CHECK OPTION
+CREATE OR REPLACE VIEW vw_funcionarios_depto_ti AS
+SELECT
+    id_funcionario,
+    nome,
+    email,
+    salario,
+    departamento_id
+FROM funcionarios
+WHERE departamento_id = 10
+WITH CHECK OPTION CONSTRAINT ck_depto_ti;
+
+-- Permitido: UPDATE dentro da condição da VIEW
+UPDATE vw_funcionarios_depto_ti
+SET salario = 8000
+WHERE id_funcionario = 100;
+
+-- BLOQUEADO: Tentativa de mudar para outro departamento
+UPDATE vw_funcionarios_depto_ti
+SET departamento_id = 20
+WHERE id_funcionario = 100;
+-- ORA-01402: view WITH CHECK OPTION where-clause violation</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Views Atualizáveis vs Não Atualizáveis</h3>
+
+        <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500 mb-4">
+          <h4 class="font-semibold text-emerald-400 mb-2">View Atualizável</h4>
+          <p class="text-neutral-300 text-sm mb-2">Permite INSERT, UPDATE e DELETE se:</p>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>Baseada em uma única tabela</li>
+            <li>Não contém funções de agregação (SUM, AVG, COUNT, etc.)</li>
+            <li>Não usa DISTINCT, GROUP BY, ou HAVING</li>
+            <li>Não usa operadores de conjunto (UNION, INTERSECT, MINUS)</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-sql">-- VIEW ATUALIZÁVEL (baseada em uma tabela)
+CREATE OR REPLACE VIEW vw_depto_ti AS
+SELECT id_funcionario, nome, email, salario
+FROM funcionarios
+WHERE departamento_id = 10;
+
+-- Operações DML funcionam
+INSERT INTO vw_depto_ti VALUES (201, 'João Silva', 'joao@empresa.com', 7000);
+UPDATE vw_depto_ti SET salario = 7500 WHERE id_funcionario = 201;
+DELETE FROM vw_depto_ti WHERE id_funcionario = 201;
+
+-- VIEW NÃO ATUALIZÁVEL (usa JOIN e agregação)
+CREATE OR REPLACE VIEW vw_estatisticas_depto AS
+SELECT
+    d.nome_departamento,
+    COUNT(*) AS qtd_funcionarios,
+    AVG(f.salario) AS salario_medio
+FROM funcionarios f
+JOIN departamentos d ON f.departamento_id = d.id_departamento
+GROUP BY d.nome_departamento;
+
+-- Tentativa de UPDATE falha
+UPDATE vw_estatisticas_depto SET salario_medio = 8000;
+-- ORA-01732: data manipulation operation not legal on this view</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciando Views</h3>
+
+        <pre><code class="language-sql">-- Remover uma VIEW
+DROP VIEW vw_funcionarios_ativos;
+
+-- Consultar definição de uma VIEW
+SELECT text
+FROM user_views
+WHERE view_name = 'VW_FUNCIONARIOS_COMPLETO';
+
+-- Listar todas as VIEWs do usuário
+SELECT view_name, text_length, read_only
+FROM user_views
+ORDER BY view_name;
+
+-- Ver dependências de uma VIEW
+SELECT name, type, referenced_name, referenced_type
+FROM user_dependencies
+WHERE name = 'VW_FUNCIONARIOS_COMPLETO';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando Synonyms</h3>
+
+        <pre><code class="language-sql">-- SYNONYM privado (apenas para o usuário atual)
+CREATE SYNONYM func FOR funcionarios;
+CREATE SYNONYM depto FOR departamentos;
+
+-- Usando o synonym
+SELECT * FROM func WHERE departamento_id = 10;
+SELECT * FROM depto;
+
+-- PUBLIC SYNONYM (visível para todos) - requer privilégio
+CREATE PUBLIC SYNONYM empresa_func FOR hr.funcionarios;
+
+-- SYNONYM para objetos em outros schemas
+CREATE SYNONYM vendas_tab FOR vendas_schema.pedidos;
+
+-- SYNONYM para VIEW
+CREATE SYNONYM rel_func FOR vw_funcionarios_completo;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciando Synonyms</h3>
+
+        <pre><code class="language-sql">-- Remover SYNONYM privado
+DROP SYNONYM func;
+
+-- Remover PUBLIC SYNONYM (requer privilégio)
+DROP PUBLIC SYNONYM empresa_func;
+
+-- Listar synonyms do usuário
+SELECT synonym_name, table_owner, table_name, db_link
+FROM user_synonyms
+ORDER BY synonym_name;
+
+-- Listar PUBLIC synonyms
+SELECT synonym_name, table_owner, table_name
+FROM all_synonyms
+WHERE owner = 'PUBLIC'
+  AND table_name LIKE 'FUNCIONARIOS%';</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar e modificar views</h4>
+                <p class="text-neutral-400 text-sm">Usar CREATE VIEW e CREATE OR REPLACE VIEW</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">WITH CHECK OPTION</h4>
+                <p class="text-neutral-400 text-sm">Proteger integridade de dados em views</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Views atualizáveis</h4>
+                <p class="text-neutral-400 text-sm">Identificar quando uma view permite DML</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar synonyms</h4>
+                <p class="text-neutral-400 text-sm">Usar synonyms privados e públicos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Benefícios práticos</h4>
+                <p class="text-neutral-400 text-sm">Simplificar consultas e melhorar segurança</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar objetos</h4>
+                <p class="text-neutral-400 text-sm">Consultar e remover views e synonyms</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: View de Segurança</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie uma VIEW que exponha dados de funcionários sem revelar informações salariais sensíveis.
+            Inclua nome, email, departamento e tempo de empresa, mas não salário ou comissões.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">CREATE OR REPLACE VIEW vw_funcionarios_publico AS
+SELECT
+    f.id_funcionario,
+    f.nome,
+    f.email,
+    d.nome_departamento,
+    c.titulo_cargo,
+    f.data_admissao,
+    FLOOR(MONTHS_BETWEEN(SYSDATE, f.data_admissao) / 12) AS anos_empresa,
+    CASE
+        WHEN MONTHS_BETWEEN(SYSDATE, f.data_admissao) / 12 < 1 THEN 'Novo'
+        WHEN MONTHS_BETWEEN(SYSDATE, f.data_admissao) / 12 < 5 THEN 'Intermediário'
+        ELSE 'Veterano'
+    END AS categoria_tempo
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.departamento_id = d.id_departamento
+LEFT JOIN cargos c ON f.cargo_id = c.id_cargo
+WHERE f.status = 'ATIVO';</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: View com CHECK OPTION</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie uma VIEW para funcionários júniores (salário <= 5000) com CHECK OPTION,
+            garantindo que aumentos salariais não violem esse critério através da VIEW.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">CREATE OR REPLACE VIEW vw_funcionarios_junior AS
+SELECT
+    id_funcionario,
+    nome,
+    email,
+    salario,
+    cargo_id,
+    departamento_id
+FROM funcionarios
+WHERE salario <= 5000
+  AND status = 'ATIVO'
+WITH CHECK OPTION CONSTRAINT ck_salario_junior;
+
+-- Teste: permitido (dentro do limite)
+UPDATE vw_funcionarios_junior
+SET salario = 4800
+WHERE id_funcionario = 100;
+
+-- Teste: bloqueado (ultrapassa o limite)
+UPDATE vw_funcionarios_junior
+SET salario = 6000
+WHERE id_funcionario = 100;
+-- Erro: ORA-01402</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Synonyms para Integração</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie synonyms para simplificar o acesso a tabelas de diferentes schemas em um ambiente
+            de integração, onde o schema de produção é PROD_HR e você está em DEV_APP.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Criar synonyms privados para acesso aos dados de produção
+CREATE SYNONYM funcionarios FOR prod_hr.funcionarios;
+CREATE SYNONYM departamentos FOR prod_hr.departamentos;
+CREATE SYNONYM cargos FOR prod_hr.cargos;
+CREATE SYNONYM historico_cargos FOR prod_hr.historico_cargos;
+
+-- Criar synonyms para views do schema de produção
+CREATE SYNONYM vw_func_completo FOR prod_hr.vw_funcionarios_completo;
+
+-- Agora o código pode usar nomes simples
+SELECT * FROM funcionarios WHERE departamento_id = 10;
+SELECT * FROM vw_func_completo WHERE situacao_salarial = 'Abaixo do mínimo';
+
+-- Listar todos os synonyms criados
+SELECT synonym_name, table_owner, table_name
+FROM user_synonyms
+ORDER BY synonym_name;</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-13.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: GROUP BY e Agregação</span>
+      </a>
+      <a href="topico-15.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Constraints Completas</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 14</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -265,6 +265,60 @@
         </div>
       </div>
 
+      <!-- Topic 4: Setup Lab -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center text-blue-400 font-bold">4</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Setup Lab - Configuração do Ambiente</h3>
+              <p class="text-sm text-neutral-400">Download Oracle XE, SQL Developer, configuração, primeiro acesso</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-blue-900/20 rounded-lg p-4 border-l-4 border-blue-500">
+                <h4 class="font-semibold text-blue-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  O <strong>Setup Lab</strong> consiste na instalação e configuração de um ambiente Oracle para estudos.
+                  Utilizaremos o <strong>Oracle Database XE (Express Edition)</strong>, versão gratuita ideal para aprendizado,
+                  junto com o <strong>SQL Developer</strong>, ferramenta gráfica oficial da Oracle para desenvolvimento e administração.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Faça o download do Oracle XE no site oficial da Oracle, instale seguindo o assistente,
+                  configure as portas e senhas, e realize o primeiro acesso via SQL*Plus e SQL Developer.
+                  Você aprenderá a criar conexões, executar comandos básicos e verificar o status do banco.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Ao final deste tópico, você terá um ambiente Oracle funcional para praticar todos os conceitos
+                  do curso. Você saberá iniciar/parar o banco, conectar-se via diferentes ferramentas e estará
+                  pronto para começar a trabalhar com SQL e administração de banco de dados.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic4')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-4.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Action Buttons -->
@@ -372,7 +426,8 @@
     const topicPages = {
       'topic1': { title: 'Sobre o Curso', url: 'topico-1.html' },
       'topic2': { title: 'O Papel do DBA Oracle', url: 'topico-2.html' },
-      'topic3': { title: 'Roteiro de Estudos', url: 'topico-3.html' }
+      'topic3': { title: 'Roteiro de Estudos', url: 'topico-3.html' },
+      'topic4': { title: 'Setup Lab - Configuração do Ambiente', url: 'topico-4.html' }
     };
 
     function openModal(topicId) {

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Types Oracle | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 8</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">8</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Data Types Oracle</h1>
+          <p class="text-neutral-400">Tipos de dados, conversões e boas práticas</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Tipos de Dados Caracteres -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Tipos de Dados: Caracteres</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">VARCHAR2 - Tipo Recomendado para Strings</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">VARCHAR2</strong> é o tipo de dado mais usado para armazenar
+          strings de tamanho variável no Oracle.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Sintaxe e Limites:</h4>
+          <pre><code class="language-sql">-- Tamanho em bytes (padrão)
+nome VARCHAR2(100)
+
+-- Tamanho em caracteres (recomendado para Unicode)
+nome VARCHAR2(100 CHAR)
+
+-- Limites:
+-- Mínimo: 1 byte
+-- Máximo: 4000 bytes (ou 32767 em PL/SQL)</code></pre>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">VARCHAR2 vs VARCHAR</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Use sempre VARCHAR2!</strong>
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>VARCHAR2 é o padrão Oracle</li>
+              <li>VARCHAR está reservado para futuro uso</li>
+              <li>Comportamento do VARCHAR pode mudar</li>
+              <li>VARCHAR2 armazena valores NULL corretamente</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">BYTE vs CHAR</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Cuidado com caracteres multibyte!
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>BYTE: tamanho em bytes (padrão)</li>
+              <li>CHAR: tamanho em caracteres</li>
+              <li>1 caractere pode ocupar até 4 bytes (UTF-8)</li>
+              <li>Use CHAR para evitar problemas</li>
+            </ul>
+          </div>
+        </div>
+
+        <pre><code class="language-sql">-- Exemplo prático
+CREATE TABLE clientes (
+    id          NUMBER(10) PRIMARY KEY,
+    nome        VARCHAR2(100 CHAR),  -- Recomendado: usa CHAR
+    email       VARCHAR2(255),       -- 255 bytes é suficiente para email
+    descricao   VARCHAR2(4000 CHAR)  -- Textos maiores
+);
+
+-- Testando BYTE vs CHAR
+INSERT INTO clientes VALUES (1, 'João', 'joao@email.com', 'Cliente VIP');
+INSERT INTO clientes VALUES (2, '日本語テスト', 'teste@email.com', 'Teste Unicode');</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">CHAR - Tamanho Fixo</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">CHAR</strong> armazena strings de tamanho fixo,
+          completando com espaços se necessário.
+        </p>
+
+        <pre><code class="language-sql">-- Sintaxe
+codigo_uf CHAR(2)  -- Sempre ocupa 2 bytes
+
+-- Exemplos de uso adequado:
+CREATE TABLE enderecos (
+    uf           CHAR(2),      -- 'SP', 'RJ' - sempre 2 caracteres
+    cep          CHAR(8),      -- '01310100' - sempre 8 dígitos
+    sexo         CHAR(1),      -- 'M' ou 'F'
+    tipo_pessoa  CHAR(1)       -- 'F' (física) ou 'J' (jurídica)
+);
+
+-- CUIDADO: CHAR preenche com espaços!
+INSERT INTO enderecos VALUES ('SP', '01310100', 'M', 'F');
+
+-- Comparação com VARCHAR2
+SELECT * FROM enderecos WHERE uf = 'SP';      -- Funciona
+SELECT * FROM enderecos WHERE uf = 'SP  ';    -- Também funciona (trailing spaces)</code></pre>
+
+        <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500 mt-4">
+          <h4 class="font-semibold text-amber-400 mb-2">Quando Usar CHAR vs VARCHAR2?</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li><strong>CHAR:</strong> Códigos de tamanho fixo (UF, flags, status com 1 char)</li>
+            <li><strong>VARCHAR2:</strong> Todos os outros casos (nomes, descrições, emails)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Tipos de Dados Numéricos -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔢</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Tipos de Dados: Numéricos</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">NUMBER - Tipo Universal para Números</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">NUMBER</strong> armazena números com precisão fixa ou flutuante.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Sintaxe: NUMBER(p, s)</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li><strong>p (precision):</strong> Total de dígitos significativos (1 a 38)</li>
+            <li><strong>s (scale):</strong> Dígitos após a vírgula (-84 a 127)</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-sql">-- Diversos formatos de NUMBER
+CREATE TABLE exemplos_number (
+    -- Inteiros
+    id              NUMBER(10),         -- Até 10 dígitos: 9999999999
+    quantidade      NUMBER(6),          -- Até 999999
+
+    -- Decimais
+    preco           NUMBER(10, 2),      -- 99999999.99 (preço/dinheiro)
+    peso            NUMBER(8, 3),       -- 99999.999 (medidas precisas)
+    percentual      NUMBER(5, 2),       -- 100.00 (0% a 100%)
+
+    -- Sem especificação (até 38 dígitos)
+    valor_generico  NUMBER,             -- Qualquer número
+
+    -- Escala negativa (arredonda)
+    populacao       NUMBER(10, -3)      -- Arredonda para milhares: 1234000
+);
+
+-- Exemplos de inserção
+INSERT INTO exemplos_number VALUES (
+    1,                  -- id
+    150,                -- quantidade
+    1234.56,            -- preco
+    75.350,             -- peso
+    15.75,              -- percentual
+    123456789.123456,   -- valor_generico
+    1234567             -- populacao (armazenado como 1235000)
+);
+
+-- Testando arredondamento
+SELECT
+    populacao,                    -- 1235000
+    populacao / 1000 AS milhares  -- 1235
+FROM exemplos_number;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Boas Práticas com NUMBER</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Recomendações</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Sempre especifique precisão e escala</li>
+              <li>Use NUMBER(10,2) para valores monetários</li>
+              <li>Evite NUMBER sem parâmetros em produção</li>
+              <li>Para IDs, use NUMBER(10) ou NUMBER(19)</li>
+            </ul>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Evite</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>INTEGER (use NUMBER com precisão)</li>
+              <li>FLOAT, REAL (use NUMBER para precisão)</li>
+              <li>NUMBER sem especificação em tabelas</li>
+              <li>Escala maior que precisão</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Tipos de Dados Temporal -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Tipos de Dados: Data e Hora</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DATE - Data e Hora</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">DATE</strong> armazena data e hora com precisão de segundos.
+        </p>
+
+        <pre><code class="language-sql">-- Criando tabela com DATE
+CREATE TABLE eventos (
+    id               NUMBER(10) PRIMARY KEY,
+    nome             VARCHAR2(200 CHAR),
+    data_criacao     DATE DEFAULT SYSDATE,
+    data_evento      DATE,
+    data_atualizacao DATE
+);
+
+-- Inserindo datas de diversas formas
+INSERT INTO eventos VALUES (
+    1,
+    'Reunião',
+    SYSDATE,                    -- Data/hora atual
+    DATE '2025-01-15',          -- Formato ISO (apenas data)
+    TO_DATE('15/01/2025 14:30', 'DD/MM/YYYY HH24:MI')  -- Com hora
+);
+
+-- Operações com DATE
+SELECT
+    nome,
+    data_evento,
+    data_evento + 7 AS uma_semana_depois,    -- Adiciona 7 dias
+    data_evento - 1 AS ontem,                -- Subtrai 1 dia
+    SYSDATE - data_criacao AS dias_desde_criacao,
+    TRUNC(data_evento) AS data_sem_hora,     -- Remove hora
+    TO_CHAR(data_evento, 'DD/MM/YYYY HH24:MI:SS') AS formatado
+FROM eventos;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">TIMESTAMP - Precisão de Frações de Segundo</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">TIMESTAMP</strong> estende DATE com precisão de até 9 casas decimais (nanossegundos).
+        </p>
+
+        <pre><code class="language-sql">-- Tipos de TIMESTAMP
+CREATE TABLE logs_sistema (
+    id                NUMBER(19) PRIMARY KEY,
+    mensagem          VARCHAR2(4000 CHAR),
+    timestamp_local   TIMESTAMP(6),              -- Precisão de 6 casas decimais
+    timestamp_tz      TIMESTAMP WITH TIME ZONE,  -- Com fuso horário
+    timestamp_ltz     TIMESTAMP WITH LOCAL TIME ZONE  -- Convertido para fuso local
+);
+
+-- Inserindo timestamps
+INSERT INTO logs_sistema VALUES (
+    1,
+    'Sistema iniciado',
+    SYSTIMESTAMP,                                      -- Timestamp atual
+    CURRENT_TIMESTAMP,                                 -- Com fuso horário
+    TO_TIMESTAMP('2025-01-15 10:30:45.123456', 'YYYY-MM-DD HH24:MI:SS.FF6')
+);
+
+-- Comparando DATE e TIMESTAMP
+SELECT
+    SYSDATE AS data_atual,             -- 15/01/2025 10:30:45
+    SYSTIMESTAMP AS timestamp_atual    -- 15/01/2025 10:30:45.123456000 -03:00
+FROM dual;</code></pre>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">Quando usar DATE?</h4>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Datas de nascimento, eventos</li>
+              <li>Precisão de segundos é suficiente</li>
+              <li>Economiza espaço (7 bytes)</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">Quando usar TIMESTAMP?</h4>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Logs de sistema e auditoria</li>
+              <li>Precisa de milissegundos/nanossegundos</li>
+              <li>Sistemas distribuídos (time zones)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: LOBs -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📦</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Large Objects (LOBs)</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">CLOB e BLOB - Objetos Grandes</h3>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">CLOB (Character LOB)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Armazena textos muito grandes (até 4 GB).
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Documentos HTML/XML</li>
+              <li>Descrições longas</li>
+              <li>JSON grandes</li>
+              <li>Logs de texto extensos</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">BLOB (Binary LOB)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Armazena dados binários grandes (até 4 GB).
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Imagens, fotos</li>
+              <li>PDFs, documentos</li>
+              <li>Vídeos, áudios</li>
+              <li>Arquivos compactados</li>
+            </ul>
+          </div>
+        </div>
+
+        <pre><code class="language-sql">-- Criando tabela com LOBs
+CREATE TABLE documentos (
+    id            NUMBER(10) PRIMARY KEY,
+    titulo        VARCHAR2(200 CHAR),
+    conteudo_xml  CLOB,           -- Texto grande
+    arquivo_pdf   BLOB,           -- Binário grande
+    data_upload   TIMESTAMP DEFAULT SYSTIMESTAMP
+);
+
+-- Inserindo texto grande (CLOB)
+INSERT INTO documentos (id, titulo, conteudo_xml) VALUES (
+    1,
+    'Contrato de Serviço',
+    '<contrato>
+        <clausula>...</clausula>
+        ... (muitas linhas) ...
+    </contrato>'
+);
+
+-- Consultar tamanho dos LOBs
+SELECT
+    titulo,
+    DBMS_LOB.GETLENGTH(conteudo_xml) AS tamanho_xml_bytes,
+    DBMS_LOB.GETLENGTH(arquivo_pdf) AS tamanho_pdf_bytes
+FROM documentos;</code></pre>
+
+        <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500 mt-4">
+          <h4 class="font-semibold text-amber-400 mb-2">Importante sobre LOBs:</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>LOBs são armazenados fora da linha (out-of-line) por padrão</li>
+            <li>Use DBMS_LOB package para manipular LOBs grandes</li>
+            <li>VARCHAR2(4000) é mais eficiente que CLOB para textos pequenos</li>
+            <li>Considere armazenar arquivos no filesystem e apenas referências no BD</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 5: Conversões -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔄</span>
+        </div>
+        <h2 class="text-xl font-bold text-red-400">Conversões de Tipos</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Conversões Implícitas vs Explícitas</h3>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500">
+            <h4 class="font-semibold text-amber-400 mb-2">Conversão Implícita</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Oracle converte automaticamente. <strong>Pode causar problemas!</strong>
+            </p>
+            <pre class="text-xs mt-2"><code class="language-sql">-- Oracle converte automaticamente
+SELECT * FROM funcionarios
+WHERE id = '123';  -- String → Number
+
+SELECT * FROM eventos
+WHERE data_evento = '15/01/2025';  -- String → Date</code></pre>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Conversão Explícita</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Use funções TO_*. <strong>Recomendado!</strong>
+            </p>
+            <pre class="text-xs mt-2"><code class="language-sql">-- Conversão explícita e segura
+SELECT * FROM funcionarios
+WHERE id = TO_NUMBER('123');
+
+SELECT * FROM eventos
+WHERE data_evento = TO_DATE('15/01/2025', 'DD/MM/YYYY');</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">TO_CHAR - Convertendo para String</h3>
+
+        <pre><code class="language-sql">-- Convertendo números para string
+SELECT
+    TO_CHAR(12345) AS simples,                -- '12345'
+    TO_CHAR(12345, '99999') AS com_formato,   -- ' 12345' (com espaços)
+    TO_CHAR(12345, '00000') AS com_zeros,     -- '012345'
+    TO_CHAR(1234.56, '9999.99') AS decimal,   -- '1234.56'
+    TO_CHAR(1234.56, 'L9,999.99') AS moeda,   -- 'R$1,234.56'
+    TO_CHAR(0.15, '99.99%') AS percentual     -- '15.00%'
+FROM dual;
+
+-- Convertendo datas para string
+SELECT
+    TO_CHAR(SYSDATE, 'DD/MM/YYYY') AS data_br,           -- '15/01/2025'
+    TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI:SS') AS completo,  -- '15/01/2025 14:30:45'
+    TO_CHAR(SYSDATE, 'DAY, DD "de" MONTH "de" YYYY') AS extenso,  -- 'MONDAY, 15 de JANUARY de 2025'
+    TO_CHAR(SYSDATE, 'DY') AS dia_semana,               -- 'MON'
+    TO_CHAR(SYSDATE, 'Q') AS trimestre,                 -- '1'
+    TO_CHAR(SYSDATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS iso  -- '2025-01-15T14:30:45'
+FROM dual;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">TO_NUMBER - Convertendo para Número</h3>
+
+        <pre><code class="language-sql">-- Convertendo strings para números
+SELECT
+    TO_NUMBER('12345') AS simples,                    -- 12345
+    TO_NUMBER('1,234.56', '9,999.99') AS formatado,   -- 1234.56
+    TO_NUMBER('R$1.234,56', 'L9G999D99') AS moeda_br, -- 1234.56
+    TO_NUMBER('15%', '99%') AS percentual             -- 15
+FROM dual;
+
+-- CUIDADO com erros!
+SELECT TO_NUMBER('ABC') FROM dual;  -- ORA-01722: invalid number
+
+-- Use validação com REGEXP_LIKE
+SELECT
+    CASE
+        WHEN REGEXP_LIKE('12345', '^\d+$')
+        THEN TO_NUMBER('12345')
+        ELSE NULL
+    END AS numero_valido
+FROM dual;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">TO_DATE e TO_TIMESTAMP - Convertendo para Data</h3>
+
+        <pre><code class="language-sql">-- TO_DATE: String → Date
+SELECT
+    TO_DATE('15/01/2025', 'DD/MM/YYYY') AS data_br,
+    TO_DATE('2025-01-15', 'YYYY-MM-DD') AS data_iso,
+    TO_DATE('15-JAN-2025', 'DD-MON-YYYY') AS data_mon,
+    TO_DATE('15/01/2025 14:30:45', 'DD/MM/YYYY HH24:MI:SS') AS com_hora
+FROM dual;
+
+-- TO_TIMESTAMP: String → Timestamp (com frações de segundo)
+SELECT
+    TO_TIMESTAMP('15/01/2025 14:30:45.123456', 'DD/MM/YYYY HH24:MI:SS.FF6') AS ts,
+    TO_TIMESTAMP_TZ('2025-01-15 10:30:45 -03:00', 'YYYY-MM-DD HH24:MI:SS TZH:TZM') AS ts_tz
+FROM dual;
+
+-- Formatos comuns
+-- DD = dia (01-31)
+-- MM = mês (01-12)
+-- YYYY = ano (4 dígitos)
+-- HH24 = hora 24h (00-23)
+-- MI = minuto (00-59)
+-- SS = segundo (00-59)
+-- FF = fração de segundo</code></pre>
+
+        <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500 mt-4">
+          <h4 class="font-semibold text-red-400 mb-2">Nunca Confie em Conversão Implícita de Datas!</h4>
+          <p class="text-neutral-300 text-sm">
+            Formatos de data variam por configuração (NLS_DATE_FORMAT). Sempre use TO_DATE explicitamente!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 6: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Escolher tipos corretos</h4>
+                <p class="text-neutral-400 text-sm">VARCHAR2, NUMBER, DATE, TIMESTAMP, LOBs</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Especificar precisão</h4>
+                <p class="text-neutral-400 text-sm">VARCHAR2(100 CHAR), NUMBER(10,2)</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Diferenças importantes</h4>
+                <p class="text-neutral-400 text-sm">CHAR vs VARCHAR2, DATE vs TIMESTAMP</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Conversões explícitas</h4>
+                <p class="text-neutral-400 text-sm">TO_CHAR, TO_NUMBER, TO_DATE</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Formatar dados</h4>
+                <p class="text-neutral-400 text-sm">Usar máscaras de formato corretamente</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">LOBs quando necessário</h4>
+                <p class="text-neutral-400 text-sm">CLOB e BLOB para dados grandes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-7.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: SGBD</span>
+      </a>
+      <a href="topico-9.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Operadores SQL</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 8</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

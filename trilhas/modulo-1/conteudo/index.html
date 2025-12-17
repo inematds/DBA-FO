@@ -430,6 +430,502 @@
         </div>
       </div>
 
+      <!-- Topic 7: SGBD -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">7</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">SGBD - Sistema Gerenciador de Banco de Dados</h3>
+              <p class="text-sm text-neutral-400">Funções do SGBD, Oracle vs outros, arquitetura cliente-servidor</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  Um <strong>SGBD</strong> é o software que gerencia o banco de dados: controla acesso, garante integridade,
+                  gerencia transações e otimiza performance. Oracle é um SGBD enterprise com recursos avançados de
+                  alta disponibilidade, enquanto outros como PostgreSQL, MySQL e SQL Server têm características específicas.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Na arquitetura cliente-servidor, o SGBD (servidor) processa requisições SQL de múltiplos clientes.
+                  Oracle destaca-se em ambientes críticos com RAC (cluster), Data Guard (replicação) e
+                  recursos de particionamento. Entender essas diferenças ajuda a escolher a ferramenta certa.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Compreender o papel do SGBD permite tomar decisões arquiteturais melhores,
+                  entender limitações e vantagens de cada plataforma, e comunicar-se efetivamente
+                  com equipes de infraestrutura e desenvolvimento.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic7')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-7.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 8: Data Types Oracle -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">8</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Data Types Oracle</h3>
+              <p class="text-sm text-neutral-400">VARCHAR2, NUMBER, DATE, TIMESTAMP, CLOB, BLOB, conversões</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>VARCHAR2:</strong> Texto variável (até 4000 bytes)<br>
+                  <strong>NUMBER:</strong> Números com precisão definida<br>
+                  <strong>DATE:</strong> Data e hora (até segundos)<br>
+                  <strong>TIMESTAMP:</strong> Data e hora com frações de segundo<br>
+                  <strong>CLOB/BLOB:</strong> Texto ou binário grande (até 4GB)
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use VARCHAR2 para textos, NUMBER para valores numéricos, DATE para datas simples e TIMESTAMP
+                  quando precisar de precisão em milissegundos. Conversões entre tipos usam TO_CHAR, TO_NUMBER,
+                  TO_DATE. Escolher o tipo correto economiza espaço e melhora performance.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Dominar data types evita erros de conversão implícita, otimiza uso de storage
+                  e permite trabalhar com dados complexos como documentos XML ou imagens armazenadas no banco.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic8')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-8.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 9: Operadores SQL -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">9</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Operadores SQL</h3>
+              <p class="text-sm text-neutral-400">Aritméticos, comparação, lógicos, BETWEEN, IN, LIKE, IS NULL</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>Aritméticos:</strong> +, -, *, / para cálculos<br>
+                  <strong>Comparação:</strong> =, !=, <, >, <=, >= para filtros<br>
+                  <strong>Lógicos:</strong> AND, OR, NOT para combinar condições<br>
+                  <strong>Especiais:</strong> BETWEEN (intervalo), IN (lista), LIKE (padrão), IS NULL (nulo)
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use BETWEEN para intervalos (WHERE salario BETWEEN 3000 AND 5000).
+                  Use IN para múltiplos valores (WHERE dept IN ('TI','RH')).
+                  Use LIKE com % para buscas parciais (WHERE nome LIKE 'João%').
+                  Use IS NULL para valores ausentes (não use = NULL).
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Dominar operadores permite criar filtros precisos, fazer buscas complexas e
+                  construir cálculos dentro das queries, reduzindo a necessidade de processamento externo.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic9')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-9.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 10: SELECT Avançado -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">10</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">SELECT Avançado</h3>
+              <p class="text-sm text-neutral-400">DUAL, aliases, prefixação, ORDER BY, DISTINCT, ROWNUM</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>DUAL:</strong> Tabela especial para testar expressões (SELECT SYSDATE FROM DUAL)<br>
+                  <strong>Aliases:</strong> Apelidos para colunas/tabelas (SELECT nome AS funcionario)<br>
+                  <strong>ORDER BY:</strong> Ordena resultados (ASC/DESC)<br>
+                  <strong>DISTINCT:</strong> Remove duplicatas<br>
+                  <strong>ROWNUM:</strong> Limita número de linhas retornadas
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use aliases para tornar queries legíveis. Use prefixação (tabela.coluna) em JOINs para evitar ambiguidade.
+                  ORDER BY organiza resultados para relatórios. DISTINCT elimina duplicatas em consultas.
+                  ROWNUM permite paginação (WHERE ROWNUM <= 10 para top 10).
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Queries avançadas ficam mais eficientes e legíveis. Você consegue criar relatórios
+                  ordenados, evitar duplicatas, limitar resultados e testar funções sem precisar de tabelas reais.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic10')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-10.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 11: TCL - Controle de Transação -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">11</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">TCL - Controle de Transação</h3>
+              <p class="text-sm text-neutral-400">COMMIT, ROLLBACK, SAVEPOINT, transações</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>COMMIT:</strong> Confirma alterações permanentemente<br>
+                  <strong>ROLLBACK:</strong> Desfaz alterações não confirmadas<br>
+                  <strong>SAVEPOINT:</strong> Marca ponto intermediário para rollback parcial<br>
+                  Uma <strong>transação</strong> é um conjunto de operações que deve ser executado completamente ou não ser executado.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Sempre faça COMMIT após operações bem-sucedidas ou ROLLBACK se algo deu errado.
+                  Use SAVEPOINT antes de operações arriscadas para poder voltar parcialmente.
+                  Transações garantem integridade: se transferir dinheiro entre contas, ou ambas operações
+                  (débito e crédito) ocorrem, ou nenhuma ocorre.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Controlar transações corretamente previne inconsistências de dados, permite recuperação
+                  de erros e garante que operações complexas sejam atômicas e confiáveis.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic11')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-11.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 12: Funções SQL -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">12</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Funções SQL</h3>
+              <p class="text-sm text-neutral-400">Numéricas, string, data, conversão, condicionais</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>Numéricas:</strong> ROUND, TRUNC, MOD, ABS, CEIL, FLOOR<br>
+                  <strong>String:</strong> UPPER, LOWER, SUBSTR, LENGTH, CONCAT, TRIM<br>
+                  <strong>Data:</strong> SYSDATE, ADD_MONTHS, MONTHS_BETWEEN, TRUNC, EXTRACT<br>
+                  <strong>Conversão:</strong> TO_CHAR, TO_NUMBER, TO_DATE<br>
+                  <strong>Condicionais:</strong> NVL, NVL2, DECODE, CASE
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use funções numéricas para arredondar valores monetários. Funções de string para formatar
+                  nomes e textos. Funções de data para calcular diferenças entre datas e adicionar meses.
+                  NVL substitui valores nulos. CASE cria lógica condicional complexa dentro de queries.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Dominar funções SQL reduz processamento em aplicações, permite transformações de dados
+                  diretamente no banco e cria queries mais eficientes e expressivas.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic12')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-12.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 13: GROUP BY e Agregação -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">13</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">GROUP BY e Agregação</h3>
+              <p class="text-sm text-neutral-400">COUNT, SUM, AVG, MIN, MAX, HAVING</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>GROUP BY:</strong> Agrupa linhas com valores idênticos<br>
+                  <strong>COUNT:</strong> Conta registros<br>
+                  <strong>SUM:</strong> Soma valores<br>
+                  <strong>AVG:</strong> Média de valores<br>
+                  <strong>MIN/MAX:</strong> Valores mínimo e máximo<br>
+                  <strong>HAVING:</strong> Filtra grupos (WHERE não funciona com agregações)
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use GROUP BY para criar relatórios sumarizados: total de vendas por região, média
+                  salarial por departamento, número de pedidos por cliente. HAVING filtra após a agregação
+                  (ex: HAVING SUM(valor) > 10000 mostra apenas grupos com total acima de 10k).
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  GROUP BY é essencial para análises e relatórios gerenciais. Permite extrair insights
+                  de grandes volumes de dados e criar dashboards diretamente do banco.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic13')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-13.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 14: Views e Synonyms -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">14</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Views e Synonyms</h3>
+              <p class="text-sm text-neutral-400">CREATE VIEW, WITH CHECK OPTION, sinônimos</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>View:</strong> Consulta armazenada que age como tabela virtual. Simplifica queries complexas
+                  e controla acesso a dados sensíveis.<br>
+                  <strong>WITH CHECK OPTION:</strong> Garante que DML em views respeite a cláusula WHERE da view.<br>
+                  <strong>Synonym:</strong> Apelido para objetos do banco (tabelas, views) facilitando referências.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Crie views para JOINs frequentes ou cálculos complexos. Use para segurança: view mostra
+                  apenas colunas permitidas ao usuário. Synonyms permitem referenciar OWNER.TABELA como TABELA,
+                  simplificando código e facilitando migração entre ambientes.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Views tornam queries complexas reutilizáveis e melhoram segurança. Synonyms simplificam
+                  código e tornam aplicações mais portáveis entre diferentes schemas e ambientes.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic14')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-14.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 15: Constraints Completas -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">15</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Constraints Completas</h3>
+              <p class="text-sm text-neutral-400">PK, FK, UNIQUE, NOT NULL, CHECK, DEFAULT</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>PRIMARY KEY (PK):</strong> Identifica unicamente cada registro<br>
+                  <strong>FOREIGN KEY (FK):</strong> Garante referência válida entre tabelas<br>
+                  <strong>UNIQUE:</strong> Impede valores duplicados<br>
+                  <strong>NOT NULL:</strong> Obriga preenchimento<br>
+                  <strong>CHECK:</strong> Valida regras customizadas<br>
+                  <strong>DEFAULT:</strong> Define valor padrão
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  PK e FK garantem integridade referencial (não há pedido órfão sem cliente).
+                  UNIQUE impede e-mails duplicados. NOT NULL garante dados essenciais.
+                  CHECK valida regras de negócio (ex: salário > 0). DEFAULT simplifica inserções
+                  (ex: data_cadastro DEFAULT SYSDATE).
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Constraints bem definidas previnem inconsistências, validam dados no nível do banco
+                  (não apenas na aplicação) e documentam regras de negócio diretamente na estrutura.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic15')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-15.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Action Buttons -->
@@ -540,7 +1036,16 @@
       'topic3': { title: 'SQL Developer e SQL*Plus', url: 'topico-3.html' },
       'topic4': { title: 'A Linguagem SQL', url: 'topico-4.html' },
       'topic5': { title: 'Comandos SQL na Prática', url: 'topico-5.html' },
-      'topic6': { title: 'JOINs, Funções e Subqueries', url: 'topico-6.html' }
+      'topic6': { title: 'JOINs, Funções e Subqueries', url: 'topico-6.html' },
+      'topic7': { title: 'SGBD - Sistema Gerenciador de Banco de Dados', url: 'topico-7.html' },
+      'topic8': { title: 'Data Types Oracle', url: 'topico-8.html' },
+      'topic9': { title: 'Operadores SQL', url: 'topico-9.html' },
+      'topic10': { title: 'SELECT Avançado', url: 'topico-10.html' },
+      'topic11': { title: 'TCL - Controle de Transação', url: 'topico-11.html' },
+      'topic12': { title: 'Funções SQL', url: 'topico-12.html' },
+      'topic13': { title: 'GROUP BY e Agregação', url: 'topico-13.html' },
+      'topic14': { title: 'Views e Synonyms', url: 'topico-14.html' },
+      'topic15': { title: 'Constraints Completas', url: 'topico-15.html' }
     };
 
     function openModal(topicId) {

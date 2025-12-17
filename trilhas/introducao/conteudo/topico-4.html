@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Lab - Configuração do Ambiente | Trilha 0 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-blue-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 0</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-blue-400">4</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Setup Lab - Configuração do Ambiente</h1>
+          <p class="text-neutral-400">Prepare seu laboratório Oracle para prática</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-blue-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Por que Configurar um Ambiente de Laboratório?</h3>
+        <p class="text-neutral-300 mb-4">
+          Um <strong class="text-blue-400">ambiente de laboratório Oracle</strong> é essencial para aprender e praticar
+          administração de banco de dados sem riscos. Neste ambiente isolado, você pode:
+        </p>
+        <ul class="list-disc list-inside text-neutral-300 space-y-2 ml-4 mb-4">
+          <li>Executar comandos SQL e DDL sem medo de quebrar sistemas de produção</li>
+          <li>Testar configurações de performance, backup e recovery</li>
+          <li>Simular cenários de falha e aprender troubleshooting</li>
+          <li>Experimentar com diferentes versões do Oracle Database</li>
+          <li>Preparar-se para certificações Oracle (OCA, OCP)</li>
+        </ul>
+
+        <div class="bg-blue-900/30 rounded-lg p-4 border-l-4 border-blue-500">
+          <h4 class="font-semibold text-blue-400 mb-2">Oracle Express Edition (XE)</h4>
+          <p class="text-neutral-300 text-sm">
+            Neste curso, utilizaremos o <strong>Oracle XE 21c</strong>, uma versão gratuita do Oracle Database
+            com funcionalidades completas, ideal para estudos. Limitações: 2 CPUs, 2GB RAM, 12GB de armazenamento
+            de dados - mais que suficiente para aprendizado.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Pré-requisitos do Curso</h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-2">Hardware Mínimo</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li>• <strong>Processador:</strong> CPU dual-core (2 GHz ou superior)</li>
+              <li>• <strong>Memória RAM:</strong> 4GB mínimo (8GB recomendado)</li>
+              <li>• <strong>Disco:</strong> 20GB de espaço livre (SSD recomendado)</li>
+              <li>• <strong>Conexão de rede:</strong> Para downloads (2GB+)</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-2">Sistema Operacional Suportado</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li>• <strong>Windows:</strong> 10 ou 11 (64-bit)</li>
+              <li>• <strong>Linux:</strong> Oracle Linux, Red Hat, Ubuntu, CentOS</li>
+              <li>• <strong>macOS:</strong> Via Docker (Oracle XE não tem instalador nativo)</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-2">Conhecimentos Básicos Necessários</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li>• Conhecimento básico de SQL (SELECT, INSERT, UPDATE, DELETE)</li>
+              <li>• Familiaridade com linha de comando (CMD/Terminal)</li>
+              <li>• Noções de sistemas operacionais e redes</li>
+              <li>• Não é necessário experiência prévia com Oracle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-blue-400">Aplicação Prática</h2>
+      </div>
+
+      <!-- Passo 1: Download Oracle XE -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 1:</span> Download do Oracle XE 21c
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">1.1 Acessar o Site da Oracle</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Acesse o site oficial de downloads da Oracle:
+            </p>
+            <div class="bg-dark-900 rounded p-3 mb-2">
+              <code class="text-blue-400 text-sm">https://www.oracle.com/database/technologies/xe-downloads.html</code>
+            </div>
+            <p class="text-neutral-400 text-xs">
+              Você precisará criar uma conta gratuita Oracle (Oracle Account) caso não tenha.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">1.2 Escolher a Versão para Seu Sistema</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Selecione o instalador apropriado:
+            </p>
+            <ul class="text-neutral-300 text-sm space-y-2">
+              <li>• <strong>Windows:</strong> Oracle Database 21c Express Edition for Windows x64 (2.6 GB)</li>
+              <li>• <strong>Linux:</strong> Oracle Database 21c Express Edition for Linux x64 (2.3 GB RPM)</li>
+            </ul>
+          </div>
+
+          <div class="bg-blue-900/30 rounded-lg p-4 border-l-4 border-blue-500">
+            <h4 class="font-semibold text-blue-400 mb-2">Dica: Alternativa com Docker</h4>
+            <p class="text-neutral-300 text-sm">
+              Se preferir usar Docker (recomendado para macOS e Linux), você pode baixar a imagem oficial:
+            </p>
+            <pre><code class="language-bash">docker pull container-registry.oracle.com/database/express:21.3.0-xe</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 2: Instalação Oracle XE -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 2:</span> Instalação do Oracle XE
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">2.1 Instalação no Windows</h4>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>1. Execute o instalador:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-3">
+              <li>• Extraia o arquivo ZIP baixado</li>
+              <li>• Execute <code class="text-blue-400">setup.exe</code> como Administrador</li>
+            </ul>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>2. Siga o assistente:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-3">
+              <li>• Aceite os termos de licença</li>
+              <li>• Escolha o diretório de instalação (padrão: <code class="text-neutral-400">C:\app\oracle\product\21c\</code>)</li>
+              <li>• Defina uma senha para o usuário <strong class="text-blue-400">SYS</strong> e <strong class="text-blue-400">SYSTEM</strong></li>
+              <li>• <strong class="text-red-400">IMPORTANTE:</strong> Anote esta senha em local seguro!</li>
+            </ul>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>3. Aguarde a instalação:</strong></p>
+            <p class="text-neutral-400 text-sm ml-4 mb-3">
+              O processo pode levar 10-15 minutos. O serviço será iniciado automaticamente.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">2.2 Instalação no Linux (Oracle Linux/RHEL/CentOS)</h4>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>1. Instalar pacotes de pré-requisitos:</strong></p>
+            <pre class="mb-3"><code class="language-bash">sudo yum install -y oracle-database-preinstall-21c</code></pre>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>2. Instalar Oracle XE via RPM:</strong></p>
+            <pre class="mb-3"><code class="language-bash">sudo yum localinstall -y oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm</code></pre>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>3. Configurar o banco de dados:</strong></p>
+            <pre class="mb-3"><code class="language-bash">sudo /etc/init.d/oracle-xe-21c configure</code></pre>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>4. Durante a configuração:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Defina a senha para SYS, SYSTEM e PDBADMIN</li>
+              <li>• Porta padrão: <strong class="text-blue-400">1521</strong></li>
+              <li>• EM Express: <strong class="text-blue-400">5500</strong></li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">2.3 Instalação via Docker (Todas as plataformas)</h4>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>1. Executar container Oracle XE:</strong></p>
+            <pre class="mb-3"><code class="language-bash">docker run -d \
+  --name oracle-xe \
+  -p 1521:1521 \
+  -p 5500:5500 \
+  -e ORACLE_PWD=SuaSenhaForte123 \
+  container-registry.oracle.com/database/express:21.3.0-xe</code></pre>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>2. Aguardar inicialização (2-5 minutos):</strong></p>
+            <pre class="mb-3"><code class="language-bash">docker logs -f oracle-xe</code></pre>
+
+            <p class="text-neutral-400 text-sm">
+              Aguarde a mensagem: <code class="text-green-400">DATABASE IS READY TO USE!</code>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 3: SQL Developer -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 3:</span> Instalação do Oracle SQL Developer
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">3.1 O que é SQL Developer?</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              O <strong class="text-blue-400">Oracle SQL Developer</strong> é a ferramenta gráfica oficial da Oracle para
+              desenvolvimento e administração de bancos de dados. Funcionalidades:
+            </p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Editor SQL com autocomplete e syntax highlighting</li>
+              <li>• Navegação visual de objetos (tabelas, views, procedures)</li>
+              <li>• Ferramentas de DBA (gerenciamento de usuários, tablespaces)</li>
+              <li>• Visualização de planos de execução</li>
+              <li>• Suporte a múltiplas conexões simultâneas</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">3.2 Download e Instalação</h4>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>1. Acessar página de downloads:</strong></p>
+            <div class="bg-dark-900 rounded p-3 mb-3">
+              <code class="text-blue-400 text-sm">https://www.oracle.com/database/sqldeveloper/technologies/download/</code>
+            </div>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>2. Escolher a versão:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-3">
+              <li>• <strong>Windows:</strong> SQL Developer 23.1 with JDK 11 included (ZIP - 460 MB)</li>
+              <li>• <strong>Linux/macOS:</strong> SQL Developer 23.1 (ZIP - 340 MB)</li>
+            </ul>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>3. Instalação:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Extraia o arquivo ZIP em um diretório de sua escolha</li>
+              <li>• Windows: Execute <code class="text-blue-400">sqldeveloper.exe</code></li>
+              <li>• Linux/Mac: Execute <code class="text-blue-400">./sqldeveloper.sh</code></li>
+              <li>• <strong>Não é necessária instalação</strong> - é um aplicativo portátil</li>
+            </ul>
+          </div>
+
+          <div class="bg-blue-900/30 rounded-lg p-4 border-l-4 border-blue-500">
+            <h4 class="font-semibold text-blue-400 mb-2">Alternativa: DBeaver (Multiplataforma)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Se preferir uma ferramenta open-source, o <strong>DBeaver Community</strong> também funciona bem com Oracle:
+            </p>
+            <div class="bg-dark-900 rounded p-3">
+              <code class="text-blue-400 text-sm">https://dbeaver.io/download/</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 4: Configuração de Conexão -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 4:</span> Configuração de Conexão
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">4.1 Criar Nova Conexão no SQL Developer</h4>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>1. Abrir assistente de conexão:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-3">
+              <li>• Clique no ícone <strong class="text-blue-400">+</strong> (Nova Conexão) no painel esquerdo</li>
+              <li>• Ou vá em: <code class="text-neutral-400">File > New > Database Connection</code></li>
+            </ul>
+
+            <p class="text-neutral-300 text-sm mb-2"><strong>2. Preencher parâmetros de conexão:</strong></p>
+            <div class="bg-dark-900 rounded-lg p-4 space-y-2 text-sm">
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Connection Name:</div>
+                <div class="col-span-2 text-blue-400">Oracle XE - SYSTEM</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Username:</div>
+                <div class="col-span-2 text-blue-400">SYSTEM</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Password:</div>
+                <div class="col-span-2 text-blue-400">[senha definida na instalação]</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Connection Type:</div>
+                <div class="col-span-2 text-blue-400">Basic</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Hostname:</div>
+                <div class="col-span-2 text-blue-400">localhost</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Port:</div>
+                <div class="col-span-2 text-blue-400">1521</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-neutral-400">Service name:</div>
+                <div class="col-span-2 text-blue-400">XEPDB1</div>
+              </div>
+            </div>
+
+            <p class="text-neutral-300 text-sm mt-3 mb-2"><strong>3. Testar a conexão:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Clique no botão <strong class="text-blue-400">Test</strong></li>
+              <li>• Deve aparecer: <code class="text-green-400">Status: Success</code></li>
+              <li>• Clique em <strong class="text-blue-400">Save</strong> e depois <strong class="text-blue-400">Connect</strong></li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">4.2 Parâmetros de Conexão - Explicação</h4>
+
+            <div class="space-y-3">
+              <div>
+                <h5 class="text-blue-400 text-sm font-semibold mb-1">CDB vs PDB</h5>
+                <p class="text-neutral-300 text-sm">
+                  Oracle 21c XE usa arquitetura <strong>multitenant</strong>:
+                </p>
+                <ul class="text-neutral-300 text-sm space-y-1 ml-4 mt-1">
+                  <li>• <strong class="text-blue-400">XE</strong> = Container Database (CDB) - administração</li>
+                  <li>• <strong class="text-blue-400">XEPDB1</strong> = Pluggable Database (PDB) - desenvolvimento</li>
+                  <li>• <strong>Use XEPDB1 para trabalhos práticos</strong></li>
+                </ul>
+              </div>
+
+              <div>
+                <h5 class="text-blue-400 text-sm font-semibold mb-1">Usuários padrão</h5>
+                <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+                  <li>• <strong class="text-blue-400">SYS:</strong> Super administrador (SYSDBA)</li>
+                  <li>• <strong class="text-blue-400">SYSTEM:</strong> Administrador (DBA)</li>
+                  <li>• <strong class="text-blue-400">PDBADMIN:</strong> Admin da PDB</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 5: Primeiro Acesso -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 5:</span> Primeiro Acesso ao Banco de Dados
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">5.1 Verificar Versão do Oracle</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Execute sua primeira query SQL para verificar a versão instalada:
+            </p>
+            <pre><code class="language-sql">SELECT * FROM v$version;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <p class="text-neutral-400 text-xs mb-2">Resultado esperado:</p>
+              <pre class="text-xs text-green-400">BANNER
+------------------------------------------------------------
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0</pre>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">5.2 Verificar Nome da Instância</h4>
+            <pre><code class="language-sql">SELECT instance_name, host_name, version, status
+FROM v$instance;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">INSTANCE_NAME  HOST_NAME     VERSION     STATUS
+-------------  -----------   ----------  ------
+XE             localhost     21.3.0.0.0  OPEN</pre>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">5.3 Listar Tablespaces Disponíveis</h4>
+            <pre><code class="language-sql">SELECT tablespace_name, status, contents
+FROM dba_tablespaces
+ORDER BY tablespace_name;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">TABLESPACE_NAME  STATUS   CONTENTS
+---------------  -------  ---------
+SYSAUX           ONLINE   PERMANENT
+SYSTEM           ONLINE   PERMANENT
+TEMP             ONLINE   TEMPORARY
+UNDOTBS1         ONLINE   UNDO
+USERS            ONLINE   PERMANENT</pre>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">5.4 Criar um Usuário de Teste</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Vamos criar um usuário para usar nos próximos módulos:
+            </p>
+            <pre><code class="language-sql">-- Criar usuário
+CREATE USER aluno IDENTIFIED BY senha123
+DEFAULT TABLESPACE users
+TEMPORARY TABLESPACE temp
+QUOTA UNLIMITED ON users;
+
+-- Conceder privilégios básicos
+GRANT CONNECT, RESOURCE TO aluno;
+
+-- Conceder privilégio de criar views
+GRANT CREATE VIEW TO aluno;</code></pre>
+
+            <p class="text-neutral-400 text-sm mt-3">
+              Agora você pode criar uma segunda conexão no SQL Developer usando o usuário <strong class="text-blue-400">aluno</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 6: Verificação do Ambiente -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 6:</span> Verificação do Ambiente
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">6.1 Teste Básico de Funcionamento</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Execute o clássico teste de conectividade Oracle:
+            </p>
+            <pre><code class="language-sql">SELECT 1 FROM DUAL;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">    1
+-----
+    1</pre>
+            </div>
+
+            <p class="text-neutral-400 text-sm mt-3">
+              A tabela <strong class="text-blue-400">DUAL</strong> é uma tabela especial do Oracle com uma única linha,
+              usada para testar expressões SQL.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">6.2 Verificar Data e Hora do Servidor</h4>
+            <pre><code class="language-sql">SELECT SYSDATE AS data_atual,
+       TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI:SS') AS formatado
+FROM DUAL;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">DATA_ATUAL           FORMATADO
+---------            -------------------
+17-DEC-25            17/12/2025 14:35:22</pre>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">6.3 Testar Operações Matemáticas</h4>
+            <pre><code class="language-sql">SELECT 10 + 5 AS soma,
+       20 - 8 AS subtracao,
+       6 * 7 AS multiplicacao,
+       100 / 4 AS divisao,
+       POWER(2, 10) AS potencia
+FROM DUAL;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">SOMA  SUBTRACAO  MULTIPLICACAO  DIVISAO  POTENCIA
+----  ---------  -------------  -------  --------
+  15         12             42       25      1024</pre>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">6.4 Criar e Consultar uma Tabela de Exemplo</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Vamos testar a criação de objetos:
+            </p>
+            <pre><code class="language-sql">-- Criar tabela
+CREATE TABLE teste_lab (
+    id NUMBER PRIMARY KEY,
+    descricao VARCHAR2(100),
+    data_criacao DATE DEFAULT SYSDATE
+);
+
+-- Inserir dados
+INSERT INTO teste_lab (id, descricao) VALUES (1, 'Ambiente configurado!');
+INSERT INTO teste_lab (id, descricao) VALUES (2, 'Oracle XE funcionando');
+COMMIT;
+
+-- Consultar
+SELECT * FROM teste_lab;</code></pre>
+
+            <div class="bg-dark-900 rounded-lg p-3 mt-3">
+              <pre class="text-xs text-green-400">ID  DESCRICAO                  DATA_CRIACAO
+--  ------------------------   -------------
+ 1  Ambiente configurado!      17-DEC-25
+ 2  Oracle XE funcionando      17-DEC-25</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 7: Troubleshooting -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="text-blue-400">Passo 7:</span> Troubleshooting Comum
+        </h3>
+
+        <div class="space-y-4">
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Problema: ORA-12541: TNS:no listener</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Causa:</strong> O listener do Oracle não está em execução.
+            </p>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução Windows:</strong></p>
+            <pre class="mb-2"><code class="language-bash">lsnrctl start</code></pre>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução Linux:</strong></p>
+            <pre><code class="language-bash">sudo systemctl start oracle-xe-21c</code></pre>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Problema: ORA-01017: invalid username/password</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Causa:</strong> Credenciais incorretas.
+            </p>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Verifique se está usando a senha correta definida na instalação</li>
+              <li>• Usuários padrão: SYSTEM, SYS (como SYSDBA), PDBADMIN</li>
+              <li>• Para resetar senha do SYSTEM via SQL*Plus:</li>
+            </ul>
+            <pre class="mt-2"><code class="language-bash">sqlplus / as sysdba
+ALTER USER system IDENTIFIED BY nova_senha;</code></pre>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Problema: ORA-12514: TNS:listener does not know of service</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Causa:</strong> Service name incorreto ou PDB não está aberta.
+            </p>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-2">
+              <li>• Verifique se está usando <strong class="text-blue-400">XEPDB1</strong> como service name</li>
+              <li>• Verifique se a PDB está aberta:</li>
+            </ul>
+            <pre><code class="language-sql">-- Conectar como SYSDBA ao CDB
+SELECT name, open_mode FROM v$pdbs;
+
+-- Se XEPDB1 estiver MOUNTED, abrir com:
+ALTER PLUGGABLE DATABASE XEPDB1 OPEN;</code></pre>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Problema: Porta 1521 já está em uso</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Causa:</strong> Outra aplicação está usando a porta padrão do Oracle.
+            </p>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Identificar processo usando a porta:</li>
+            </ul>
+            <pre class="mt-2"><code class="language-bash"># Windows
+netstat -ano | findstr :1521
+
+# Linux
+sudo netstat -tulpn | grep 1521</code></pre>
+            <p class="text-neutral-300 text-sm mt-2 ml-4">
+              • Ou reconfigure o listener para usar outra porta editando <code class="text-neutral-400">listener.ora</code>
+            </p>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Problema: SQL Developer não conecta (sem mensagem de erro específica)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Possíveis causas:</strong>
+            </p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4 mb-2">
+              <li>• Firewall bloqueando porta 1521</li>
+              <li>• Driver JDBC desatualizado</li>
+              <li>• Java incompatível</li>
+            </ul>
+            <p class="text-neutral-300 text-sm mb-2"><strong>Solução:</strong></p>
+            <ul class="text-neutral-300 text-sm space-y-1 ml-4">
+              <li>• Teste com SQL*Plus primeiro: <code class="text-blue-400">sqlplus system@localhost:1521/XEPDB1</code></li>
+              <li>• Se SQL*Plus funcionar, o problema é no SQL Developer</li>
+              <li>• Atualize o SQL Developer para a versão mais recente</li>
+            </ul>
+          </div>
+
+          <div class="bg-blue-900/30 rounded-lg p-4 border-l-4 border-blue-500">
+            <h4 class="font-semibold text-blue-400 mb-2">Comandos Úteis de Diagnóstico</h4>
+            <pre><code class="language-bash"># Verificar status do listener
+lsnrctl status
+
+# Verificar serviços registrados
+lsnrctl services
+
+# Verificar processos Oracle (Linux)
+ps -ef | grep oracle
+
+# Verificar serviços Oracle (Windows)
+services.msc # Buscar por "OracleService"</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-blue-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Ao completar este tópico, você deve ser capaz de:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Instalar Oracle XE 21c</h4>
+                <p class="text-neutral-400 text-sm">Realizar instalação completa em Windows, Linux ou Docker</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar SQL Developer</h4>
+                <p class="text-neutral-400 text-sm">Instalar e criar conexões com o banco de dados</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Conectar ao banco Oracle</h4>
+                <p class="text-neutral-400 text-sm">Usar credenciais corretas e entender CDB vs PDB</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Executar queries básicas</h4>
+                <p class="text-neutral-400 text-sm">Testar ambiente com SELECT, CREATE TABLE, INSERT</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar usuários e schemas</h4>
+                <p class="text-neutral-400 text-sm">Gerenciar usuários básicos e conceder privilégios</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Verificar configurações</h4>
+                <p class="text-neutral-400 text-sm">Consultar views do sistema (v$version, v$instance)</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Resolver problemas comuns</h4>
+                <p class="text-neutral-400 text-sm">Diagnosticar e corrigir erros de conexão e listener</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-blue-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar ferramentas de linha de comando</h4>
+                <p class="text-neutral-400 text-sm">SQL*Plus, lsnrctl e comandos de diagnóstico</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-900/30 to-blue-600/30 rounded-lg p-6 border border-blue-500/30">
+          <h4 class="font-semibold text-neutral-100 mb-3 text-center">Checklist de Validação do Ambiente</h4>
+          <div class="grid md:grid-cols-2 gap-3 text-sm">
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">Oracle XE instalado e em execução</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">SQL Developer conectado com sucesso</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">Query <code class="text-blue-400">SELECT 1 FROM DUAL</code> funciona</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">Tabela de teste criada e consultada</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">Usuário customizado criado com privilégios</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400">☑</span>
+              <span class="text-neutral-300">Listener respondendo na porta 1521</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl border border-blue-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-3 text-center">Próximos Passos</h3>
+        <p class="text-neutral-300 text-center mb-4">
+          Parabéns! Você configurou com sucesso seu ambiente Oracle. Agora está pronto para iniciar
+          os estudos práticos das próximas trilhas.
+        </p>
+        <div class="grid md:grid-cols-3 gap-4 text-center text-sm">
+          <div>
+            <div class="text-2xl mb-2">📊</div>
+            <div class="font-semibold text-blue-400">Trilha 1</div>
+            <div class="text-neutral-400">Fundamentos SQL</div>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">⚙️</div>
+            <div class="font-semibold text-cyan-400">Trilha 2</div>
+            <div class="text-neutral-400">Administração Básica</div>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🔒</div>
+            <div class="font-semibold text-purple-400">Trilha 3</div>
+            <div class="text-neutral-400">Segurança</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl border border-blue-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-3.html" class="flex items-center gap-2 text-neutral-400 hover:text-blue-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Roadmap de Aprendizagem</span>
+      </a>
+      <span class="text-neutral-500 text-sm">Último tópico da Trilha 0</span>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 0: Introdução - Tópico 4</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

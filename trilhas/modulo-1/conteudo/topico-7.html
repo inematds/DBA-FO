@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGBD (Sistema Gerenciador de Banco de Dados) | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 7</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">7</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">SGBD (Sistema Gerenciador de Banco de Dados)</h1>
+          <p class="text-neutral-400">O que é um SGBD, suas funções e arquitetura</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é um SGBD?</h3>
+        <p class="text-neutral-300 mb-4">
+          Um <strong class="text-emerald-400">SGBD (Sistema Gerenciador de Banco de Dados)</strong> ou
+          <strong>DBMS (Database Management System)</strong> é um software que permite criar, gerenciar,
+          consultar e controlar o acesso a bancos de dados de forma eficiente e segura.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          É importante entender a diferença entre <strong>Banco de Dados</strong> e <strong>SGBD</strong>:
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Banco de Dados</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              É a <strong>coleção organizada de dados</strong> em si. Os arquivos físicos que armazenam
+              as informações estruturadas.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Dados propriamente ditos</li>
+              <li>Estruturas (tabelas, índices)</li>
+              <li>Relacionamentos</li>
+              <li>Metadados</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">SGBD</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              É o <strong>software que gerencia</strong> o banco de dados. A ferramenta que permite
+              interagir com os dados.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Oracle Database</li>
+              <li>MySQL</li>
+              <li>PostgreSQL</li>
+              <li>SQL Server</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Funções Principais de um SGBD</h3>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">1. Gerenciamento de Dados</h4>
+            <p class="text-neutral-300 text-sm">
+              Armazenamento, recuperação, atualização e exclusão de dados de forma eficiente.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">2. Controle de Concorrência</h4>
+            <p class="text-neutral-300 text-sm">
+              Permite que múltiplos usuários acessem o banco simultaneamente sem conflitos,
+              usando locks e transações.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">3. Segurança e Controle de Acesso</h4>
+            <p class="text-neutral-300 text-sm">
+              Autenticação de usuários, autorização de operações, auditoria e criptografia de dados.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">4. Integridade dos Dados</h4>
+            <p class="text-neutral-300 text-sm">
+              Garantia através de constraints, triggers e validações que os dados permanecem consistentes.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">5. Backup e Recuperação</h4>
+            <p class="text-neutral-300 text-sm">
+              Proteção contra perdas através de backups e mecanismos de recovery em caso de falhas.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2">6. Otimização de Consultas</h4>
+            <p class="text-neutral-300 text-sm">
+              Query optimizer analisa e executa consultas da forma mais eficiente possível.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Arquitetura Cliente-Servidor</h3>
+        <p class="text-neutral-300 mb-4">
+          A maioria dos SGBDs modernos, incluindo o Oracle, utiliza uma arquitetura <strong>cliente-servidor</strong>:
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Servidor (Server)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Gerencia o banco de dados, processa requisições e retorna resultados.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Oracle Instance (processos + memória)</li>
+              <li>Database files (datafiles, controlfiles, redologs)</li>
+              <li>Listener (recebe conexões)</li>
+            </ul>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">Cliente (Client)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Aplicação que se conecta ao servidor e envia comandos SQL.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>SQL*Plus, SQL Developer</li>
+              <li>Aplicações web/desktop</li>
+              <li>Scripts e ferramentas ETL</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Fluxo de Comunicação:</h4>
+          <pre class="text-neutral-300 text-sm">Cliente → SQL Request → Listener → Server Process → Database
+Cliente ← Result Set ← Server Process ← Database</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Oracle vs Outros SGBDs -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔍</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Oracle vs Outros SGBDs</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Comparação entre SGBDs Relacionais</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-emerald-900/30">
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">Característica</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">Oracle</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">MySQL</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">PostgreSQL</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">SQL Server</th>
+              </tr>
+            </thead>
+            <tbody class="text-neutral-300 text-sm">
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Licença</td>
+                <td class="border border-dark-600 px-4 py-2">Comercial</td>
+                <td class="border border-dark-600 px-4 py-2">Open Source</td>
+                <td class="border border-dark-600 px-4 py-2">Open Source</td>
+                <td class="border border-dark-600 px-4 py-2">Comercial</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Fabricante</td>
+                <td class="border border-dark-600 px-4 py-2">Oracle Corporation</td>
+                <td class="border border-dark-600 px-4 py-2">Oracle (MySQL AB)</td>
+                <td class="border border-dark-600 px-4 py-2">PostgreSQL Global Development Group</td>
+                <td class="border border-dark-600 px-4 py-2">Microsoft</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Plataformas</td>
+                <td class="border border-dark-600 px-4 py-2">Multi-plataforma</td>
+                <td class="border border-dark-600 px-4 py-2">Multi-plataforma</td>
+                <td class="border border-dark-600 px-4 py-2">Multi-plataforma</td>
+                <td class="border border-dark-600 px-4 py-2">Windows, Linux</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Escalabilidade</td>
+                <td class="border border-dark-600 px-4 py-2">Muito Alta</td>
+                <td class="border border-dark-600 px-4 py-2">Média</td>
+                <td class="border border-dark-600 px-4 py-2">Alta</td>
+                <td class="border border-dark-600 px-4 py-2">Alta</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">RAC (Clustering)</td>
+                <td class="border border-dark-600 px-4 py-2">Sim</td>
+                <td class="border border-dark-600 px-4 py-2">Limitado</td>
+                <td class="border border-dark-600 px-4 py-2">Não nativo</td>
+                <td class="border border-dark-600 px-4 py-2">Sim (AlwaysOn)</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Particionamento</td>
+                <td class="border border-dark-600 px-4 py-2">Avançado</td>
+                <td class="border border-dark-600 px-4 py-2">Básico</td>
+                <td class="border border-dark-600 px-4 py-2">Bom</td>
+                <td class="border border-dark-600 px-4 py-2">Bom</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Mercado</td>
+                <td class="border border-dark-600 px-4 py-2">Grandes empresas</td>
+                <td class="border border-dark-600 px-4 py-2">Web, startups</td>
+                <td class="border border-dark-600 px-4 py-2">Empresas médias/grandes</td>
+                <td class="border border-dark-600 px-4 py-2">Microsoft ecosystem</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Vantagens do Oracle Database</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Alta Disponibilidade</h4>
+                <p class="text-neutral-400 text-sm">RAC, Data Guard, Flashback technologies</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Performance Excepcional</h4>
+                <p class="text-neutral-400 text-sm">Otimizador avançado, in-memory processing</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Recursos Empresariais</h4>
+                <p class="text-neutral-400 text-sm">Particionamento, compressão, encriptação</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">PL/SQL Poderoso</h4>
+                <p class="text-neutral-400 text-sm">Linguagem procedural robusta e performática</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Segurança Avançada</h4>
+                <p class="text-neutral-400 text-sm">Label Security, Database Vault, Data Masking</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Suporte e Ecossistema</h4>
+                <p class="text-neutral-400 text-sm">Documentação completa, suporte técnico premium</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Componentes do Oracle -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Componentes Principais do Oracle</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Arquitetura do Oracle Database</h3>
+
+        <div class="space-y-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">1. Instance (Instância)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Conjunto de processos em memória e estruturas que gerenciam o banco de dados.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>SGA (System Global Area):</strong> Memória compartilhada (Buffer Cache, Shared Pool, Redo Log Buffer)</li>
+              <li><strong>PGA (Program Global Area):</strong> Memória privada de cada processo</li>
+              <li><strong>Background Processes:</strong> SMON, PMON, DBWn, LGWR, CKPT, ARCn</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">2. Database (Banco de Dados)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Conjunto de arquivos físicos que armazenam os dados permanentemente.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Datafiles:</strong> Armazenam tabelas, índices e dados</li>
+              <li><strong>Control Files:</strong> Metadados sobre a estrutura do banco</li>
+              <li><strong>Redo Log Files:</strong> Registram todas as mudanças (recovery)</li>
+              <li><strong>Archive Log Files:</strong> Cópias dos redo logs (backup)</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">3. Listener</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Processo que escuta requisições de conexão dos clientes na rede.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Recebe pedidos de conexão na porta 1521 (padrão)</li>
+              <li>Cria ou direciona para um server process</li>
+              <li>Configurado no arquivo listener.ora</li>
+            </ul>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">4. Server Processes</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Processos criados para atender requisições dos usuários.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Dedicated:</strong> Um processo para cada conexão</li>
+              <li><strong>Shared:</strong> Vários usuários compartilham processos (MTS)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Diagrama Simplificado</h3>
+
+        <div class="bg-dark-700 rounded-lg p-6">
+          <pre class="text-neutral-300 text-sm">┌──────────────────────────────────────────────────────────┐
+│                     CLIENTE                              │
+│  (SQL*Plus, SQL Developer, Aplicações)                   │
+└────────────────────┬─────────────────────────────────────┘
+                     │ SQL Requests
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│                    LISTENER                              │
+│  (Porta 1521 - Recebe conexões)                         │
+└────────────────────┬─────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│                ORACLE INSTANCE                           │
+│  ┌────────────────────────────────────────────────┐     │
+│  │  SGA (System Global Area)                      │     │
+│  │  - Buffer Cache                                │     │
+│  │  - Shared Pool (Library Cache, Dict Cache)     │     │
+│  │  - Redo Log Buffer                             │     │
+│  │  - Large Pool, Java Pool                       │     │
+│  └────────────────────────────────────────────────┘     │
+│  ┌────────────────────────────────────────────────┐     │
+│  │  Background Processes                          │     │
+│  │  SMON | PMON | DBWn | LGWR | CKPT | ARCn       │     │
+│  └────────────────────────────────────────────────┘     │
+└────────────────────┬─────────────────────────────────────┘
+                     │ I/O
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│                    DATABASE                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │  Datafiles   │  │ Control Files│  │ Redo Logs    │  │
+│  │  (.dbf)      │  │  (.ctl)      │  │  (.log)      │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+└──────────────────────────────────────────────────────────┘</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Diferenciar BD e SGBD</h4>
+                <p class="text-neutral-400 text-sm">Entender a distinção entre dados e gerenciador</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Conhecer funções do SGBD</h4>
+                <p class="text-neutral-400 text-sm">Segurança, concorrência, backup, otimização</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Arquitetura cliente-servidor</h4>
+                <p class="text-neutral-400 text-sm">Compreender o fluxo de comunicação</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Comparar SGBDs</h4>
+                <p class="text-neutral-400 text-sm">Oracle vs MySQL, PostgreSQL, SQL Server</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Componentes Oracle</h4>
+                <p class="text-neutral-400 text-sm">Instance, Database, Listener, Processos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Vantagens do Oracle</h4>
+                <p class="text-neutral-400 text-sm">Alta disponibilidade, performance, recursos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-red-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Identificando Componentes</h3>
+          <p class="text-neutral-300 mb-4">
+            Classifique cada item como <strong>Instance</strong> ou <strong>Database</strong>:
+          </p>
+          <ul class="list-disc list-inside text-neutral-400 mb-4 space-y-1">
+            <li>SGA (System Global Area)</li>
+            <li>Datafiles (.dbf)</li>
+            <li>Background Processes (SMON, PMON, DBWn)</li>
+            <li>Control Files (.ctl)</li>
+            <li>PGA (Program Global Area)</li>
+            <li>Redo Log Files (.log)</li>
+          </ul>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <h4 class="font-semibold text-emerald-400 mb-2">Resposta:</h4>
+              <ul class="list-disc list-inside text-neutral-300 space-y-1">
+                <li><strong>Instance:</strong> SGA, Background Processes, PGA</li>
+                <li><strong>Database:</strong> Datafiles, Control Files, Redo Log Files</li>
+              </ul>
+              <p class="text-neutral-400 text-sm mt-3">
+                A <strong>Instance</strong> são estruturas em memória e processos.
+                O <strong>Database</strong> são arquivos físicos em disco.
+              </p>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Vantagens do Oracle</h3>
+          <p class="text-neutral-300 mb-4">
+            Liste 3 cenários em que o Oracle seria mais adequado que MySQL:
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <h4 class="font-semibold text-emerald-400 mb-2">Cenários:</h4>
+              <ul class="list-disc list-inside text-neutral-300 space-y-2">
+                <li><strong>Grande volume transacional:</strong> Bancos, sistemas financeiros que exigem alta concorrência e ACID rigoroso</li>
+                <li><strong>Alta disponibilidade crítica:</strong> Sistemas 24/7 que não podem ter downtime (RAC, Data Guard)</li>
+                <li><strong>Dados sensíveis:</strong> Aplicações que precisam de criptografia avançada, auditoria e compliance rigoroso</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Fluxo de Conexão</h3>
+          <p class="text-neutral-300 mb-4">
+            Ordene os passos do processo de conexão de um cliente ao Oracle Database:
+          </p>
+          <ul class="list-disc list-inside text-neutral-400 mb-4 space-y-1">
+            <li>A) Server process executa SQL e retorna resultado</li>
+            <li>B) Cliente envia requisição SQL na porta 1521</li>
+            <li>C) Listener cria/direciona para um server process</li>
+            <li>D) Aplicação cliente inicia conexão</li>
+            <li>E) Listener recebe a conexão</li>
+          </ul>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <h4 class="font-semibold text-emerald-400 mb-2">Ordem Correta:</h4>
+              <p class="text-neutral-300 mb-2">D → B → E → C → A</p>
+              <ol class="list-decimal list-inside text-neutral-400 space-y-1">
+                <li>Aplicação cliente inicia conexão</li>
+                <li>Cliente envia requisição SQL na porta 1521</li>
+                <li>Listener recebe a conexão</li>
+                <li>Listener cria/direciona para um server process</li>
+                <li>Server process executa SQL e retorna resultado</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-6.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Tópico 6</span>
+      </a>
+      <a href="topico-8.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Data Types Oracle</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 7</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>
