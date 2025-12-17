@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo 3: Administração Avançada | Curso Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../index.html" class="flex items-center space-x-2 text-neutral-400 hover:text-primary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Voltar ao Curso</span>
+        </a>
+        <span class="text-purple-400 font-semibold">Módulo 3</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="text-center mb-12">
+      <span class="inline-block px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-sm font-semibold mb-4">
+        MÓDULO 3 - ADMINISTRAÇÃO AVANÇADA
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">🔒 Administração Oracle II</h1>
+      <p class="text-xl text-neutral-400 max-w-2xl mx-auto">
+        RMAN, Backup & Recovery, Segurança e Auditoria
+      </p>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mb-12">
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-purple-400">5</div>
+        <div class="text-xs text-neutral-400">Seções</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-purple-400">7</div>
+        <div class="text-xs text-neutral-400">Exercícios</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-purple-400">RMAN</div>
+        <div class="text-xs text-neutral-400">Ferramenta</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-purple-400">Avançado</div>
+        <div class="text-xs text-neutral-400">Nível</div>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-2xl p-8 border border-purple-500/30">
+        <h2 class="text-2xl font-bold text-purple-400 mb-4">Introdução</h2>
+        <p class="text-neutral-300 text-lg">
+          Este módulo eleva suas habilidades de DBA para o próximo nível. Trataremos de tópicos cruciais para a <strong class="text-purple-400">segurança e resiliência</strong> de um ambiente de produção: estratégias de backup e recuperação, a arquitetura multitenant e melhores práticas de segurança e auditoria.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3.1 RMAN -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">💾</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">3.1 Backup & Recovery com RMAN</h2>
+            <p class="text-neutral-400">Recovery Manager</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Nenhum DBA pode dormir tranquilamente sem uma estratégia de backup sólida. O <strong class="text-purple-400">RMAN (Recovery Manager)</strong> é a principal ferramenta da Oracle para isso.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-2">Backups Online (Quentes)</h4>
+            <p class="text-neutral-300 text-sm">Backup com o banco aberto e em uso.</p>
+          </div>
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-2">Backups Incrementais</h4>
+            <p class="text-neutral-300 text-sm">Apenas blocos alterados desde o último backup.</p>
+          </div>
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-2">Validação e Teste</h4>
+            <p class="text-neutral-300 text-sm">Verificar integridade e simular restauração.</p>
+          </div>
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-2">Catálogo Centralizado</h4>
+            <p class="text-neutral-300 text-sm">Informações sobre backups no control file ou Recovery Catalog.</p>
+          </div>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-6">
+          <h4 class="font-bold text-purple-400 mb-3">Comandos Essenciais do RMAN</h4>
+          <pre><code class="language-bash"># Conectar ao RMAN
+$ rman target /
+
+# Fazer backup completo do banco de dados
+RMAN> BACKUP DATABASE;
+
+# Listar os backups realizados
+RMAN> LIST BACKUP;
+
+# Simular restauração para verificar backup
+RMAN> RESTORE TABLESPACE USERS PREVIEW;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.2 Recuperação -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🔄</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">3.2 Recuperação de Desastres</h2>
+            <p class="text-neutral-400">Restore e Recover</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Um backup só é bom se a recuperação funcionar. O processo envolve duas etapas:
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-400 mb-2">1. RESTORE</h4>
+            <p class="text-neutral-300 text-sm">Restaura os arquivos de dados a partir do backup mais recente.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-cyan-500">
+            <h4 class="font-bold text-cyan-400 mb-2">2. RECOVER</h4>
+            <p class="text-neutral-300 text-sm">Aplica alterações dos redo logs para trazer o banco até o ponto mais recente.</p>
+          </div>
+        </div>
+
+        <div class="bg-red-900/20 p-4 rounded-xl border border-red-500/30">
+          <h4 class="font-bold text-red-400 mb-2">Cenários de Falha</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li><strong>Perda de Data File:</strong> Restaurar apenas o arquivo corrompido/apagado</li>
+            <li><strong>Falha de Mídia (Perda Total):</strong> Restaurar banco inteiro em novo servidor</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.3 Multitenant -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📦</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">3.3 Arquitetura Multitenant</h2>
+            <p class="text-neutral-400">CDB e PDB (a partir do Oracle 12c)</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          A arquitetura <strong class="text-purple-400">Multitenant</strong> muda a forma como gerenciamos múltiplos bancos de dados.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-purple-900/20 p-6 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">CDB (Container Database)</h4>
+            <p class="text-neutral-300 text-sm">
+              Banco de dados "contêiner", a instância principal. Gerencia infraestrutura, processos e metadados comuns.
+            </p>
+          </div>
+          <div class="bg-cyan-900/20 p-6 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">PDB (Pluggable Database)</h4>
+            <p class="text-neutral-300 text-sm">
+              Banco "plugável", independente com seus próprios schemas e tabelas, mas que "vive" dentro de um CDB.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-900/20 p-4 rounded-xl border border-emerald-500/30">
+          <h4 class="font-bold text-emerald-400 mb-2">Vantagens</h4>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li><strong>Consolidação:</strong> Dezenas de PDBs em um único CDB economiza hardware</li>
+            <li><strong>Gerenciamento Simplificado:</strong> Backup/patching no nível do CDB</li>
+            <li><strong>Agilidade:</strong> Criar novo PDB clonando é muito mais rápido</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.4 Segurança -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🛡️</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">3.4 Segurança de Banco de Dados</h2>
+            <p class="text-neutral-400">Proteção em várias camadas</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-400 mb-2">Princípio do Menor Privilégio</h4>
+            <p class="text-neutral-300 text-sm">Conceda apenas permissões estritamente necessárias. Evite roles como DBA para usuários de aplicação.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-cyan-500">
+            <h4 class="font-bold text-cyan-400 mb-2">Transparent Data Encryption (TDE)</h4>
+            <p class="text-neutral-300 text-sm">Criptografa dados "em repouso" nos data files. Se alguém roubar os arquivos, os dados estarão ilegíveis.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-400 mb-2">Virtual Private Database (VPD)</h4>
+            <p class="text-neutral-300 text-sm">Políticas de segurança anexadas às tabelas. Exemplo: gerente vê apenas pedidos da sua região.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.5 Auditoria -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📋</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">3.5 Auditoria e Conformidade</h2>
+            <p class="text-neutral-400">Quem fez o quê e quando</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Auditoria é essencial para investigações de segurança e conformidade (LGPD, SOX, etc.).
+        </p>
+
+        <div class="bg-dark-700/50 rounded-xl p-6">
+          <h4 class="font-bold text-purple-400 mb-3">Auditoria Unificada</h4>
+          <pre><code class="language-sql">-- Criar política para auditar SELECT em tabela de salários
+CREATE AUDIT POLICY audit_salarios
+ACTIONS SELECT ON HR.EMPREGADOS;
+
+-- Ativar a política
+AUDIT POLICY audit_salarios;
+
+-- Consultar registros de auditoria
+SELECT * FROM UNIFIED_AUDIT_TRAIL;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-purple-900/30 to-dark-800 rounded-2xl p-8 border border-purple-500/30">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📝</span>
+          <div>
+            <h2 class="text-2xl font-bold text-purple-400">Exercícios Práticos</h2>
+            <p class="text-neutral-400">RMAN, Auditoria e PDBs</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">1. Backup com RMAN</p>
+            <p class="text-neutral-400 text-sm">Conecte-se ao RMAN e execute um backup completo. Use LIST BACKUP para verificar.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">2. Validação de Backup</p>
+            <p class="text-neutral-400 text-sm">Execute RESTORE DATABASE VALIDATE para verificar integridade dos backups.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">3. Simulação de Falha</p>
+            <p class="text-neutral-400 text-sm">Renomeie um data file para simular perda de mídia e observe o erro.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">4. Recuperação com RMAN</p>
+            <p class="text-neutral-400 text-sm">Use RMAN para restaurar e recuperar o tablespace afetado.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">5. Auditoria</p>
+            <p class="text-neutral-400 text-sm">Crie política de auditoria para LOGON FAILED e CREATE USER.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">6. Teste de Auditoria</p>
+            <p class="text-neutral-400 text-sm">Tente login inválido e crie usuário. Verifique UNIFIED_AUDIT_TRAIL.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">7. Gerenciamento de PDB</p>
+            <p class="text-neutral-400 text-sm">Use SHOW PDBS, feche e abra um PDB (se em ambiente Multitenant).</p>
+          </div>
+        </div>
+
+        <details class="mt-6">
+          <summary class="bg-purple-500/20 text-purple-400 px-4 py-3 rounded-lg font-semibold cursor-pointer hover:bg-purple-500/30 transition-colors">
+            📋 Ver Gabarito dos Exercícios
+          </summary>
+          <div class="mt-4 space-y-4">
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-purple-400 font-semibold mb-2">1 e 2. RMAN Backup e Validação</p>
+              <pre><code class="language-bash">$ rman target /
+RMAN> BACKUP DATABASE;
+RMAN> LIST BACKUP OF DATABASE;
+RMAN> RESTORE DATABASE VALIDATE;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-purple-400 font-semibold mb-2">4. Recuperação com RMAN</p>
+              <pre><code class="language-bash">RMAN> SQL 'ALTER TABLESPACE USERS OFFLINE';
+RMAN> RESTORE TABLESPACE USERS;
+RMAN> RECOVER TABLESPACE USERS;
+RMAN> SQL 'ALTER TABLESPACE USERS ONLINE';</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-purple-400 font-semibold mb-2">5. Criação de Política de Auditoria</p>
+              <pre><code class="language-sql">CREATE AUDIT POLICY auditoria_geral
+ACTIONS LOGON FAILED, CREATE USER;
+
+AUDIT POLICY auditoria_geral;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-purple-400 font-semibold mb-2">7. Gerenciamento de PDB</p>
+              <pre><code class="language-sql">SQL> SHOW PDBS;
+SQL> ALTER PLUGGABLE DATABASE PDB1 CLOSE;
+SQL> ALTER PLUGGABLE DATABASE PDB1 OPEN;</code></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="mb-12">
+      <div class="bg-primary/10 rounded-2xl p-8 border border-primary/30">
+        <h2 class="text-2xl font-bold text-primary mb-6 text-center">🎉 Módulo 3 Concluído!</h2>
+        <p class="text-neutral-300 text-center mb-8">
+          Você domina backup, recovery e segurança. No próximo módulo: Performance e Tuning!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="../modulo-4/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors">
+            <span>Próximo: Módulo 4</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+          <a href="../modulo-2/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-bold hover:bg-dark-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span>Voltar: Módulo 2</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Curso Oracle DBA - Módulo 3: Administração Oracle II</p>
+    </div>
+  </footer>
+
+  <script>
+    if (localStorage.getItem('color-theme') === 'light') document.documentElement.classList.remove('dark');
+    hljs.highlightAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursos | Curso Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; font-size: 0.8rem; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../index.html" class="flex items-center space-x-2 text-neutral-400 hover:text-primary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Voltar ao Curso</span>
+        </a>
+        <span class="text-amber-400 font-semibold">Recursos</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="text-center mb-12">
+      <span class="inline-block px-4 py-2 bg-amber-500/20 text-amber-400 rounded-full text-sm font-semibold mb-4">
+        MATERIAIS DE APOIO
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">📚 Recursos</h1>
+      <p class="text-xl text-neutral-400 max-w-2xl mx-auto">
+        Scripts SQL, diagramas e materiais complementares
+      </p>
+    </div>
+
+    <!-- Scripts SQL -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">💻</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">Scripts SQL Práticos</h2>
+            <p class="text-neutral-400">Prontos para executar em seu ambiente</p>
+          </div>
+        </div>
+
+        <!-- Módulo 1 Scripts -->
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-emerald-400 mb-4 flex items-center">
+            <span class="bg-emerald-500/20 px-2 py-1 rounded text-xs mr-2">M1</span>
+            Fundamentos SQL
+          </h3>
+          <div class="bg-dark-700/50 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Criar Tabelas de Exemplo (Livraria)</h4>
+            <pre><code class="language-sql">CREATE TABLE AUTORES (
+    AUTOR_ID NUMBER PRIMARY KEY,
+    NOME_AUTOR VARCHAR2(100) NOT NULL,
+    PAIS_ORIGEM VARCHAR2(50)
+);
+
+CREATE TABLE LIVROS (
+    LIVRO_ID NUMBER PRIMARY KEY,
+    TITULO VARCHAR2(200) NOT NULL,
+    ANO_PUBLICACAO NUMBER(4),
+    PRECO NUMBER(10, 2),
+    AUTOR_ID NUMBER REFERENCES AUTORES(AUTOR_ID)
+);
+
+-- Inserir dados de exemplo
+INSERT INTO AUTORES VALUES (1, 'J.K. Rowling', 'Reino Unido');
+INSERT INTO AUTORES VALUES (2, 'George Orwell', 'Reino Unido');
+INSERT INTO AUTORES VALUES (3, 'Machado de Assis', 'Brasil');
+
+INSERT INTO LIVROS VALUES (101, 'Harry Potter e a Pedra Filosofal', 1997, 35.00, 1);
+INSERT INTO LIVROS VALUES (102, '1984', 1949, 28.50, 2);
+INSERT INTO LIVROS VALUES (103, 'Dom Casmurro', 1899, 22.00, 3);
+INSERT INTO LIVROS VALUES (104, 'A Revolução dos Bichos', 1945, 25.00, 2);
+
+COMMIT;</code></pre>
+          </div>
+        </div>
+
+        <!-- Módulo 2 Scripts -->
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-cyan-400 mb-4 flex items-center">
+            <span class="bg-cyan-500/20 px-2 py-1 rounded text-xs mr-2">M2</span>
+            Administração Básica
+          </h3>
+          <div class="bg-dark-700/50 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Gerenciamento de Usuários e Tablespaces</h4>
+            <pre><code class="language-sql">-- Criar usuário (execute como SYSTEM ou SYS)
+CREATE USER analista IDENTIFIED BY Oracle123;
+
+-- Conceder privilégios básicos
+GRANT CREATE SESSION, CREATE TABLE TO analista;
+
+-- Criar tablespace
+CREATE TABLESPACE APP_DATA
+DATAFILE '/u01/app/oracle/oradata/XE/app_data01.dbf' SIZE 50M;
+
+-- Alterar usuário para usar novo tablespace
+ALTER USER analista DEFAULT TABLESPACE APP_DATA QUOTA 40M ON APP_DATA;
+
+-- Verificar usuários criados
+SELECT USERNAME, CREATED, DEFAULT_TABLESPACE FROM DBA_USERS WHERE USERNAME = 'ANALISTA';
+
+-- Verificar tablespaces
+SELECT TABLESPACE_NAME, STATUS FROM DBA_TABLESPACES;
+
+-- Verificar espaço livre em tablespaces
+SELECT TABLESPACE_NAME, SUM(BYTES)/1024/1024 AS FREE_MB
+FROM DBA_FREE_SPACE
+GROUP BY TABLESPACE_NAME;
+
+-- Verificar sessões ativas
+SELECT USERNAME, SID, SERIAL#, STATUS FROM V$SESSION;</code></pre>
+          </div>
+        </div>
+
+        <!-- Módulo 3 Scripts -->
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-purple-400 mb-4 flex items-center">
+            <span class="bg-purple-500/20 px-2 py-1 rounded text-xs mr-2">M3</span>
+            Administração Avançada
+          </h3>
+          <div class="bg-dark-700/50 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Comandos RMAN (executar no RMAN, não SQL*Plus)</h4>
+            <pre><code class="language-bash"># Conectar ao RMAN
+$ rman target /
+
+# Backup completo
+RMAN> BACKUP DATABASE;
+
+# Listar backups
+RMAN> LIST BACKUP;
+
+# Validar backup
+RMAN> RESTORE DATABASE VALIDATE;
+
+# Recuperar tablespace
+RMAN> SQL 'ALTER TABLESPACE USERS OFFLINE';
+RMAN> RESTORE TABLESPACE USERS;
+RMAN> RECOVER TABLESPACE USERS;
+RMAN> SQL 'ALTER TABLESPACE USERS ONLINE';</code></pre>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Auditoria</h4>
+            <pre><code class="language-sql">-- Criar política de auditoria
+CREATE AUDIT POLICY auditoria_geral
+ACTIONS LOGON FAILED, CREATE USER;
+AUDIT POLICY auditoria_geral;
+
+-- Verificar registros de auditoria
+SELECT AUDIT_TYPE, ACTION_NAME, DBUSERNAME, EVENT_TIMESTAMP
+FROM UNIFIED_AUDIT_TRAIL
+WHERE UNIFIED_AUDIT_POLICIES = 'AUDITORIA_GERAL'
+ORDER BY EVENT_TIMESTAMP DESC;</code></pre>
+          </div>
+        </div>
+
+        <!-- Módulo 4 Scripts -->
+        <div class="mb-8">
+          <h3 class="text-lg font-bold text-orange-400 mb-4 flex items-center">
+            <span class="bg-orange-500/20 px-2 py-1 rounded text-xs mr-2">M4</span>
+            Performance e Tuning
+          </h3>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Plano de Execução e Índices</h4>
+            <pre><code class="language-sql">-- Gerar plano de execução
+EXPLAIN PLAN FOR
+SELECT L.TITULO, A.NOME_AUTOR
+FROM LIVROS L
+JOIN AUTORES A ON L.AUTOR_ID = A.AUTOR_ID
+WHERE A.PAIS_ORIGEM = 'Reino Unido';
+
+-- Ver o plano de execução
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+-- Criar um índice
+CREATE INDEX idx_livros_autor_id ON LIVROS(AUTOR_ID);
+
+-- Coletar estatísticas
+EXEC DBMS_STATS.GATHER_TABLE_STATS('HR', 'EMPLOYEES');
+
+-- Visualizar índices criados
+SELECT INDEX_NAME, TABLE_NAME, COLUMN_NAME FROM DBA_IND_COLUMNS;</code></pre>
+          </div>
+        </div>
+
+        <!-- Módulo 5 Scripts -->
+        <div>
+          <h3 class="text-lg font-bold text-red-400 mb-4 flex items-center">
+            <span class="bg-red-500/20 px-2 py-1 rounded text-xs mr-2">M5</span>
+            Alta Disponibilidade
+          </h3>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-100 mb-3">Verificações de Status</h4>
+            <pre><code class="language-sql">-- Verificar status do banco de dados
+SELECT NAME, OPEN_MODE, DB_UNIQUE_NAME FROM V$DATABASE;
+
+-- Verificar modo de arquivo (necessário para RMAN)
+SELECT LOG_MODE FROM V$DATABASE;
+
+-- Verificar instâncias em um RAC
+SELECT INSTANCE_NUMBER, INSTANCE_NAME, STATUS FROM GV$INSTANCE;
+
+-- Gerenciamento de PDB (se Multitenant)
+SHOW PDBS;
+ALTER PLUGGABLE DATABASE PDB1 CLOSE;
+ALTER PLUGGABLE DATABASE PDB1 OPEN;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diagramas -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🖼️</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">Diagramas e Imagens</h2>
+            <p class="text-neutral-400">Visualizações da arquitetura Oracle</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <div class="bg-dark-600 rounded-lg aspect-video flex items-center justify-center mb-3">
+              <span class="text-6xl">📊</span>
+            </div>
+            <h4 class="font-semibold text-neutral-100">Diagrama ER</h4>
+            <p class="text-neutral-400 text-sm">Modelo Entidade-Relacionamento</p>
+            <p class="text-amber-400 text-xs mt-2">diagrama_er.png</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <div class="bg-dark-600 rounded-lg aspect-video flex items-center justify-center mb-3">
+              <span class="text-6xl">🏗️</span>
+            </div>
+            <h4 class="font-semibold text-neutral-100">Arquitetura Oracle</h4>
+            <p class="text-neutral-400 text-sm">Instância e Banco de Dados</p>
+            <p class="text-amber-400 text-xs mt-2">arquitetura_oracle_1.jpg</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <div class="bg-dark-600 rounded-lg aspect-video flex items-center justify-center mb-3">
+              <span class="text-6xl">⚙️</span>
+            </div>
+            <h4 class="font-semibold text-neutral-100">Arquitetura DBA</h4>
+            <p class="text-neutral-400 text-sm">Visão detalhada para o DBA</p>
+            <p class="text-amber-400 text-xs mt-2">arquitetura_dba.png</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <div class="bg-dark-600 rounded-lg aspect-video flex items-center justify-center mb-3">
+              <span class="text-6xl">💡</span>
+            </div>
+            <h4 class="font-semibold text-neutral-100">Conceitos DBA</h4>
+            <p class="text-neutral-400 text-sm">Mapa conceitual</p>
+            <p class="text-amber-400 text-xs mt-2">conceitos_dba.png</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Links Úteis -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🔗</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">Links Úteis</h2>
+            <p class="text-neutral-400">Recursos externos recomendados</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <a href="https://www.oracle.com/database/technologies/xe-downloads.html" target="_blank" class="bg-dark-700/50 rounded-xl p-4 hover:bg-dark-700 transition-colors block">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-3">📦</span>
+              <span class="font-semibold text-neutral-100">Oracle XE Download</span>
+            </div>
+            <p class="text-neutral-400 text-sm">Baixe a versão gratuita do Oracle Database</p>
+          </a>
+          <a href="https://www.oracle.com/database/sqldeveloper/" target="_blank" class="bg-dark-700/50 rounded-xl p-4 hover:bg-dark-700 transition-colors block">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-3">🛠️</span>
+              <span class="font-semibold text-neutral-100">SQL Developer</span>
+            </div>
+            <p class="text-neutral-400 text-sm">IDE gratuita para Oracle Database</p>
+          </a>
+          <a href="https://docs.oracle.com/en/database/" target="_blank" class="bg-dark-700/50 rounded-xl p-4 hover:bg-dark-700 transition-colors block">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-3">📚</span>
+              <span class="font-semibold text-neutral-100">Documentação Oracle</span>
+            </div>
+            <p class="text-neutral-400 text-sm">Documentação oficial completa</p>
+          </a>
+          <a href="https://asktom.oracle.com/" target="_blank" class="bg-dark-700/50 rounded-xl p-4 hover:bg-dark-700 transition-colors block">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-3">❓</span>
+              <span class="font-semibold text-neutral-100">Ask Tom</span>
+            </div>
+            <p class="text-neutral-400 text-sm">Perguntas e respostas sobre Oracle</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Limpeza -->
+    <section class="mb-12">
+      <div class="bg-red-900/20 rounded-2xl p-8 border border-red-500/30">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🧹</span>
+          <div>
+            <h2 class="text-2xl font-bold text-red-400">Scripts de Limpeza</h2>
+            <p class="text-neutral-400">Para remover dados de teste (use com cuidado!)</p>
+          </div>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-4">
+          <pre><code class="language-sql">-- ATENÇÃO: Execute apenas se quiser remover os objetos de teste
+
+-- Remover tabelas de teste
+DROP TABLE LIVROS;
+DROP TABLE AUTORES;
+
+-- Remover usuário de teste
+DROP USER analista CASCADE;
+
+-- Remover tablespace
+DROP TABLESPACE APP_DATA INCLUDING CONTENTS AND DATAFILES;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="mb-12">
+      <div class="bg-primary/10 rounded-2xl p-8 border border-primary/30">
+        <h2 class="text-2xl font-bold text-primary mb-6 text-center">Continue Aprendendo!</h2>
+        <p class="text-neutral-300 text-center mb-8">
+          Use esses recursos para praticar os conceitos aprendidos em cada módulo.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="../../index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors">
+            <span>Voltar ao Curso</span>
+          </a>
+          <a href="../introducao/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-bold hover:bg-dark-600 transition-colors">
+            <span>Começar do Início</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Curso Oracle DBA - Recursos e Materiais de Apoio</p>
+    </div>
+  </footer>
+
+  <script>
+    if (localStorage.getItem('color-theme') === 'light') document.documentElement.classList.remove('dark');
+    hljs.highlightAll();
+  </script>
+</body>
+</html>

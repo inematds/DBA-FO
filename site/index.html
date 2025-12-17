@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso Completo Oracle DBA | Do Iniciante ao Especialista</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            oracle: '#F80000',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-200 { color: #334155 !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-3">
+          <span class="text-3xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="trilhas/recursos/index.html" class="text-neutral-400 hover:text-primary transition-colors">Recursos</a>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-slate-900 via-slate-800 to-primary/20 py-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="inline-block px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-semibold mb-6">
+        CURSO COMPLETO DE DBA ORACLE
+      </span>
+      <h1 class="text-4xl sm:text-6xl font-bold mb-6 text-white">
+        Torne-se um <span class="text-primary">DBA Oracle</span>
+      </h1>
+      <p class="text-xl text-neutral-300 max-w-3xl mx-auto mb-8">
+        Do iniciante ao especialista em administração de bancos de dados Oracle.
+        Material autoexplicativo com exercícios práticos baseados em desafios reais do mercado.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <div class="bg-dark-800/50 px-6 py-3 rounded-lg border border-dark-600">
+          <span class="text-2xl font-bold text-primary">5</span>
+          <span class="text-neutral-400 ml-2">Módulos</span>
+        </div>
+        <div class="bg-dark-800/50 px-6 py-3 rounded-lg border border-dark-600">
+          <span class="text-2xl font-bold text-primary">7</span>
+          <span class="text-neutral-400 ml-2">Trilhas</span>
+        </div>
+        <div class="bg-dark-800/50 px-6 py-3 rounded-lg border border-dark-600">
+          <span class="text-2xl font-bold text-primary">50+</span>
+          <span class="text-neutral-400 ml-2">Exercícios</span>
+        </div>
+      </div>
+      <a href="#trilhas" class="inline-flex items-center space-x-2 px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors">
+        <span>Começar Agora</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="trilhas">
+
+    <!-- About -->
+    <section class="mb-16">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-start space-x-4">
+          <span class="text-4xl">👨‍🏫</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100 mb-4">Sobre o Curso</h2>
+            <p class="text-neutral-300 text-lg italic mb-4">
+              "Este material foi elaborado por um profissional com vasta experiência em administração de bancos de dados Oracle,
+              tendo atuado como DBA por muitos anos, escrito livros e ministrado aulas."
+            </p>
+            <p class="text-neutral-400">
+              O objetivo é ser autoexplicativo e didático, com exercícios práticos que simulam desafios reais do dia a dia de um DBA.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trilhas Section -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-center mb-12">Trilhas de Aprendizado</h2>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Trilha: Introdução -->
+        <a href="trilhas/introducao/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-blue-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">🎯</span>
+            </div>
+            <div>
+              <span class="text-xs text-blue-400 font-semibold">TRILHA 0</span>
+              <h3 class="text-lg font-bold text-neutral-100">Introdução</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Visão geral do curso, objetivos de aprendizado e como aproveitar ao máximo o material.
+          </p>
+          <div class="flex items-center text-blue-400 text-sm font-semibold">
+            <span>Começar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Módulo 1 -->
+        <a href="trilhas/modulo-1/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-emerald-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">📊</span>
+            </div>
+            <div>
+              <span class="text-xs text-emerald-400 font-semibold">MÓDULO 1</span>
+              <h3 class="text-lg font-bold text-neutral-100">Fundamentos SQL</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Conceitos de BD relacional, modelagem de dados, SQL Developer, comandos SQL essenciais.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded text-xs">SELECT</span>
+            <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded text-xs">INSERT</span>
+            <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded text-xs">JOINs</span>
+          </div>
+          <div class="flex items-center text-emerald-400 text-sm font-semibold">
+            <span>Acessar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Módulo 2 -->
+        <a href="trilhas/modulo-2/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-cyan-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">⚙️</span>
+            </div>
+            <div>
+              <span class="text-xs text-cyan-400 font-semibold">MÓDULO 2</span>
+              <h3 class="text-lg font-bold text-neutral-100">Admin Básico</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Instalação, arquitetura Oracle, usuários, tablespaces e monitoramento básico.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-cyan-500/10 text-cyan-400 rounded text-xs">SGA/PGA</span>
+            <span class="px-2 py-1 bg-cyan-500/10 text-cyan-400 rounded text-xs">Users</span>
+            <span class="px-2 py-1 bg-cyan-500/10 text-cyan-400 rounded text-xs">Tablespaces</span>
+          </div>
+          <div class="flex items-center text-cyan-400 text-sm font-semibold">
+            <span>Acessar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Módulo 3 -->
+        <a href="trilhas/modulo-3/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-purple-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">🔒</span>
+            </div>
+            <div>
+              <span class="text-xs text-purple-400 font-semibold">MÓDULO 3</span>
+              <h3 class="text-lg font-bold text-neutral-100">Admin Avançado</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            RMAN, backup & recovery, arquitetura Multitenant (CDB/PDB), segurança e auditoria.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-purple-500/10 text-purple-400 rounded text-xs">RMAN</span>
+            <span class="px-2 py-1 bg-purple-500/10 text-purple-400 rounded text-xs">CDB/PDB</span>
+            <span class="px-2 py-1 bg-purple-500/10 text-purple-400 rounded text-xs">TDE</span>
+          </div>
+          <div class="flex items-center text-purple-400 text-sm font-semibold">
+            <span>Acessar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Módulo 4 -->
+        <a href="trilhas/modulo-4/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-orange-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">⚡</span>
+            </div>
+            <div>
+              <span class="text-xs text-orange-400 font-semibold">MÓDULO 4</span>
+              <h3 class="text-lg font-bold text-neutral-100">Performance</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Diagnóstico com AWR/ASH, planos de execução, índices, tuning de memória e SQL.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-orange-500/10 text-orange-400 rounded text-xs">AWR</span>
+            <span class="px-2 py-1 bg-orange-500/10 text-orange-400 rounded text-xs">EXPLAIN PLAN</span>
+            <span class="px-2 py-1 bg-orange-500/10 text-orange-400 rounded text-xs">Índices</span>
+          </div>
+          <div class="flex items-center text-orange-400 text-sm font-semibold">
+            <span>Acessar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Módulo 5 -->
+        <a href="trilhas/modulo-5/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-red-500/50 block">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">🛡️</span>
+            </div>
+            <div>
+              <span class="text-xs text-red-400 font-semibold">MÓDULO 5</span>
+              <h3 class="text-lg font-bold text-neutral-100">Alta Disponibilidade</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Oracle RAC, ASM, Data Guard e arquitetura de máxima disponibilidade (MAA).
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-red-500/10 text-red-400 rounded text-xs">RAC</span>
+            <span class="px-2 py-1 bg-red-500/10 text-red-400 rounded text-xs">Data Guard</span>
+            <span class="px-2 py-1 bg-red-500/10 text-red-400 rounded text-xs">ASM</span>
+          </div>
+          <div class="flex items-center text-red-400 text-sm font-semibold">
+            <span>Acessar</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+        <!-- Trilha: Recursos -->
+        <a href="trilhas/recursos/index.html" class="card-hover bg-dark-800 rounded-2xl p-6 border border-dark-600 hover:border-amber-500/50 block md:col-span-2 lg:col-span-1">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center mr-4">
+              <span class="text-2xl">📚</span>
+            </div>
+            <div>
+              <span class="text-xs text-amber-400 font-semibold">EXTRAS</span>
+              <h3 class="text-lg font-bold text-neutral-100">Recursos</h3>
+            </div>
+          </div>
+          <p class="text-neutral-400 text-sm mb-4">
+            Scripts SQL práticos, diagramas de arquitetura, materiais de apoio e referências.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Scripts</span>
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Diagramas</span>
+            <span class="px-2 py-1 bg-amber-500/10 text-amber-400 rounded text-xs">Downloads</span>
+          </div>
+          <div class="flex items-center text-amber-400 text-sm font-semibold">
+            <span>Ver Recursos</span>
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Progress Path -->
+    <section class="mb-16">
+      <div class="bg-gradient-to-r from-dark-800 to-dark-700 rounded-2xl p-8 border border-dark-600">
+        <h2 class="text-2xl font-bold text-center mb-8">Jornada de Aprendizado</h2>
+        <div class="flex flex-wrap justify-center items-center gap-4">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+            <span class="ml-2 text-neutral-300">SQL</span>
+          </div>
+          <svg class="w-6 h-6 text-dark-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+            <span class="ml-2 text-neutral-300">Admin</span>
+          </div>
+          <svg class="w-6 h-6 text-dark-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+            <span class="ml-2 text-neutral-300">Avançado</span>
+          </div>
+          <svg class="w-6 h-6 text-dark-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+            <span class="ml-2 text-neutral-300">Tuning</span>
+          </div>
+          <svg class="w-6 h-6 text-dark-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">5</div>
+            <span class="ml-2 text-neutral-300">HA</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-12">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <div class="flex justify-center items-center space-x-3 mb-4">
+        <span class="text-3xl">🗄️</span>
+        <span class="text-xl font-bold text-primary">Curso Oracle DBA</span>
+      </div>
+      <p class="text-neutral-500 text-sm mb-4">
+        Material elaborado por profissional com vasta experiência em Oracle DBA
+      </p>
+      <p class="text-neutral-600 text-xs">
+        © 2025 Curso Oracle DBA. Todos os direitos reservados.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

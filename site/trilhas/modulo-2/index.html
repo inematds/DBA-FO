@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo 2: Administração Básica | Curso Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../index.html" class="flex items-center space-x-2 text-neutral-400 hover:text-primary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Voltar ao Curso</span>
+        </a>
+        <span class="text-cyan-400 font-semibold">Módulo 2</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <span class="inline-block px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-full text-sm font-semibold mb-4">
+        MÓDULO 2 - ADMINISTRAÇÃO BÁSICA
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">⚙️ Administração Oracle I</h1>
+      <p class="text-xl text-neutral-400 max-w-2xl mx-auto">
+        Instalação, arquitetura e gerenciamento básico
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-4 mb-12">
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-cyan-400">5</div>
+        <div class="text-xs text-neutral-400">Seções</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-cyan-400">9</div>
+        <div class="text-xs text-neutral-400">Exercícios</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-cyan-400">DBA</div>
+        <div class="text-xs text-neutral-400">Foco</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-cyan-400">Básico</div>
+        <div class="text-xs text-neutral-400">Nível</div>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-cyan-900/30 to-dark-800 rounded-2xl p-8 border border-cyan-500/30">
+        <h2 class="text-2xl font-bold text-cyan-400 mb-4">Introdução</h2>
+        <p class="text-neutral-300 text-lg">
+          Com os fundamentos de SQL estabelecidos, é hora de mergulhar no mundo da <strong class="text-cyan-400">administração de bancos de dados Oracle</strong>.
+          Este módulo aborda as tarefas essenciais que todo DBA iniciante precisa dominar: desde a instalação do software até o gerenciamento da estrutura interna do banco de dados.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2.1 Instalação -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📦</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">2.1 Instalação e Configuração</h2>
+            <p class="text-neutral-400">Instalando o Oracle Database</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          A primeira tarefa de um DBA é instalar o banco de dados. O Oracle Database pode ser instalado em diversas plataformas (Linux, Windows, etc.).
+          O processo de instalação, embora guiado por um assistente gráfico (Oracle Universal Installer - OUI), exige atenção a detalhes importantes.
+        </p>
+
+        <div class="bg-dark-700/50 rounded-xl p-6 mb-6">
+          <h4 class="font-bold text-cyan-400 mb-4">Pontos Importantes</h4>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs font-semibold mr-3 mt-0.5">Edição</span>
+              <div>
+                <p class="text-neutral-300">A Oracle oferece diferentes edições (Enterprise, Standard, Express).</p>
+                <p class="text-neutral-400 text-sm">Para estudos, a <strong class="text-cyan-400">Express Edition (XE)</strong> é gratuita e ideal.</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs font-semibold mr-3 mt-0.5">ORACLE_BASE</span>
+              <p class="text-neutral-300">Diretório raiz da instalação Oracle.</p>
+            </div>
+            <div class="flex items-start">
+              <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs font-semibold mr-3 mt-0.5">ORACLE_HOME</span>
+              <p class="text-neutral-300">Diretório específico da versão do software instalado.</p>
+            </div>
+            <div class="flex items-start">
+              <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs font-semibold mr-3 mt-0.5">SID</span>
+              <p class="text-neutral-300">System Identifier - identificador único da instância do banco.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.2 Arquitetura -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🏗️</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">2.2 Arquitetura Interna do Oracle</h2>
+            <p class="text-neutral-400">Instância e Banco de Dados</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Para administrar um banco de dados Oracle, é fundamental entender sua arquitetura.
+          Ela é dividida em duas partes principais: a <strong class="text-cyan-400">Instância</strong> e o <strong class="text-cyan-400">Banco de Dados</strong>.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <!-- Instância -->
+          <div class="bg-cyan-900/20 p-6 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">Instância (Instance)</h4>
+            <p class="text-neutral-300 text-sm mb-4">
+              Conjunto de processos em segundo plano e área de memória alocada na RAM. É <strong>volátil</strong> - existe enquanto o banco está "no ar".
+            </p>
+            <div class="space-y-2">
+              <div class="bg-dark-700/50 rounded-lg p-3">
+                <p class="text-cyan-400 font-semibold text-sm">SGA (System Global Area)</p>
+                <p class="text-neutral-400 text-xs">Memória compartilhada: Buffer Cache, Shared Pool, Redo Log Buffer</p>
+              </div>
+              <div class="bg-dark-700/50 rounded-lg p-3">
+                <p class="text-cyan-400 font-semibold text-sm">PGA (Program Global Area)</p>
+                <p class="text-neutral-400 text-xs">Memória privada para cada processo de servidor</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banco de Dados -->
+          <div class="bg-purple-900/20 p-6 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">Banco de Dados (Database)</h4>
+            <p class="text-neutral-300 text-sm mb-4">
+              Conjunto de arquivos físicos armazenados em disco. É <strong>persistente</strong>.
+            </p>
+            <div class="space-y-2">
+              <div class="bg-dark-700/50 rounded-lg p-3">
+                <p class="text-purple-400 font-semibold text-sm">Data Files</p>
+                <p class="text-neutral-400 text-xs">Contêm os dados reais das tabelas e índices</p>
+              </div>
+              <div class="bg-dark-700/50 rounded-lg p-3">
+                <p class="text-purple-400 font-semibold text-sm">Control Files</p>
+                <p class="text-neutral-400 text-xs">Metadados sobre a estrutura do banco</p>
+              </div>
+              <div class="bg-dark-700/50 rounded-lg p-3">
+                <p class="text-purple-400 font-semibold text-sm">Redo Log Files</p>
+                <p class="text-neutral-400 text-xs">Registram todas as alterações feitas no banco</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-900/20 p-4 rounded-xl border border-blue-500/30">
+          <p class="text-blue-400 text-sm">
+            <strong>📷 Diagrama:</strong> Veja as imagens <code>arquitetura_oracle_1.jpg</code> e <code>arquitetura_dba.png</code> na seção de Recursos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.3 Usuários -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">👥</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">2.3 Gerenciamento de Usuários</h2>
+            <p class="text-neutral-400">Usuários, Perfis e Permissões</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Um dos papéis centrais do DBA é controlar quem acessa o banco de dados e o que cada um pode fazer.
+        </p>
+
+        <div class="bg-dark-700/50 rounded-xl p-6 mb-6">
+          <h4 class="font-bold text-cyan-400 mb-3">Criando um Usuário</h4>
+          <p class="text-neutral-300 text-sm mb-4">
+            Para se conectar ao Oracle, é preciso ter uma conta de usuário. Cada usuário é dono de um <strong>schema</strong>.
+          </p>
+          <pre><code class="language-sql">-- Criar um novo usuário
+CREATE USER carlos IDENTIFIED BY SuaSenha123;</code></pre>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-6 mb-6">
+          <h4 class="font-bold text-cyan-400 mb-3">Tipos de Privilégios</h4>
+          <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
+              <p class="text-cyan-400 font-semibold text-sm">Privilégios de Sistema</p>
+              <p class="text-neutral-400 text-xs mb-2">Ações no nível do banco</p>
+              <code class="text-xs text-neutral-300">CREATE SESSION, CREATE TABLE</code>
+            </div>
+            <div class="bg-dark-800 rounded-lg p-4 border border-dark-600">
+              <p class="text-purple-400 font-semibold text-sm">Privilégios de Objeto</p>
+              <p class="text-neutral-400 text-xs mb-2">Manipular objetos de outro usuário</p>
+              <code class="text-xs text-neutral-300">SELECT ON empregados</code>
+            </div>
+          </div>
+          <pre><code class="language-sql">-- Conceder permissão para o usuário se conectar
+GRANT CREATE SESSION TO carlos;
+
+-- Conceder permissão para criar tabelas
+GRANT CREATE TABLE TO carlos;</code></pre>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-6">
+          <h4 class="font-bold text-orange-400 mb-3">Perfis (Profiles)</h4>
+          <p class="text-neutral-300 text-sm">
+            Conjuntos de limites para recursos do banco (sessões simultâneas, tempo de CPU, políticas de senha).
+            Garantem que um usuário não consuma recursos excessivos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.4 Tablespaces -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">💾</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">2.4 Tablespaces e Arquivos de Dados</h2>
+            <p class="text-neutral-400">Estrutura lógica de armazenamento</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          No Oracle, os dados não são armazenados diretamente em "arquivos de tabela". A estrutura é mais abstrata e flexível.
+        </p>
+
+        <div class="bg-dark-700/50 rounded-xl p-6 mb-6">
+          <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-cyan-900/20 p-4 rounded-lg border border-cyan-500/30">
+              <h4 class="font-bold text-cyan-400 mb-2">Tablespace</h4>
+              <p class="text-neutral-300 text-sm">Unidade <strong>lógica</strong> de armazenamento. O banco é dividido em tablespaces (tabelas, índices, etc.).</p>
+            </div>
+            <div class="bg-purple-900/20 p-4 rounded-lg border border-purple-500/30">
+              <h4 class="font-bold text-purple-400 mb-2">Data File</h4>
+              <p class="text-neutral-300 text-sm">Arquivo <strong>físico</strong> no sistema operacional. Um tablespace pode ter vários data files.</p>
+            </div>
+          </div>
+
+          <pre><code class="language-sql">-- Criar um novo tablespace 'DADOS_APP' com arquivo de 100MB
+CREATE TABLESPACE DADOS_APP
+DATAFILE '/u01/app/oracle/oradata/XE/dados_app01.dbf' SIZE 100M;
+
+-- Alterar o tablespace padrão de um usuário
+ALTER USER carlos DEFAULT TABLESPACE DADOS_APP;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.5 Monitoramento -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📊</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">2.5 Monitoramento Básico</h2>
+            <p class="text-neutral-400">Mantendo a saúde do banco</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Um DBA proativo monitora constantemente a saúde do banco de dados. As principais áreas são:
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-cyan-500">
+            <h4 class="font-bold text-cyan-400 mb-2">Alert Log</h4>
+            <p class="text-neutral-300 text-sm">O "diário de bordo" do banco. Primeiro lugar a olhar quando algo está errado.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-400 mb-2">Uso de Tablespaces</h4>
+            <p class="text-neutral-300 text-sm">Monitorar espaço livre para evitar erros nas aplicações.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-400 mb-2">Sessões Ativas</h4>
+            <p class="text-neutral-300 text-sm">Verificar quais usuários estão conectados e o que executam.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-emerald-500">
+            <h4 class="font-bold text-emerald-400 mb-2">Data Dictionary</h4>
+            <p class="text-neutral-300 text-sm">Views DBA_, ALL_, USER_ são a principal ferramenta do DBA.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-cyan-900/30 to-dark-800 rounded-2xl p-8 border border-cyan-500/30">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📝</span>
+          <div>
+            <h2 class="text-2xl font-bold text-cyan-400">Exercícios Práticos</h2>
+            <p class="text-neutral-400">Administração básica do Oracle</p>
+          </div>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-4 mb-6">
+          <p class="text-neutral-300 text-sm">
+            <strong class="text-cyan-400">Pré-requisito:</strong> Execute esses exercícios conectado como um usuário com privilégios de DBA (como SYSTEM).
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">1. Criação de Usuário</p>
+            <p class="text-neutral-400 text-sm">Crie um novo usuário chamado <code>analista</code> com a senha <code>Oracle123</code>.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">2. Concessão de Privilégios</p>
+            <p class="text-neutral-400 text-sm">Conceda ao usuário <code>analista</code> os privilégios para se conectar e criar tabelas.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">3. Criação de Tablespace</p>
+            <p class="text-neutral-400 text-sm">Crie um tablespace <code>APP_DATA</code> com tamanho inicial de 50MB.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">4. Alteração de Usuário</p>
+            <p class="text-neutral-400 text-sm">Altere o usuário <code>analista</code> para usar o tablespace <code>APP_DATA</code> como padrão. Defina quota de 40MB.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">5. Criação de Tabela</p>
+            <p class="text-neutral-400 text-sm">Conecte-se como <code>analista</code> e crie uma tabela PROJETOS (PROJETO_ID, NOME_PROJETO, DATA_INICIO).</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">6. Monitoramento de Tablespaces</p>
+            <p class="text-neutral-400 text-sm">Consulte DBA_FREE_SPACE para verificar o espaço livre no tablespace APP_DATA.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">7. Monitoramento de Usuários</p>
+            <p class="text-neutral-400 text-sm">Verifique em DBA_USERS a data de criação e tablespace padrão do usuário <code>analista</code>.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">8. Remoção de Usuário</p>
+            <p class="text-neutral-400 text-sm">Remova o usuário <code>analista</code> e todos os seus objetos.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">9. Remoção de Tablespace</p>
+            <p class="text-neutral-400 text-sm">Remova o tablespace APP_DATA incluindo seus datafiles.</p>
+          </div>
+        </div>
+
+        <!-- Gabarito -->
+        <details class="mt-6">
+          <summary class="bg-cyan-500/20 text-cyan-400 px-4 py-3 rounded-lg font-semibold cursor-pointer hover:bg-cyan-500/30 transition-colors">
+            📋 Ver Gabarito dos Exercícios
+          </summary>
+          <div class="mt-4 space-y-4">
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">1. Criação de Usuário</p>
+              <pre><code class="language-sql">CREATE USER analista IDENTIFIED BY Oracle123;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">2. Concessão de Privilégios</p>
+              <pre><code class="language-sql">GRANT CREATE SESSION, CREATE TABLE TO analista;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">3. Criação de Tablespace</p>
+              <pre><code class="language-sql">CREATE TABLESPACE APP_DATA
+DATAFILE '/u01/app/oracle/oradata/XE/app_data01.dbf' SIZE 50M;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">4. Alteração de Usuário</p>
+              <pre><code class="language-sql">ALTER USER analista DEFAULT TABLESPACE APP_DATA QUOTA 40M ON APP_DATA;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">5. Criação de Tabela</p>
+              <pre><code class="language-sql">-- Conecte-se como analista primeiro
+CREATE TABLE PROJETOS (
+  PROJETO_ID NUMBER PRIMARY KEY,
+  NOME_PROJETO VARCHAR2(100),
+  DATA_INICIO DATE
+);</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">6. Monitoramento de Tablespaces</p>
+              <pre><code class="language-sql">SELECT TABLESPACE_NAME, SUM(BYTES)/1024/1024 AS FREE_MB
+FROM DBA_FREE_SPACE
+WHERE TABLESPACE_NAME = 'APP_DATA'
+GROUP BY TABLESPACE_NAME;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">7. Monitoramento de Usuários</p>
+              <pre><code class="language-sql">SELECT USERNAME, CREATED, DEFAULT_TABLESPACE
+FROM DBA_USERS
+WHERE USERNAME = 'ANALISTA';</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">8. Remoção de Usuário</p>
+              <pre><code class="language-sql">DROP USER analista CASCADE;</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-cyan-400 font-semibold mb-2">9. Remoção de Tablespace</p>
+              <pre><code class="language-sql">DROP TABLESPACE APP_DATA INCLUDING CONTENTS AND DATAFILES;</code></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="mb-12">
+      <div class="bg-primary/10 rounded-2xl p-8 border border-primary/30">
+        <h2 class="text-2xl font-bold text-primary mb-6 text-center">🎉 Módulo 2 Concluído!</h2>
+        <p class="text-neutral-300 text-center mb-8">
+          Você aprendeu os fundamentos de administração Oracle. No próximo módulo, vamos avançar para RMAN, backup/recovery e segurança!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="../modulo-3/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors">
+            <span>Próximo: Módulo 3</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+          <a href="../modulo-1/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-bold hover:bg-dark-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span>Voltar: Módulo 1</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Curso Oracle DBA - Módulo 2: Administração Oracle I</p>
+    </div>
+  </footer>
+
+  <script>
+    if (localStorage.getItem('color-theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+    hljs.highlightAll();
+  </script>
+</body>
+</html>

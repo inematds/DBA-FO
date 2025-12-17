@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo 4: Performance e Tuning | Curso Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../index.html" class="flex items-center space-x-2 text-neutral-400 hover:text-primary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Voltar ao Curso</span>
+        </a>
+        <span class="text-orange-400 font-semibold">Módulo 4</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="text-center mb-12">
+      <span class="inline-block px-4 py-2 bg-orange-500/20 text-orange-400 rounded-full text-sm font-semibold mb-4">
+        MÓDULO 4 - PERFORMANCE
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4">⚡ Performance e Tuning</h1>
+      <p class="text-xl text-neutral-400 max-w-2xl mx-auto">
+        Diagnóstico, otimização de SQL e tuning interno
+      </p>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mb-12">
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-orange-400">5</div>
+        <div class="text-xs text-neutral-400">Seções</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-orange-400">5</div>
+        <div class="text-xs text-neutral-400">Exercícios</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-orange-400">AWR</div>
+        <div class="text-xs text-neutral-400">Diagnóstico</div>
+      </div>
+      <div class="bg-dark-800 rounded-xl p-4 text-center border border-dark-600">
+        <div class="text-2xl font-bold text-orange-400">Expert</div>
+        <div class="text-xs text-neutral-400">Nível</div>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-orange-900/30 to-dark-800 rounded-2xl p-8 border border-orange-500/30">
+        <h2 class="text-2xl font-bold text-orange-400 mb-4">Introdução</h2>
+        <p class="text-neutral-300 text-lg">
+          Um banco de dados que funciona é bom, mas um banco de dados <strong class="text-orange-400">rápido é essencial</strong>. Otimização de desempenho, ou <em>tuning</em>, é uma das disciplinas mais desafiadoras e valorizadas de um DBA. Vamos aprender a diagnosticar gargalos, otimizar SQL e ajustar componentes internos.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4.1 Diagnóstico -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🔍</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">4.1 Diagnóstico de Performance</h2>
+            <p class="text-neutral-400">Onde começar quando "o sistema está lento"</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-orange-900/20 p-4 rounded-xl border border-orange-500/30">
+            <h4 class="font-bold text-orange-400 mb-2">AWR</h4>
+            <p class="text-neutral-300 text-sm">Automatic Workload Repository. Coleta estatísticas de desempenho continuamente. Snapshots de hora em hora.</p>
+          </div>
+          <div class="bg-orange-900/20 p-4 rounded-xl border border-orange-500/30">
+            <h4 class="font-bold text-orange-400 mb-2">Relatório AWR</h4>
+            <p class="text-neutral-300 text-sm">Documento HTML detalhado: queries mais "caras", eventos de espera, etc. Habilidade fundamental!</p>
+          </div>
+          <div class="bg-orange-900/20 p-4 rounded-xl border border-orange-500/30">
+            <h4 class="font-bold text-orange-400 mb-2">ASH</h4>
+            <p class="text-neutral-300 text-sm">Active Session History. Amostra atividade a cada segundo. Diagnóstico granular de problemas transitórios.</p>
+          </div>
+          <div class="bg-orange-900/20 p-4 rounded-xl border border-orange-500/30">
+            <h4 class="font-bold text-orange-400 mb-2">ADDM</h4>
+            <p class="text-neutral-300 text-sm">Automatic Database Diagnostic Monitor. Analisa AWR e gera recomendações automáticas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4.2 Plano de Execução -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📊</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">4.2 Tuning de SQL: Plano de Execução</h2>
+            <p class="text-neutral-400">A "receita" do otimizador</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          O <strong class="text-orange-400">Plano de Execução</strong> é a "receita" que o Otimizador Oracle cria para buscar dados. Descreve os passos: qual tabela primeiro, se usa índice, como faz o join, etc.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-red-900/20 p-4 rounded-xl border border-red-500/30">
+            <h4 class="font-bold text-red-400 mb-2">Full Table Scan</h4>
+            <p class="text-neutral-300 text-sm">Oracle lê tabela inteira para encontrar poucas linhas. Sinal de índice faltando ou não usado.</p>
+          </div>
+          <div class="bg-red-900/20 p-4 rounded-xl border border-red-500/30">
+            <h4 class="font-bold text-red-400 mb-2">Tipo de Join Inadequado</h4>
+            <p class="text-neutral-300 text-sm">Oracle pode escolher Nested Loops, Hash Join ou Sort Merge que não é ideal para o volume de dados.</p>
+          </div>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-6">
+          <h4 class="font-bold text-orange-400 mb-3">Gerando o Plano de Execução</h4>
+          <pre><code class="language-sql">-- Gerar plano de execução
+EXPLAIN PLAN FOR
+SELECT * FROM HR.EMPLOYEES WHERE LAST_NAME = 'Smith';
+
+-- Visualizar o plano
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4.3 Índices -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📚</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">4.3 Índices: Acelere suas Consultas</h2>
+            <p class="text-neutral-400">O "índice do livro" para seus dados</p>
+          </div>
+        </div>
+
+        <p class="text-neutral-300 mb-6">
+          Um <strong class="text-orange-400">índice</strong> é uma estrutura de dados separada que "aponta" para as linhas de uma tabela. Permite encontrar dados rapidamente sem ler a tabela inteira.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 p-6 rounded-xl border border-emerald-500/30">
+            <h4 class="font-bold text-emerald-400 mb-3">✓ Quando Criar Índice</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>• Colunas frequentemente usadas no WHERE</li>
+              <li>• Colunas usadas em JOINs</li>
+              <li>• Colunas com alta seletividade</li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 p-6 rounded-xl border border-red-500/30">
+            <h4 class="font-bold text-red-400 mb-3">✗ Quando NÃO Criar</h4>
+            <ul class="space-y-2 text-neutral-300 text-sm">
+              <li>• Tabelas pequenas</li>
+              <li>• Colunas com muitos valores duplicados</li>
+              <li>• Tabelas com muito INSERT/UPDATE/DELETE</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-dark-700/50 rounded-xl p-6">
+          <pre><code class="language-sql">-- Criar um índice na coluna DEPT_ID
+CREATE INDEX idx_emp_dept_id ON EMPREGADOS(DEPT_ID);</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4.4 Gestão de Memória -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🧠</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">4.4 Gestão de Memória e Tuning Interno</h2>
+            <p class="text-neutral-400">SGA, PGA e AMM</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-400 mb-2">Tuning da SGA</h4>
+            <p class="text-neutral-300 text-sm">Aumentar Buffer Cache reduz I/O. Aumentar Shared Pool acelera parsing.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-cyan-500">
+            <h4 class="font-bold text-cyan-400 mb-2">Tuning da PGA</h4>
+            <p class="text-neutral-300 text-sm">Melhora sorts e hash joins, evitando uso de disco (tablespace temporário).</p>
+          </div>
+        </div>
+
+        <div class="bg-emerald-900/20 p-4 rounded-xl border border-emerald-500/30">
+          <h4 class="font-bold text-emerald-400 mb-2">Gestão Automática de Memória (AMM)</h4>
+          <p class="text-neutral-300 text-sm">
+            A partir do Oracle 11g, defina apenas <code class="text-emerald-400">MEMORY_TARGET</code> e o Oracle gerencia dinamicamente SGA/PGA.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4.5 Ferramentas -->
+    <section class="mb-12">
+      <div class="bg-dark-800 rounded-2xl p-8 border border-dark-600">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">🛠️</span>
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-100">4.5 Ferramentas de Diagnóstico</h2>
+            <p class="text-neutral-400">SQL Tuning Advisor e SQL Trace</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-400 mb-2">SQL Tuning Advisor</h4>
+            <p class="text-neutral-300 text-sm">Analisa query de alta carga e fornece recomendações: criar índice, coletar estatísticas, reescrever query.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4 border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-400 mb-2">SQL Trace e TKPROF</h4>
+            <p class="text-neutral-300 text-sm">Habilita trace de sessão. TKPROF formata em relatório legível com plano de execução, tempos de CPU, I/O.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-br from-orange-900/30 to-dark-800 rounded-2xl p-8 border border-orange-500/30">
+        <div class="flex items-center mb-6">
+          <span class="text-4xl mr-4">📝</span>
+          <div>
+            <h2 class="text-2xl font-bold text-orange-400">Exercícios Práticos</h2>
+            <p class="text-neutral-400">Performance e Tuning</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">1. Identificando Query Lenta</p>
+            <p class="text-neutral-400 text-sm">Gere o plano de execução para: <code>SELECT * FROM HR.EMPLOYEES WHERE LAST_NAME = 'Smith';</code></p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">2. Criando um Índice</p>
+            <p class="text-neutral-400 text-sm">Crie índice para acelerar a query anterior. Gere o plano novamente e compare.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">3. Coletando Estatísticas</p>
+            <p class="text-neutral-400 text-sm">Execute DBMS_STATS.GATHER_TABLE_STATS para HR.EMPLOYEES.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">4. Analisando um Join</p>
+            <p class="text-neutral-400 text-sm">Gere plano para query com JOIN entre EMPLOYEES e DEPARTMENTS. Identifique método de join.</p>
+          </div>
+          <div class="bg-dark-700/50 rounded-xl p-4">
+            <p class="text-neutral-100 font-semibold mb-2">5. Relatório AWR (Opcional)</p>
+            <p class="text-neutral-400 text-sm">Se tiver Diagnostic Pack, gere um relatório AWR e identifique "SQL ordered by Elapsed Time".</p>
+          </div>
+        </div>
+
+        <details class="mt-6">
+          <summary class="bg-orange-500/20 text-orange-400 px-4 py-3 rounded-lg font-semibold cursor-pointer hover:bg-orange-500/30 transition-colors">
+            📋 Ver Gabarito dos Exercícios
+          </summary>
+          <div class="mt-4 space-y-4">
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-orange-400 font-semibold mb-2">1. Plano de Execução</p>
+              <pre><code class="language-sql">EXPLAIN PLAN FOR
+SELECT * FROM HR.EMPLOYEES WHERE LAST_NAME = 'Smith';
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+-- Esperado: TABLE ACCESS FULL (sem índice)</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-orange-400 font-semibold mb-2">2. Criando Índice</p>
+              <pre><code class="language-sql">CREATE INDEX idx_emp_last_name ON HR.EMPLOYEES(LAST_NAME);
+
+-- Gerar plano novamente
+-- Esperado: INDEX RANGE SCAN + TABLE ACCESS BY INDEX ROWID</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-orange-400 font-semibold mb-2">3. Coletando Estatísticas</p>
+              <pre><code class="language-sql">EXEC DBMS_STATS.GATHER_TABLE_STATS('HR', 'EMPLOYEES');</code></pre>
+            </div>
+            <div class="bg-dark-700/50 rounded-xl p-4">
+              <p class="text-orange-400 font-semibold mb-2">4. Analisando Join</p>
+              <pre><code class="language-sql">EXPLAIN PLAN FOR
+SELECT e.FIRST_NAME, e.LAST_NAME, d.DEPARTMENT_NAME
+FROM HR.EMPLOYEES e
+JOIN HR.DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+WHERE d.DEPARTMENT_NAME = 'Sales';
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+-- Procure: NESTED LOOPS, HASH JOIN ou SORT MERGE JOIN</code></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="mb-12">
+      <div class="bg-primary/10 rounded-2xl p-8 border border-primary/30">
+        <h2 class="text-2xl font-bold text-primary mb-6 text-center">🎉 Módulo 4 Concluído!</h2>
+        <p class="text-neutral-300 text-center mb-8">
+          Você domina diagnóstico e tuning! Último módulo: Alta Disponibilidade e Clusters!
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="../modulo-5/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors">
+            <span>Próximo: Módulo 5</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+          <a href="../modulo-3/index.html" class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-bold hover:bg-dark-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span>Voltar: Módulo 3</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Curso Oracle DBA - Módulo 4: Performance e Tuning</p>
+    </div>
+  </footer>
+
+  <script>
+    if (localStorage.getItem('color-theme') === 'light') document.documentElement.classList.remove('dark');
+    hljs.highlightAll();
+  </script>
+</body>
+</html>
