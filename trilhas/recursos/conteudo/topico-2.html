@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagramas de Arquitetura Oracle | Recursos | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    .diagram-box { font-family: 'Courier New', monospace; line-height: 1.8; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-amber-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-amber-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Recursos</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-amber-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Diagramas de Arquitetura Oracle</h1>
+          <p class="text-neutral-400">Referências visuais da arquitetura Oracle</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Arquitetura Completa -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🏗️</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Arquitetura Completa do Oracle Database</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Visão Geral: Instância + Database</h3>
+        <div class="bg-dark-900 rounded-lg p-6 diagram-box text-sm text-neutral-300 overflow-x-auto">
+          <pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│                        ORACLE INSTANCE                              │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │                    SGA (System Global Area)                   │  │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │  │
+│  │  │ Shared Pool  │  │ Database     │  │ Redo Log     │       │  │
+│  │  │              │  │ Buffer Cache │  │ Buffer       │       │  │
+│  │  │ - Library    │  │              │  │              │       │  │
+│  │  │   Cache      │  │ (Data Blocks)│  │ (Redo        │       │  │
+│  │  │ - Data Dict  │  │              │  │  Entries)    │       │  │
+│  │  │   Cache      │  │              │  │              │       │  │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘       │  │
+│  │  ┌──────────────┐  ┌──────────────┐                         │  │
+│  │  │ Java Pool    │  │ Large Pool   │                         │  │
+│  │  └──────────────┘  └──────────────┘                         │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │               BACKGROUND PROCESSES                            │  │
+│  │  PMON  SMON  DBWn  LGWR  CKPT  ARCn  RECO  ...               │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │               USER PROCESSES                                  │  │
+│  │  Server Process 1  →  PGA (Program Global Area)              │  │
+│  │  Server Process 2  →  PGA                                     │  │
+│  │  Server Process n  →  PGA                                     │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+                              ↓ ↑
+┌─────────────────────────────────────────────────────────────────────┐
+│                        ORACLE DATABASE                              │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │                   PHYSICAL STRUCTURES                         │  │
+│  │                                                               │  │
+│  │  Data Files          Control Files       Redo Log Files      │  │
+│  │  ┌──────────┐        ┌──────────┐        ┌──────────┐       │  │
+│  │  │ system01 │        │ control1 │        │ redo01   │       │  │
+│  │  │ sysaux01 │        │ control2 │        │ redo02   │       │  │
+│  │  │ users01  │        │ control3 │        │ redo03   │       │  │
+│  │  │ undotbs1 │        └──────────┘        └──────────┘       │  │
+│  │  │ temp01   │                                                │  │
+│  │  └──────────┘        Archive Log Files                       │  │
+│  │                      ┌──────────┐                            │  │
+│  │  Parameter File      │ arch0001 │                            │  │
+│  │  ┌──────────┐        │ arch0002 │                            │  │
+│  │  │ spfile   │        │ arch...  │                            │  │
+│  │  └──────────┘        └──────────┘                            │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+</pre>
+        </div>
+        <div class="mt-4 grid md:grid-cols-2 gap-4">
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">Instância</h4>
+            <p class="text-neutral-300 text-sm">
+              Estruturas em memória (SGA, PGA) e processos que gerenciam o acesso aos dados.
+              Existe apenas enquanto o banco está rodando.
+            </p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Database</h4>
+            <p class="text-neutral-300 text-sm">
+              Arquivos físicos no disco que armazenam os dados, metadados e logs.
+              Persistem mesmo quando o banco está desligado.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: SGA Detalhada -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">💾</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">SGA - System Global Area</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Componentes da SGA</h3>
+        <div class="bg-dark-900 rounded-lg p-6 diagram-box text-sm text-neutral-300 overflow-x-auto">
+          <pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                    SGA (Shared Memory)                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────┐     │
+│  │              DATABASE BUFFER CACHE                    │     │
+│  │  • Armazena cópias de blocos de dados lidos do disco │     │
+│  │  • Reduz I/O físico mantendo dados em memória        │     │
+│  │  • Gerenciado por algoritmo LRU (Least Recently Used)│     │
+│  │  • Tamanho: configurável via DB_CACHE_SIZE           │     │
+│  └───────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────┐     │
+│  │              SHARED POOL                              │     │
+│  │  ┌─────────────────────────────────────────────┐     │     │
+│  │  │ Library Cache                               │     │     │
+│  │  │ • SQL statements parsed                     │     │     │
+│  │  │ • Execution plans                           │     │     │
+│  │  │ • PL/SQL code                               │     │     │
+│  │  └─────────────────────────────────────────────┘     │     │
+│  │  ┌─────────────────────────────────────────────┐     │     │
+│  │  │ Data Dictionary Cache                       │     │     │
+│  │  │ • Metadados de tabelas, índices, usuários   │     │     │
+│  │  │ • Informações de privilégios                │     │     │
+│  │  └─────────────────────────────────────────────┘     │     │
+│  │  Tamanho: SHARED_POOL_SIZE                           │     │
+│  └───────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────┐     │
+│  │              REDO LOG BUFFER                          │     │
+│  │  • Armazena alterações (redo entries) antes de gravar│     │
+│  │  • LGWR escreve para redo log files                  │     │
+│  │  • Tamanho: LOG_BUFFER                               │     │
+│  └───────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────┐     │
+│  │              LARGE POOL (Opcional)                    │     │
+│  │  • Usado por RMAN, Shared Server, Parallel Queries   │     │
+│  │  • Reduz fragmentação do Shared Pool                 │     │
+│  │  • Tamanho: LARGE_POOL_SIZE                          │     │
+│  └───────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────┐     │
+│  │              JAVA POOL (Opcional)                     │     │
+│  │  • Usado por Java Virtual Machine dentro do Oracle   │     │
+│  │  • Tamanho: JAVA_POOL_SIZE                           │     │
+│  └───────────────────────────────────────────────────────┘     │
+│                                                                 │
+│  Gerenciamento Automático: SGA_TARGET (ASMM)                   │
+│  Gerenciamento Completo: MEMORY_TARGET (AMM)                   │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Processos de Background -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">⚙️</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Processos de Background</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- PMON -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">🔄</span>
+              <h4 class="font-semibold text-purple-400">PMON - Process Monitor</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Detecta processos falhos</li>
+              <li>Libera recursos de sessões mortas</li>
+              <li>Faz rollback de transações incompletas</li>
+              <li>Registra instância no listener</li>
+            </ul>
+          </div>
+
+          <!-- SMON -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">🛠️</span>
+              <h4 class="font-semibold text-purple-400">SMON - System Monitor</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Recovery na inicialização (instance recovery)</li>
+              <li>Limpa segmentos temporários</li>
+              <li>Coalece espaços livres em tablespaces</li>
+              <li>Recupera transações mortas</li>
+            </ul>
+          </div>
+
+          <!-- DBWn -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">💿</span>
+              <h4 class="font-semibold text-purple-400">DBWn - Database Writer</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Escreve blocos sujos (dirty blocks) para disco</li>
+              <li>Escreve em checkpoints</li>
+              <li>Quando buffer cache está cheio</li>
+              <li>Múltiplos processos: DBW0..DBW9, DBWa..DBWj</li>
+            </ul>
+          </div>
+
+          <!-- LGWR -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">📝</span>
+              <h4 class="font-semibold text-purple-400">LGWR - Log Writer</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Escreve redo log buffer para redo log files</li>
+              <li>Escreve em COMMIT</li>
+              <li>A cada 3 segundos</li>
+              <li>Quando buffer está 1/3 cheio</li>
+            </ul>
+          </div>
+
+          <!-- CKPT -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">✅</span>
+              <h4 class="font-semibold text-purple-400">CKPT - Checkpoint</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Atualiza headers dos datafiles</li>
+              <li>Atualiza control files</li>
+              <li>Sinaliza DBWn para escrever dirty blocks</li>
+              <li>Reduz tempo de recovery</li>
+            </ul>
+          </div>
+
+          <!-- ARCn -->
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">📦</span>
+              <h4 class="font-semibold text-purple-400">ARCn - Archiver</h4>
+            </div>
+            <ul class="text-neutral-300 text-sm space-y-1 list-disc list-inside">
+              <li>Copia redo logs para archive logs</li>
+              <li>Apenas em ARCHIVELOG mode</li>
+              <li>Essencial para backups completos</li>
+              <li>Múltiplos processos: ARC0..ARC9, ARCa..ARCt</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: Estruturas Físicas -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📁</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Estruturas Físicas do Database</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <div class="bg-dark-900 rounded-lg p-6 diagram-box text-sm text-neutral-300 overflow-x-auto">
+          <pre>
+┌───────────────────────────────────────────────────────────────────┐
+│                    PHYSICAL DATABASE FILES                        │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  DATA FILES (.dbf)                                      │     │
+│  │  ┌──────────────────────────────────────────────┐      │     │
+│  │  │ Tablespace: SYSTEM                           │      │     │
+│  │  │ File: /u01/oradata/ORCL/system01.dbf         │      │     │
+│  │  │ • Data dictionary                            │      │     │
+│  │  │ • System tables                              │      │     │
+│  │  └──────────────────────────────────────────────┘      │     │
+│  │  ┌──────────────────────────────────────────────┐      │     │
+│  │  │ Tablespace: SYSAUX                           │      │     │
+│  │  │ File: /u01/oradata/ORCL/sysaux01.dbf         │      │     │
+│  │  │ • Auxiliary system data                      │      │     │
+│  │  └──────────────────────────────────────────────┘      │     │
+│  │  ┌──────────────────────────────────────────────┐      │     │
+│  │  │ Tablespace: USERS                            │      │     │
+│  │  │ File: /u01/oradata/ORCL/users01.dbf          │      │     │
+│  │  │ • User data and objects                      │      │     │
+│  │  └──────────────────────────────────────────────┘      │     │
+│  │  ┌──────────────────────────────────────────────┐      │     │
+│  │  │ Tablespace: UNDOTBS1                         │      │     │
+│  │  │ File: /u01/oradata/ORCL/undotbs01.dbf        │      │     │
+│  │  │ • Undo data (rollback segments)              │      │     │
+│  │  └──────────────────────────────────────────────┘      │     │
+│  │  ┌──────────────────────────────────────────────┐      │     │
+│  │  │ Tablespace: TEMP                             │      │     │
+│  │  │ File: /u01/oradata/ORCL/temp01.dbf           │      │     │
+│  │  │ • Sort operations, temporary data            │      │     │
+│  │  └──────────────────────────────────────────────┘      │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  CONTROL FILES (.ctl)                                   │     │
+│  │  • /u01/oradata/ORCL/control01.ctl                      │     │
+│  │  • /u01/fast_recovery_area/ORCL/control02.ctl           │     │
+│  │  • Database structure metadata                          │     │
+│  │  • Datafile locations and names                         │     │
+│  │  • Checkpoint information                               │     │
+│  │  • CRITICAL: Multiplexed for redundancy                 │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  REDO LOG FILES (.log)                                  │     │
+│  │  Group 1:                                               │     │
+│  │    • /u01/oradata/ORCL/redo01a.log                      │     │
+│  │    • /u01/oradata/ORCL/redo01b.log                      │     │
+│  │  Group 2:                                               │     │
+│  │    • /u01/oradata/ORCL/redo02a.log                      │     │
+│  │    • /u01/oradata/ORCL/redo02b.log                      │     │
+│  │  Group 3:                                               │     │
+│  │    • /u01/oradata/ORCL/redo03a.log                      │     │
+│  │    • /u01/oradata/ORCL/redo03b.log                      │     │
+│  │  • Record all changes (DML, DDL)                        │     │
+│  │  • Circular usage (log switch)                          │     │
+│  │  • Multiplexed members in each group                    │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  ARCHIVE LOG FILES (when in ARCHIVELOG mode)            │     │
+│  │  • /u01/fast_recovery_area/ORCL/archivelog/             │     │
+│  │    - arch_1_12345.arc                                   │     │
+│  │    - arch_1_12346.arc                                   │     │
+│  │    - ...                                                │     │
+│  │  • Copies of filled redo logs                           │     │
+│  │  • Required for point-in-time recovery                  │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  PARAMETER FILE                                         │     │
+│  │  SPFILE: /u01/oracle/dbs/spfileORCL.ora                 │     │
+│  │  (Binary, managed by Oracle)                            │     │
+│  │  OR                                                      │     │
+│  │  PFILE: /u01/oracle/dbs/initORCL.ora                    │     │
+│  │  (Text, manually editable)                              │     │
+│  └─────────────────────────────────────────────────────────┘     │
+└───────────────────────────────────────────────────────────────────┘
+</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 5: Fluxo de Dados -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔄</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Fluxo de Operações</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Fluxo de uma Transação (UPDATE)</h3>
+        <div class="bg-dark-900 rounded-lg p-6 diagram-box text-sm text-neutral-300 overflow-x-auto">
+          <pre>
+1. User Process executa: UPDATE employees SET salary = 5000 WHERE id = 123;
+
+2. Server Process:
+   ┌─────────────────────────────────────────────────────────┐
+   │ ① Verifica se bloco está no DB Buffer Cache             │
+   │    • Se SIM → lê da memória (logical read)              │
+   │    • Se NÃO → lê do datafile (physical read)            │
+   └─────────────────────────────────────────────────────────┘
+                          ↓
+   ┌─────────────────────────────────────────────────────────┐
+   │ ② Gera UNDO entry (valor antigo) no Undo Segment       │
+   │    • Permite ROLLBACK                                   │
+   │    • Read consistency para outras sessões               │
+   └─────────────────────────────────────────────────────────┘
+                          ↓
+   ┌─────────────────────────────────────────────────────────┐
+   │ ③ Gera REDO entry no Redo Log Buffer                   │
+   │    • Registra a mudança (change vector)                 │
+   │    • Protege contra falhas                              │
+   └─────────────────────────────────────────────────────────┘
+                          ↓
+   ┌─────────────────────────────────────────────────────────┐
+   │ ④ Atualiza bloco no DB Buffer Cache                    │
+   │    • Bloco agora é "dirty" (modificado)                 │
+   │    • Ainda NÃO está no disco                            │
+   └─────────────────────────────────────────────────────────┘
+
+3. User executa: COMMIT;
+
+   ┌─────────────────────────────────────────────────────────┐
+   │ ⑤ LGWR escreve Redo Log Buffer → Redo Log Files        │
+   │    • SYNC write (aguarda confirmação do OS)             │
+   │    • Transação é DURÁVEL após este ponto                │
+   └─────────────────────────────────────────────────────────┘
+                          ↓
+   ┌─────────────────────────────────────────────────────────┐
+   │ ⑥ Server Process confirma COMMIT ao usuário             │
+   │    • "Commit complete"                                  │
+   └─────────────────────────────────────────────────────────┘
+
+4. Em background (assíncrono):
+
+   ┌─────────────────────────────────────────────────────────┐
+   │ ⑦ DBWn escreve dirty blocks → Data Files               │
+   │    • Acontece em checkpoints                            │
+   │    • Ou quando buffer cache está cheio                  │
+   │    • NÃO bloqueia o COMMIT                              │
+   └─────────────────────────────────────────────────────────┘
+
+IMPORTANTE:
+- COMMIT força LGWR a escrever (redo logs SEMPRE antes de retornar)
+- COMMIT NÃO força DBWn (datafiles escritos depois, de forma lazy)
+- Recovery usa redo logs para replicar mudanças não escritas em datafiles
+</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dicas -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">💡</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Como Usar Estes Diagramas</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Referência Rápida</h4>
+              <p class="text-neutral-300 text-sm">Imprima e mantenha próximo durante troubleshooting.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Treinamento</h4>
+              <p class="text-neutral-300 text-sm">Use para explicar arquitetura para novos membros da equipe.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Diagnóstico</h4>
+              <p class="text-neutral-300 text-sm">Identifique qual componente está envolvido em um problema de performance.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Planejamento</h4>
+              <p class="text-neutral-300 text-sm">Use para decidir alocação de memória, quantidade de processos, etc.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue explorando</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-amber-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Scripts SQL</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+        <span>Próximo: Links e Referências</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Recursos - Diagramas de Arquitetura</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

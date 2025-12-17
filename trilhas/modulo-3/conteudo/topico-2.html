@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estratégias de Backup | Trilha 3 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-purple-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-purple-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 3</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-purple-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Estratégias de Backup</h1>
+          <p class="text-neutral-400">Full, incremental, differential, archivelog mode, retention policy</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de Backup</h3>
+        
+        <div class="space-y-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Full Backup (Completo)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Copia todos os blocos de dados usados do banco. É independente de backups anteriores.
+              Permite restore completo sem necessidade de outros backups.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Vantagem:</strong> Restore mais rápido (um único backup)</li>
+              <li><strong>Desvantagem:</strong> Demora mais, ocupa mais espaço</li>
+              <li><strong>Uso:</strong> Base semanal ou quinzenal</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Incremental Level 0</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Similar ao full backup, mas serve como base para backups incrementais Level 1.
+              Copia todos os blocos usados e habilita estratégia incremental.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Diferença do Full:</strong> Pode ser base de incrementais</li>
+              <li><strong>Uso:</strong> Início de ciclo de backup incremental</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Incremental Level 1 (Diferencial)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Copia apenas blocos alterados desde o último backup incremental (Level 1 ou 0).
+              Mais rápido e econômico que full backup.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Vantagem:</strong> Rápido, economiza espaço</li>
+              <li><strong>Desvantagem:</strong> Restore mais complexo (precisa da cadeia)</li>
+              <li><strong>Uso:</strong> Backup diário</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Incremental Level 1 Cumulativo</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Copia todos os blocos alterados desde o último Level 0.
+              Ignora Level 1 anteriores.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Vantagem:</strong> Restore mais simples (só Level 0 + último Level 1)</li>
+              <li><strong>Desvantagem:</strong> Maior que Level 1 diferencial</li>
+              <li><strong>Uso:</strong> Quando restore speed > backup speed</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">ARCHIVELOG Mode</h3>
+        
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-purple-400">ARCHIVELOG mode</strong> é essencial para recuperação completa.
+          Quando o redo log é preenchido, Oracle arquiva-o antes de reutilizá-lo.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">NOARCHIVELOG (Padrão)</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li>✗ Sem ponto de recuperação no tempo</li>
+              <li>✗ Apenas backup offline (cold)</li>
+              <li>✗ Perda de dados entre backups</li>
+              <li>✓ Usado apenas para dev/test</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">ARCHIVELOG (Produção)</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li>✓ Point-in-time recovery</li>
+              <li>✓ Backup online (hot)</li>
+              <li>✓ Zero data loss (com DataGuard)</li>
+              <li>✓ Obrigatório para produção</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Retention Policy</h3>
+        
+        <p class="text-neutral-300 mb-4">
+          Define por quanto tempo manter backups antes de considerá-los obsoletos.
+        </p>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Recovery Window</h4>
+            <p class="text-neutral-300 text-sm">
+              <code class="bg-dark-900 px-2 py-1 rounded">CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;</code><br>
+              Mantém backups necessários para recuperar banco nos últimos N dias.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Redundancy</h4>
+            <p class="text-neutral-300 text-sm">
+              <code class="bg-dark-900 px-2 py-1 rounded">CONFIGURE RETENTION POLICY TO REDUNDANCY 2;</code><br>
+              Mantém N cópias de cada backup antes de considerar obsoleto.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Ativando ARCHIVELOG Mode</h3>
+
+        <pre><code class="language-sql">-- Verificar modo atual
+SELECT LOG_MODE FROM V$DATABASE;
+
+-- Ativar ARCHIVELOG mode
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+ALTER DATABASE ARCHIVELOG;
+ALTER DATABASE OPEN;
+
+-- Configurar destino de archivelogs
+ALTER SYSTEM SET LOG_ARCHIVE_DEST_1='LOCATION=/u01/app/oracle/archivelog' SCOPE=BOTH;
+ALTER SYSTEM SET LOG_ARCHIVE_FORMAT='arch_%t_%s_%r.arc' SCOPE=SPFILE;
+
+-- Forçar switch de log (gera archivelog)
+ALTER SYSTEM SWITCH LOGFILE;
+
+-- Verificar archivelogs gerados
+SELECT NAME, SEQUENCE#, FIRST_TIME FROM V$ARCHIVED_LOG ORDER BY FIRST_TIME DESC;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Estratégia de Backup Recomendada</h3>
+
+        <div class="bg-purple-900/20 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-purple-400 mb-2">Estratégia Padrão (7 dias de recuperação)</h4>
+          <ul class="text-neutral-300 text-sm space-y-2">
+            <li><strong>Domingo:</strong> Incremental Level 0 (backup base)</li>
+            <li><strong>Segunda a Sábado:</strong> Incremental Level 1 (apenas alterações)</li>
+            <li><strong>Contínuo:</strong> Backup de archivelogs a cada hora</li>
+            <li><strong>Mensal:</strong> Backup Level 0 mantido por 1 ano</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-bash">#!/bin/bash
+# Script de backup incremental automatizado
+
+ORACLE_SID=ORCL
+BACKUP_DIR=/backup/rman
+
+# Domingo: Level 0
+if [ $(date +%u) -eq 7 ]; then
+  rman TARGET / <<EOF
+  RUN {
+    ALLOCATE CHANNEL c1 TYPE DISK FORMAT '$BACKUP_DIR/level0_%d_%U';
+    BACKUP INCREMENTAL LEVEL 0 DATABASE TAG 'WEEKLY_FULL';
+    BACKUP ARCHIVELOG ALL DELETE INPUT TAG 'WEEKLY_ARCH';
+    DELETE NOPROMPT OBSOLETE;
+  }
+EOF
+
+# Segunda a Sábado: Level 1
+else
+  rman TARGET / <<EOF
+  RUN {
+    ALLOCATE CHANNEL c1 TYPE DISK FORMAT '$BACKUP_DIR/level1_%d_%U';
+    BACKUP INCREMENTAL LEVEL 1 DATABASE TAG 'DAILY_INC';
+    BACKUP ARCHIVELOG ALL DELETE INPUT TAG 'DAILY_ARCH';
+    DELETE NOPROMPT OBSOLETE;
+  }
+EOF
+fi</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Backup com Compressão e Otimização</h3>
+
+        <pre><code class="language-sql">-- Backup otimizado com múltiplas técnicas
+RUN {
+  -- Alocar 4 canais para paralelização
+  ALLOCATE CHANNEL c1 TYPE DISK FORMAT '/backup/db_%U';
+  ALLOCATE CHANNEL c2 TYPE DISK FORMAT '/backup/db_%U';
+  ALLOCATE CHANNEL c3 TYPE DISK FORMAT '/backup/db_%U';
+  ALLOCATE CHANNEL c4 TYPE DISK FORMAT '/backup/db_%U';
+  
+  -- Backup incremental Level 1 com compressão
+  BACKUP INCREMENTAL LEVEL 1
+    AS COMPRESSED BACKUPSET
+    SECTION SIZE 1G  -- Divide em seções de 1GB (paraleliza melhor)
+    TAG 'DAILY_COMPRESSED'
+    DATABASE
+    PLUS ARCHIVELOG DELETE INPUT;
+  
+  -- Liberar canais
+  RELEASE CHANNEL c1;
+  RELEASE CHANNEL c2;
+  RELEASE CHANNEL c3;
+  RELEASE CHANNEL c4;
+  
+  -- Limpeza
+  DELETE NOPROMPT OBSOLETE;
+  CROSSCHECK BACKUP;
+}</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Monitoramento de Backups</h3>
+
+        <pre><code class="language-sql">-- Verificar últimos backups
+SELECT
+  SESSION_KEY,
+  INPUT_TYPE,
+  STATUS,
+  TO_CHAR(START_TIME, 'DD/MM/YYYY HH24:MI') START_TIME,
+  TO_CHAR(END_TIME, 'DD/MM/YYYY HH24:MI') END_TIME,
+  ELAPSED_SECONDS/3600 HOURS,
+  OUTPUT_BYTES/1024/1024/1024 SIZE_GB
+FROM V$RMAN_BACKUP_JOB_DETAILS
+ORDER BY START_TIME DESC
+FETCH FIRST 10 ROWS ONLY;
+
+-- Espaço utilizado por backups
+SELECT
+  DEVICE_TYPE,
+  ROUND(SUM(BYTES)/1024/1024/1024, 2) SIZE_GB,
+  COUNT(*) NUM_BACKUPS
+FROM V$BACKUP_PIECE
+WHERE STATUS = 'A'
+GROUP BY DEVICE_TYPE;
+
+-- Verificar cobertura de recovery
+SELECT
+  TO_CHAR(MIN(COMPLETION_TIME), 'DD/MM/YYYY HH24:MI') OLDEST_BACKUP,
+  TO_CHAR(MAX(COMPLETION_TIME), 'DD/MM/YYYY HH24:MI') NEWEST_BACKUP,
+  ROUND((SYSDATE - MIN(COMPLETION_TIME))) DAYS_COVERAGE
+FROM V$BACKUP_SET
+WHERE STATUS = 'A';
+
+-- Verificar archivelogs não backupeados
+SELECT
+  COUNT(*) ARCHIVELOGS_NOT_BACKED_UP,
+  ROUND(SUM(BLOCKS * BLOCK_SIZE)/1024/1024/1024, 2) SIZE_GB
+FROM V$ARCHIVED_LOG
+WHERE DELETED = 'NO'
+AND BACKUP_COUNT = 0;</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Competências Adquiridas</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Projetar Estratégia</h4>
+                <p class="text-neutral-400 text-sm">Definir frequência, tipo e retenção de backups</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar ARCHIVELOG</h4>
+                <p class="text-neutral-400 text-sm">Ativar e gerenciar modo de archivelog</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Automatizar Backups</h4>
+                <p class="text-neutral-400 text-sm">Scripts shell para rotinas de backup</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Otimizar Performance</h4>
+                <p class="text-neutral-400 text-sm">Compressão, paralelização, section size</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Monitorar Status</h4>
+                <p class="text-neutral-400 text-sm">Queries para verificar cobertura e falhas</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Balancear RTO/RPO</h4>
+                <p class="text-neutral-400 text-sm">Equilibrar tempo de recovery e espaço</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-purple-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: RMAN</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+        <span>Próximo: Recovery</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 3: Admin Avançado - Tópico 2</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

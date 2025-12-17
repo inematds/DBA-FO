@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RMAN - Recovery Manager | Trilha 3 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/30">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-purple-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-purple-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 3</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 1</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-purple-400">1</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">RMAN - Recovery Manager</h1>
+          <p class="text-neutral-400">Conceitos, configuração, catálogo, canais e tipos de backup</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é RMAN?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-purple-400">RMAN (Recovery Manager)</strong> é a ferramenta oficial da Oracle para
+          realizar backup e recuperação de bancos de dados. Introduzido no Oracle 8, evoluiu para ser a solução
+          mais robusta e recomendada, superando backups tradicionais de sistema operacional.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          RMAN opera diretamente no nível de bloco de dados, não no nível de arquivo do SO. Isso permite
+          funcionalidades avançadas como backup incremental, compressão, criptografia, validação de blocos
+          corrompidos e paralelização automática.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Características Principais:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Backup Incremental:</strong> Copia apenas blocos alterados desde último backup</li>
+            <li><strong>Compressão Nativa:</strong> Reduz espaço necessário (até 10x em alguns casos)</li>
+            <li><strong>Criptografia TDE:</strong> Protege backups com Advanced Security Option</li>
+            <li><strong>Block Change Tracking:</strong> Otimiza performance de backups incrementais</li>
+            <li><strong>Validação:</strong> Detecta blocos corrompidos durante backup</li>
+            <li><strong>Paralelização:</strong> Múltiplos canais para backup/restore simultâneos</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Arquitetura do RMAN</h3>
+
+        <div class="space-y-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">RMAN Client</h4>
+            <p class="text-neutral-300 text-sm">
+              Interface de linha de comando que envia comandos para o target database.
+              Pode ser executado de qualquer máquina com Oracle Client instalado.
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Target Database</h4>
+            <p class="text-neutral-300 text-sm">
+              Banco de dados sendo backed up ou restored. RMAN cria sessões server-side
+              que executam as operações de backup/recovery.
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Repository (Control File ou Catalog)</h4>
+            <p class="text-neutral-300 text-sm">
+              <strong>Control File:</strong> Armazena metadados de backup (padrão, limitado em histórico).<br>
+              <strong>Recovery Catalog:</strong> Banco separado para metadados (recomendado para ambientes grandes).
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Media Manager (MML)</h4>
+            <p class="text-neutral-300 text-sm">
+              Biblioteca de terceiros para integração com storage em fita (tape libraries).
+              Exemplos: Oracle Secure Backup, NetBackup, TSM, CommVault.
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Fast Recovery Area (FRA)</h4>
+            <p class="text-neutral-300 text-sm">
+              Área de disco gerenciada pela Oracle para armazenar backups, archived logs,
+              flashback logs e control file copies. Simplifica gerenciamento de espaço.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Control File vs Recovery Catalog</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-purple-900/30">
+                <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Aspecto</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Control File</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Recovery Catalog</th>
+              </tr>
+            </thead>
+            <tbody class="text-neutral-300 text-sm">
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Configuração</td>
+                <td class="border border-dark-600 px-4 py-2">Automática (padrão)</td>
+                <td class="border border-dark-600 px-4 py-2">Requer criação manual</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Histórico</td>
+                <td class="border border-dark-600 px-4 py-2">Limitado (dias/meses)</td>
+                <td class="border border-dark-600 px-4 py-2">Ilimitado</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Múltiplos Bancos</td>
+                <td class="border border-dark-600 px-4 py-2">Não</td>
+                <td class="border border-dark-600 px-4 py-2">Sim (centralizado)</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Scripts Armazenados</td>
+                <td class="border border-dark-600 px-4 py-2">Não</td>
+                <td class="border border-dark-600 px-4 py-2">Sim</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Relatórios</td>
+                <td class="border border-dark-600 px-4 py-2">Básicos</td>
+                <td class="border border-dark-600 px-4 py-2">Avançados</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2 font-semibold">Recomendado Para</td>
+                <td class="border border-dark-600 px-4 py-2">Ambientes pequenos</td>
+                <td class="border border-dark-600 px-4 py-2">Ambientes enterprise</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Configurando o RMAN</h3>
+
+        <p class="text-neutral-300 mb-4">
+          Configuração inicial do RMAN com Fast Recovery Area:
+        </p>
+
+        <pre><code class="language-sql">-- Configurar Fast Recovery Area (FRA)
+ALTER SYSTEM SET DB_RECOVERY_FILE_DEST_SIZE = 100G SCOPE=BOTH;
+ALTER SYSTEM SET DB_RECOVERY_FILE_DEST = '/u01/app/oracle/fra' SCOPE=BOTH;
+
+-- Habilitar controle de alterações de blocos (otimiza backups incrementais)
+ALTER DATABASE ENABLE BLOCK CHANGE TRACKING USING FILE '/u01/app/oracle/block_change_tracking.f';
+
+-- Configurar retenção de backup (7 dias)
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
+
+-- Configurar compressão (requer Advanced Compression)
+CONFIGURE COMPRESSION ALGORITHM 'MEDIUM';
+
+-- Configurar backup de control file e spfile automático
+CONFIGURE CONTROLFILE AUTOBACKUP ON;
+CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/backup/ctrl_%F';
+
+-- Configurar paralelização (4 canais)
+CONFIGURE DEVICE TYPE DISK PARALLELISM 4;
+CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '/backup/db_%U';
+
+-- Excluir tablespaces de backup (ex: temporários)
+CONFIGURE EXCLUDE FOR TABLESPACE temp;
+CONFIGURE EXCLUDE FOR TABLESPACE temp01;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Conectando ao RMAN</h3>
+
+        <pre><code class="language-bash"># Conexão simples (usando control file)
+rman TARGET /
+
+# Conexão com usuário específico
+rman TARGET sys/senha@ORCL
+
+# Conexão com catálogo
+rman TARGET sys/senha@ORCL CATALOG rman/rman@RMANCAT
+
+# Executar comando único
+rman TARGET / <<EOF
+BACKUP DATABASE PLUS ARCHIVELOG;
+EXIT;
+EOF</code></pre>
+
+        <p class="text-neutral-300 mt-4 mb-4">Comandos básicos do RMAN:</p>
+
+        <pre><code class="language-sql">-- Verificar configuração
+SHOW ALL;
+
+-- Listar backups
+LIST BACKUP SUMMARY;
+LIST BACKUP OF DATABASE;
+LIST ARCHIVELOG ALL;
+
+-- Validar backups (sem restaurar)
+VALIDATE BACKUPSET 123;
+RESTORE DATABASE VALIDATE;
+
+-- Relatórios
+REPORT NEED BACKUP DAYS 7;
+REPORT OBSOLETE;
+REPORT SCHEMA;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando Recovery Catalog</h3>
+
+        <pre><code class="language-sql">-- No banco que será catálogo (banco separado)
+CREATE TABLESPACE rman_tbs DATAFILE '/u01/app/oracle/oradata/rmancat/rman01.dbf' SIZE 500M AUTOEXTEND ON;
+CREATE USER rman IDENTIFIED BY senha DEFAULT TABLESPACE rman_tbs QUOTA UNLIMITED ON rman_tbs;
+GRANT RECOVERY_CATALOG_OWNER TO rman;
+
+-- Criar o catálogo
+rman CATALOG rman/senha@RMANCAT
+RMAN> CREATE CATALOG;
+
+-- Registrar banco de dados no catálogo
+rman TARGET sys/senha@ORCL CATALOG rman/senha@RMANCAT
+RMAN> REGISTER DATABASE;
+
+-- Sincronizar catálogo (executar periodicamente)
+RMAN> RESYNC CATALOG;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de Backup com RMAN</h3>
+
+        <pre><code class="language-sql">-- Backup full database (com archivelogs)
+BACKUP DATABASE PLUS ARCHIVELOG DELETE INPUT;
+
+-- Backup incremental level 0 (base)
+BACKUP INCREMENTAL LEVEL 0 DATABASE;
+
+-- Backup incremental level 1 (diferencial - desde último level 1 ou 0)
+BACKUP INCREMENTAL LEVEL 1 DATABASE;
+
+-- Backup incremental level 1 cumulativo (desde último level 0)
+BACKUP INCREMENTAL LEVEL 1 CUMULATIVE DATABASE;
+
+-- Backup de tablespace específica
+BACKUP TABLESPACE users, tools;
+
+-- Backup de datafile específico
+BACKUP DATAFILE 4,5,6;
+
+-- Backup de archivelogs
+BACKUP ARCHIVELOG ALL DELETE INPUT;
+BACKUP ARCHIVELOG FROM TIME 'SYSDATE-1';
+
+-- Backup com compressão
+BACKUP AS COMPRESSED BACKUPSET DATABASE;
+
+-- Backup para múltiplos destinos (duplexing)
+BACKUP COPIES 2 DATABASE;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciando Backups</h3>
+
+        <pre><code class="language-sql">-- Listar backups obsoletos (fora da retention policy)
+REPORT OBSOLETE;
+
+-- Deletar backups obsoletos
+DELETE OBSOLETE;
+
+-- Deletar backup específico
+DELETE BACKUPSET 123;
+
+-- Crosscheck (verificar se backups ainda existem no disco/fita)
+CROSSCHECK BACKUP;
+CROSSCHECK ARCHIVELOG ALL;
+
+-- Deletar backups expirados (que falharam no crosscheck)
+DELETE EXPIRED BACKUP;
+DELETE EXPIRED ARCHIVELOG ALL;
+
+-- Validar integridade do banco
+VALIDATE DATABASE;
+
+-- Validar blocos corrompidos
+BACKUP VALIDATE CHECK LOGICAL DATABASE;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Competências Adquiridas</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar RMAN</h4>
+                <p class="text-neutral-400 text-sm">Definir FRA, retention policy, compressão e canais</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar Catálogo</h4>
+                <p class="text-neutral-400 text-sm">Criar, registrar e sincronizar recovery catalog</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Executar Backups</h4>
+                <p class="text-neutral-400 text-sm">Full, incremental, tablespace, archivelog</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Otimizar Performance</h4>
+                <p class="text-neutral-400 text-sm">Paralelização, block change tracking, compressão</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Validar e Manter</h4>
+                <p class="text-neutral-400 text-sm">Crosscheck, delete obsolete, validate backups</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-purple-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Troubleshooting</h4>
+                <p class="text-neutral-400 text-sm">Diagnosticar falhas de backup e recovery</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 rounded-xl border border-purple-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="index.html" class="flex items-center gap-2 text-neutral-400 hover:text-purple-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Voltar ao Índice</span>
+      </a>
+      <a href="topico-2.html" class="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+        <span>Próximo: Estratégias de Backup</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 3: Admin Avançado - Tópico 1</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

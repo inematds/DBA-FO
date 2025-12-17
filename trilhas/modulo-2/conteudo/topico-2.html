@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalação do Oracle Database | Trilha 2 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/shell.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-cyan-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-cyan-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 2</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-cyan-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Instalação do Oracle Database</h1>
+          <p class="text-neutral-400">Pré-requisitos, OUI, silent install, pós-instalação</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Pré-requisitos -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📋</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Pré-requisitos para Instalação</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Requisitos de Sistema</h3>
+        <p class="text-neutral-300 mb-4">
+          Antes de iniciar a instalação do Oracle Database, é essencial verificar se o sistema atende aos
+          requisitos mínimos de hardware e software. A falta de algum pré-requisito pode causar falhas
+          durante ou após a instalação.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-cyan-900/20 p-4 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">Hardware Mínimo</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-2">
+              <li><strong>RAM:</strong> 2 GB (recomendado 4 GB+)</li>
+              <li><strong>SWAP:</strong> Igual ou maior que a RAM</li>
+              <li><strong>Disco:</strong> 10 GB para software + espaço para dados</li>
+              <li><strong>Resolução:</strong> Mínimo 1024x768 para interface gráfica</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">Software (Linux)</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-2">
+              <li><strong>SO:</strong> Oracle Linux, Red Hat, CentOS, SUSE</li>
+              <li><strong>Kernel:</strong> Versão compatível com a versão Oracle</li>
+              <li><strong>Pacotes:</strong> binutils, glibc, make, gcc, libaio</li>
+              <li><strong>X11:</strong> Para instalação gráfica</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Verificação de Pré-requisitos (Linux)</h4>
+          <pre><code class="language-shell"># Verificar memória RAM
+free -g
+
+# Verificar espaço em disco
+df -h
+
+# Verificar espaço de SWAP
+swapon -s
+
+# Verificar versão do kernel
+uname -r
+
+# Verificar pacotes instalados (Red Hat/CentOS)
+rpm -q binutils glibc make gcc libaio
+
+# Ou em Debian/Ubuntu
+dpkg -l | grep -E "binutils|libc6|make|gcc|libaio"</code></pre>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Preparação do Ambiente (Linux)</h3>
+        <p class="text-neutral-300 mb-4">
+          O Oracle requer configuração específica de usuários, grupos e parâmetros do kernel.
+        </p>
+
+        <pre><code class="language-shell"># 1. Criar grupos e usuário Oracle (como root)
+groupadd -g 54321 oinstall
+groupadd -g 54322 dba
+groupadd -g 54323 oper
+useradd -u 54321 -g oinstall -G dba,oper oracle
+
+# 2. Definir senha para o usuário oracle
+passwd oracle
+
+# 3. Criar estrutura de diretórios
+mkdir -p /u01/app/oracle/product/19.0.0/dbhome_1
+mkdir -p /u02/oradata
+chown -R oracle:oinstall /u01 /u02
+chmod -R 775 /u01 /u02
+
+# 4. Configurar parâmetros do kernel (adicionar ao /etc/sysctl.conf)
+cat >> /etc/sysctl.conf <<EOF
+fs.file-max = 6815744
+kernel.sem = 250 32000 100 128
+kernel.shmmni = 4096
+kernel.shmall = 1073741824
+kernel.shmmax = 4398046511104
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048576
+EOF
+
+# Aplicar configurações
+sysctl -p
+
+# 5. Configurar limites de recursos (/etc/security/limits.conf)
+cat >> /etc/security/limits.conf <<EOF
+oracle   soft   nproc    2047
+oracle   hard   nproc    16384
+oracle   soft   nofile   1024
+oracle   hard   nofile   65536
+oracle   soft   stack    10240
+oracle   hard   stack    32768
+EOF</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 2: Oracle Universal Installer (OUI) -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🖥️</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Instalação com Oracle Universal Installer (OUI)</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Instalação Gráfica</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-purple-400">Oracle Universal Installer (OUI)</strong> é uma ferramenta gráfica
+          que guia você através do processo de instalação. É a forma mais comum e amigável de instalar o Oracle.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Passos da Instalação Gráfica:</h4>
+          <ol class="list-decimal list-inside text-neutral-300 space-y-2">
+            <li>Baixar o software do site da Oracle (oracle.com/downloads)</li>
+            <li>Descompactar o arquivo ZIP</li>
+            <li>Executar o instalador como usuário oracle</li>
+            <li>Seguir o assistente de instalação</li>
+            <li>Executar scripts root quando solicitado</li>
+          </ol>
+        </div>
+
+        <pre><code class="language-shell"># 1. Fazer download do Oracle Database 19c (exemplo)
+# Baixe manualmente de oracle.com/downloads ou use wget com autenticação
+
+# 2. Descompactar (como usuário oracle)
+su - oracle
+cd /u01/app/oracle/product/19.0.0/dbhome_1
+unzip /tmp/LINUX.X64_193000_db_home.zip
+
+# 3. Configurar variáveis de ambiente
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+export ORACLE_BASE=/u01/app/oracle
+
+# 4. Iniciar o OUI
+cd $ORACLE_HOME
+./runInstaller
+
+# Em outro terminal (como root) quando solicitado:
+# /u01/app/oraInventory/orainstRoot.sh
+# /u01/app/oracle/product/19.0.0/dbhome_1/root.sh</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Opções de Instalação no OUI</h3>
+
+        <div class="space-y-3">
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">1. Configuração de Instalação</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm">
+              <li><strong>Create and configure a single instance database:</strong> Instala software + cria database</li>
+              <li><strong>Install database software only:</strong> Apenas instala o software (recomendado)</li>
+              <li><strong>Upgrade an existing database:</strong> Para atualizar versão anterior</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">2. Classe de Sistema</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm">
+              <li><strong>Server Class:</strong> Para servidores de produção (mais opções)</li>
+              <li><strong>Desktop Class:</strong> Para ambientes de desenvolvimento (configuração simplificada)</li>
+            </ul>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">3. Edição do Banco</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm">
+              <li><strong>Enterprise Edition:</strong> Todos os recursos (licença paga)</li>
+              <li><strong>Standard Edition 2:</strong> Recursos básicos (licença paga)</li>
+              <li><strong>Express Edition:</strong> Gratuita, limitada (11g XE: 11 GB, 18c XE: 12 GB, 1 GB RAM)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Silent Install -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🤖</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Instalação Silenciosa (Silent Install)</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Instalação Não Interativa</h3>
+        <p class="text-neutral-300 mb-4">
+          A instalação silenciosa permite instalar o Oracle sem interface gráfica, usando um arquivo de resposta (response file).
+          É ideal para automação, instalações em massa ou servidores sem X11.
+        </p>
+
+        <div class="bg-orange-900/20 rounded-lg p-4 border border-orange-500/30 mb-4">
+          <h4 class="font-semibold text-orange-400 mb-2">Vantagens da Instalação Silenciosa:</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>Não requer interface gráfica (X11)</li>
+            <li>Automatizável via scripts</li>
+            <li>Instalação consistente em múltiplos servidores</li>
+            <li>Pode ser executada remotamente via SSH</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-shell"># 1. Copiar template do response file
+cd $ORACLE_HOME/install/response
+cp db_install.rsp /tmp/my_install.rsp
+
+# 2. Editar o response file (principais parâmetros)
+vi /tmp/my_install.rsp
+
+# Parâmetros importantes:
+# oracle.install.option=INSTALL_DB_SWONLY
+# UNIX_GROUP_NAME=oinstall
+# INVENTORY_LOCATION=/u01/app/oraInventory
+# ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+# ORACLE_BASE=/u01/app/oracle
+# oracle.install.db.InstallEdition=EE
+# oracle.install.db.OSDBA_GROUP=dba
+# oracle.install.db.OSOPER_GROUP=oper
+# oracle.install.db.OSBACKUPDBA_GROUP=dba
+# oracle.install.db.OSDGDBA_GROUP=dba
+# oracle.install.db.OSKMDBA_GROUP=dba
+# oracle.install.db.OSRACDBA_GROUP=dba
+
+# 3. Executar instalação silenciosa
+./runInstaller -silent -responseFile /tmp/my_install.rsp \
+  -ignorePrereq
+
+# 4. Monitorar o log
+tail -f $ORACLE_BASE/oraInventory/logs/installActions*.log
+
+# 5. Executar scripts root quando a instalação terminar
+# Como root:
+/u01/app/oraInventory/orainstRoot.sh
+/u01/app/oracle/product/19.0.0/dbhome_1/root.sh</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Response File Mínimo</h3>
+        <p class="text-neutral-300 mb-4">
+          Exemplo de um response file simplificado para instalação silenciosa:
+        </p>
+
+        <pre><code class="language-shell">####################################################################
+## Copyright(c) Oracle Corporation 1998,2019. All rights reserved.##
+##                                                                ##
+## Specify values for the variables listed below to customize    ##
+## your installation.                                             ##
+####################################################################
+
+# Tipo de instalação
+oracle.install.option=INSTALL_DB_SWONLY
+
+# Grupo Unix
+UNIX_GROUP_NAME=oinstall
+
+# Localização do inventário
+INVENTORY_LOCATION=/u01/app/oraInventory
+
+# Oracle Home
+ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+
+# Oracle Base
+ORACLE_BASE=/u01/app/oracle
+
+# Edição do banco de dados
+oracle.install.db.InstallEdition=EE
+
+# Grupos DBA
+oracle.install.db.OSDBA_GROUP=dba
+oracle.install.db.OSOPER_GROUP=oper
+oracle.install.db.OSBACKUPDBA_GROUP=dba
+oracle.install.db.OSDGDBA_GROUP=dba
+oracle.install.db.OSKMDBA_GROUP=dba
+oracle.install.db.OSRACDBA_GROUP=dba
+
+# Não configurar Security Updates
+SECURITY_UPDATES_VIA_MYORACLESUPPORT=false
+DECLINE_SECURITY_UPDATES=true</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 4: Pós-Instalação -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Tarefas Pós-Instalação</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Configuração do Ambiente</h3>
+        <p class="text-neutral-300 mb-4">
+          Após instalar o software Oracle, é necessário configurar variáveis de ambiente e criar o banco de dados.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Variáveis de Ambiente Essenciais</h4>
+          <pre><code class="language-shell"># Adicionar ao ~/.bash_profile do usuário oracle
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+export ORACLE_SID=ORCL
+export PATH=$ORACLE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+
+# Recarregar o profile
+source ~/.bash_profile
+
+# Verificar configuração
+echo $ORACLE_HOME
+which sqlplus</code></pre>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Verificação da Instalação</h3>
+
+        <pre><code class="language-shell"># 1. Verificar versão instalada
+$ORACLE_HOME/OPatch/opatch lsinventory
+
+# 2. Verificar binários principais
+ls -lh $ORACLE_HOME/bin/oracle
+ls -lh $ORACLE_HOME/bin/sqlplus
+
+# 3. Verificar listener (se instalado)
+lsnrctl status
+
+# 4. Verificar Oracle Inventory
+cat /u01/app/oraInventory/ContentsXML/inventory.xml
+
+# 5. Validar instalação
+cd $ORACLE_HOME/rdbms/admin
+sqlplus / as sysdba
+-- Executar no SQL*Plus:
+SELECT * FROM V$VERSION;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Configurar Listener</h3>
+        <p class="text-neutral-300 mb-4">
+          O Oracle Listener é necessário para conexões remotas ao banco de dados.
+        </p>
+
+        <pre><code class="language-shell"># Criar listener com configuração padrão
+netca
+
+# Ou criar manualmente o arquivo listener.ora
+cat > $ORACLE_HOME/network/admin/listener.ora <<EOF
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+    )
+  )
+
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (GLOBAL_DBNAME = ORCL)
+      (ORACLE_HOME = /u01/app/oracle/product/19.0.0/dbhome_1)
+      (SID_NAME = ORCL)
+    )
+  )
+EOF
+
+# Iniciar o listener
+lsnrctl start
+
+# Verificar status
+lsnrctl status
+
+# Configurar para iniciar automaticamente (systemd)
+cat > /etc/systemd/system/oracle-listener.service <<EOF
+[Unit]
+Description=Oracle Net Listener
+After=network.target
+
+[Service]
+Type=forking
+User=oracle
+Group=oinstall
+ExecStart=/u01/app/oracle/product/19.0.0/dbhome_1/bin/lsnrctl start
+ExecStop=/u01/app/oracle/product/19.0.0/dbhome_1/bin/lsnrctl stop
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable oracle-listener
+systemctl start oracle-listener</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🎯</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Verificar pré-requisitos</h4>
+                <p class="text-neutral-400 text-sm">Hardware, software, kernel parameters, usuários e grupos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Instalar com OUI</h4>
+                <p class="text-neutral-400 text-sm">Executar instalação gráfica e compreender as opções</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Instalação silenciosa</h4>
+                <p class="text-neutral-400 text-sm">Criar e usar response files para automação</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar ambiente</h4>
+                <p class="text-neutral-400 text-sm">Definir variáveis ORACLE_HOME, ORACLE_BASE, ORACLE_SID</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar listener</h4>
+                <p class="text-neutral-400 text-sm">Criar listener.ora e gerenciar com lsnrctl</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Validar instalação</h4>
+                <p class="text-neutral-400 text-sm">Verificar binários, inventário e conectividade</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl border border-cyan-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Arquitetura Oracle</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+        <span>Próximo: Criando Database com DBCA</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 2: Administração Básica Oracle - Tópico 2</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

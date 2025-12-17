@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recovery e Restauração | Trilha 3 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#C74634',dark:{900:'#0f172a',800:'#1e293b',700:'#334155',600:'#475569'}}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>body{font-family:'Inter',sans-serif}.dark body{background-color:#0f172a}pre code{border-radius:.5rem}.hljs{background:#1e293b!important;padding:1.5rem!important}</style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex justify-between items-center">
+      <a href="../../../index.html" class="flex items-center space-x-3">
+        <span class="text-2xl">🗄️</span>
+        <span class="text-xl font-bold text-primary">Oracle DBA</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-r from-purple-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-purple-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Recovery e Restauração</h1>
+          <p class="text-neutral-400">RESTORE/RECOVER, point-in-time recovery, flashback, incomplete recovery</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">📖</span></div>
+        <h2 class="text-xl font-bold text-purple-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Conceitos de Recovery</h3>
+        <div class="space-y-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">RESTORE</h4>
+            <p class="text-neutral-300 text-sm">Copia arquivos de backup de volta para seus locais originais ou novos. Não deixa o banco consistente.</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">RECOVER</h4>
+            <p class="text-neutral-300 text-sm">Aplica redo logs (online e archived) para tornar os datafiles consistentes com um ponto no tempo.</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Complete Recovery</h4>
+            <p class="text-neutral-300 text-sm">Recupera banco até última transação committed disponível. Sem perda de dados.</p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Incomplete Recovery (PITR)</h4>
+            <p class="text-neutral-300 text-sm">Recupera até ponto específico no passado. Requer RESETLOGS após recovery. Perde dados após o ponto escolhido.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Flashback Technologies</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead><tr class="bg-purple-900/30">
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Tecnologia</th>
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Uso</th>
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Requisito</th>
+            </tr></thead>
+            <tbody class="text-neutral-300">
+              <tr><td class="border border-dark-600 px-4 py-2 font-semibold">Flashback Query</td>
+              <td class="border border-dark-600 px-4 py-2">Consultar dados em ponto anterior</td>
+              <td class="border border-dark-600 px-4 py-2">UNDO retention</td></tr>
+              <tr class="bg-dark-700/50"><td class="border border-dark-600 px-4 py-2 font-semibold">Flashback Table</td>
+              <td class="border border-dark-600 px-4 py-2">Reverter tabela inteira</td>
+              <td class="border border-dark-600 px-4 py-2">Row movement ON</td></tr>
+              <tr><td class="border border-dark-600 px-4 py-2 font-semibold">Flashback Drop</td>
+              <td class="border border-dark-600 px-4 py-2">Recuperar tabela DROPpada</td>
+              <td class="border border-dark-600 px-4 py-2">Recycle Bin</td></tr>
+              <tr class="bg-dark-700/50"><td class="border border-dark-600 px-4 py-2 font-semibold">Flashback Database</td>
+              <td class="border border-dark-600 px-4 py-2">Reverter banco inteiro</td>
+              <td class="border border-dark-600 px-4 py-2">FRA + Flashback ON</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">🛠️</span></div>
+        <h2 class="text-xl font-bold text-emerald-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Complete Recovery</h3>
+        <pre><code class="language-sql">-- Perda de datafile (mas controlfile e redo logs intactos)
+-- 1. Identificar datafiles perdidos
+SELECT FILE#, NAME, STATUS FROM V$DATAFILE WHERE STATUS = 'OFFLINE';
+
+-- 2. Banco em MOUNT (se necessário offline do datafile)
+ALTER DATABASE DATAFILE 4 OFFLINE;
+
+-- 3. Restore e Recover
+RMAN TARGET /
+RUN {
+  RESTORE DATAFILE 4;
+  RECOVER DATAFILE 4;
+}
+
+-- 4. Trazer datafile online
+ALTER DATABASE DATAFILE 4 ONLINE;
+
+-- Recovery de banco inteiro
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+RESTORE DATABASE;
+RECOVER DATABASE;
+ALTER DATABASE OPEN;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Point-in-Time Recovery (PITR)</h3>
+        <pre><code class="language-sql">-- Cenário: DROP TABLE acidental às 14:30, queremos voltar para 14:25
+-- IMPORTANTE: PITR perde todas transações após o ponto escolhido!
+
+-- 1. Shutdown e mount
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+
+-- 2. Restore e recover até ponto específico
+RMAN TARGET /
+RUN {
+  SET UNTIL TIME "TO_DATE('17/12/2025 14:25:00', 'DD/MM/YYYY HH24:MI:SS')";
+  RESTORE DATABASE;
+  RECOVER DATABASE;
+}
+
+-- 3. Abrir com RESETLOGS (cria nova incarnation)
+ALTER DATABASE OPEN RESETLOGS;
+
+-- Alternativas para SET UNTIL:
+-- SET UNTIL SCN 2547893;
+-- SET UNTIL SEQUENCE 1234 THREAD 1;
+-- SET UNTIL RESTORE POINT before_mistake;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Flashback Database</h3>
+        <pre><code class="language-sql">-- Habilitar Flashback Database
+ALTER DATABASE FLASHBACK ON;
+
+-- Criar guaranteed restore point (não expira)
+CREATE RESTORE POINT before_upgrade GUARANTEE FLASHBACK DATABASE;
+
+-- Flashback database para restore point
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+FLASHBACK DATABASE TO RESTORE POINT before_upgrade;
+ALTER DATABASE OPEN RESETLOGS;
+
+-- Flashback para timestamp
+FLASHBACK DATABASE TO TIMESTAMP (SYSTIMESTAMP - INTERVAL '2' HOUR);
+
+-- Verificar janela de flashback disponível
+SELECT OLDEST_FLASHBACK_SCN, OLDEST_FLASHBACK_TIME 
+FROM V$FLASHBACK_DATABASE_LOG;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Flashback Table</h3>
+        <pre><code class="language-sql">-- Habilitar row movement (necessário)
+ALTER TABLE employees ENABLE ROW MOVEMENT;
+
+-- Flashback table para 1 hora atrás
+FLASHBACK TABLE employees TO TIMESTAMP (SYSTIMESTAMP - INTERVAL '1' HOUR);
+
+-- Flashback múltiplas tabelas
+FLASHBACK TABLE employees, departments TO TIMESTAMP 
+  TO_TIMESTAMP('17/12/2025 10:00:00', 'DD/MM/YYYY HH24:MI:SS');
+
+-- Recuperar tabela DROPpada (Flashback Drop)
+SHOW RECYCLEBIN;
+FLASHBACK TABLE employees TO BEFORE DROP;
+
+-- Purgar recyclebin
+PURGE RECYCLEBIN;
+PURGE TABLE employees;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Block Media Recovery</h3>
+        <pre><code class="language-sql">-- Recovery de blocos corrompidos específicos (mais rápido que datafile inteiro)
+-- Identificar blocos corrompidos
+SELECT FILE#, BLOCK#, CORRUPTION_TYPE FROM V$DATABASE_BLOCK_CORRUPTION;
+
+-- Recover blocos específicos
+RMAN TARGET /
+BLOCKRECOVER DATAFILE 5 BLOCK 234, 456, 789;
+
+-- Recover com restore point
+BLOCKRECOVER DATAFILE 5 BLOCK 234 
+  FROM BACKUPSET 
+  RESTORE UNTIL RESTORE POINT before_issue;</code></pre>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">✅</span></div>
+        <h2 class="text-xl font-bold text-cyan-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Complete Recovery</h4>
+              <p class="text-neutral-400 text-sm">Restaurar banco até última transação</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">PITR</h4>
+              <p class="text-neutral-400 text-sm">Point-in-time recovery preciso</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Flashback</h4>
+              <p class="text-neutral-400 text-sm">Recovery rápido sem restore</p></div></div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Block Recovery</h4>
+              <p class="text-neutral-400 text-sm">Reparar blocos corrompidos</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Troubleshooting</h4>
+              <p class="text-neutral-400 text-sm">Diagnosticar falhas de recovery</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Teste Regular</h4>
+              <p class="text-neutral-400 text-sm">Validar procedimentos de recovery</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-purple-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span>Anterior</span></a>
+      <a href="topico-4.html" class="flex items-center gap-2 text-purple-400 hover:text-purple-300">
+        <span>Próximo</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 3 - Tópico 3</p>
+    </div>
+  </footer>
+
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

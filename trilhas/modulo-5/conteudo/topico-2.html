@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASM - Automatic Storage Management | Trilha 5 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-red-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-red-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 5</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-red-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">ASM - Automatic Storage Management</h1>
+          <p class="text-neutral-400">Disk groups, redundância, rebalanceamento e administração ASM</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-red-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é ASM?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-red-400">Automatic Storage Management (ASM)</strong> é um gerenciador integrado de volumes
+          e sistema de arquivos projetado especificamente para bancos de dados Oracle. Ele simplifica o gerenciamento de storage,
+          eliminando a necessidade de ferramentas externas como LVM ou filesystem tradicionais.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          ASM distribui dados automaticamente através de discos (striping), fornece redundância integrada e realiza
+          rebalanceamento automático quando discos são adicionados ou removidos, tudo sem downtime do banco de dados.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Conceitos Fundamentais:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>ASM Instance:</strong> Instância especial (+ASM) que gerencia disk groups</li>
+            <li><strong>Disk Group:</strong> Pool lógico de discos físicos que armazena dados</li>
+            <li><strong>ASM Disk:</strong> Dispositivo de storage individual gerenciado pelo ASM</li>
+            <li><strong>Failure Group:</strong> Conjunto de discos que compartilham ponto único de falha</li>
+            <li><strong>Allocation Unit (AU):</strong> Unidade básica de alocação (1MB, 2MB, 4MB, 8MB, 16MB, 32MB ou 64MB)</li>
+            <li><strong>Extent:</strong> Uma ou mais AUs contíguas alocadas para um arquivo</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Níveis de Redundância ASM</h3>
+
+        <div class="space-y-4">
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">EXTERNAL Redundancy</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Sem redundância gerenciada pelo ASM. Use quando o storage já possui proteção (RAID de hardware, SAN com replicação).
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm space-y-1">
+              <li>Apenas 1 cópia dos dados mantida</li>
+              <li>Máxima capacidade utilizável (100% do espaço)</li>
+              <li>Melhor performance (sem overhead de espelhamento)</li>
+              <li>Proteção dependente do storage externo</li>
+            </ul>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">NORMAL Redundancy (Espelhamento 2-way)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              ASM mantém 2 cópias de cada bloco de dados em failure groups diferentes. Padrão recomendado.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm space-y-1">
+              <li>Tolera falha de 1 failure group</li>
+              <li>50% de capacidade utilizável</li>
+              <li>Balanceamento ideal entre proteção e espaço</li>
+              <li>Requer mínimo 2 failure groups</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">HIGH Redundancy (Espelhamento 3-way)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              ASM mantém 3 cópias de cada bloco. Máxima proteção para ambientes críticos.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm space-y-1">
+              <li>Tolera falha de 2 failure groups simultaneamente</li>
+              <li>33% de capacidade utilizável</li>
+              <li>Proteção máxima contra perda de dados</li>
+              <li>Requer mínimo 3 failure groups</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Arquitetura ASM</h3>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <pre class="text-neutral-300 text-sm">
+┌─────────────────────────────────────────────────────┐
+│              Oracle Database Instance               │
+│   Processos conectam-se ao ASM via ASMB process    │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────┴────────────────────────────────┐
+│              +ASM Instance                          │
+│  Processos: RBAL, ARBn, GMON, ASMB                 │
+│  Metadados armazenados em: ASM metadata files      │
+└────────────────────┬────────────────────────────────┘
+                     │
+        ┌────────────┴────────────┬──────────────┐
+        │                         │              │
+   ┌────┴─────┐            ┌─────┴───┐    ┌─────┴───┐
+   │ DG_DATA  │            │ DG_FRA  │    │ DG_REDO │
+   │ NORMAL   │            │ NORMAL  │    │ EXTERNAL│
+   │          │            │         │    │         │
+   │ Disk1    │            │ Disk5   │    │ Disk7   │
+   │ Disk2    │            │ Disk6   │    │ Disk8   │
+   │ Disk3    │            │         │    └─────────┘
+   │ Disk4    │            └─────────┘
+   └──────────┘
+          </pre>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Processos Background ASM</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li><strong>RBAL:</strong> Coordena rebalanceamento</li>
+              <li><strong>ARBn:</strong> Executa rebalanceamento</li>
+              <li><strong>GMON:</strong> Monitora saúde dos disks</li>
+              <li><strong>ASMB:</strong> Comunica com DB instance</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Tipos de Disk Groups</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li><strong>DATA:</strong> Datafiles, control files</li>
+              <li><strong>FRA:</strong> Fast Recovery Area (backups)</li>
+              <li><strong>REDO:</strong> Redo logs (opcional)</li>
+              <li><strong>GRID:</strong> OCR e Voting Disks (RAC)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando Disk Groups</h3>
+
+        <pre><code class="language-sql">-- Descobrir discos disponíveis para ASM
+SELECT path, total_mb, name, header_status
+FROM v$asm_disk
+ORDER BY path;
+
+-- Criar Disk Group com redundância NORMAL
+CREATE DISKGROUP dg_data NORMAL REDUNDANCY
+  FAILGROUP fg1 DISK '/dev/oracleasm/disk1', '/dev/oracleasm/disk2'
+  FAILGROUP fg2 DISK '/dev/oracleasm/disk3', '/dev/oracleasm/disk4'
+  ATTRIBUTE 'compatible.asm' = '19.0',
+            'compatible.rdbms' = '19.0',
+            'au_size' = '4M';
+
+-- Criar Disk Group com redundância EXTERNAL
+CREATE DISKGROUP dg_redo EXTERNAL REDUNDANCY
+  DISK '/dev/oracleasm/disk5', '/dev/oracleasm/disk6'
+  ATTRIBUTE 'compatible.asm' = '19.0',
+            'compatible.rdbms' = '19.0',
+            'au_size' = '1M';
+
+-- Verificar disk groups criados
+SELECT name, state, type, total_mb, free_mb,
+       ROUND((1 - free_mb/total_mb)*100, 2) pct_used
+FROM v$asm_diskgroup;
+
+-- Adicionar disco a disk group existente
+ALTER DISKGROUP dg_data ADD DISK '/dev/oracleasm/disk7';
+
+-- Adicionar disco em failure group específico
+ALTER DISKGROUP dg_data ADD FAILGROUP fg1
+  DISK '/dev/oracleasm/disk8';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Administrando ASM com ASMCMD</h3>
+
+        <pre><code class="language-sql">-- Conectar ao ASMCMD
+$ asmcmd
+ASMCMD>
+
+-- Listar disk groups
+ASMCMD> lsdg
+State    Type    Rebal  Sector  Block       AU  Total_MB  Free_MB  Req_mir_free_MB
+MOUNTED  NORMAL  N         512   4096  4194304    204800   184320            20480
+
+-- Navegar na estrutura ASM (similar ao filesystem)
+ASMCMD> ls
+DATA/
+FRA/
+REDO/
+
+ASMCMD> cd DATA/PRODDB
+ASMCMD> ls -l
+Type  Redund  Striped  Time             Sys  Name
+DATAFILE  UNPROT  COARSE   JAN 15 10:00:00  Y    SYSTEM.256.1234567890
+DATAFILE  UNPROT  COARSE   JAN 15 10:00:00  Y    SYSAUX.257.1234567891
+DATAFILE  UNPROT  COARSE   JAN 15 10:05:00  N    USERS.258.1234567892
+
+-- Ver espaço usado por database
+ASMCMD> du DATA/PRODDB
+Used_MB      Mirror_used_MB
+  51200             102400
+
+-- Copiar arquivo do ASM para filesystem
+ASMCMD> cp DATA/PRODDB/DATAFILE/users.258.1234567892 /backup/users.dbf
+
+-- Remover arquivo ASM
+ASMCMD> rm DATA/PRODDB/TEMPFILE/temp01.dbf
+
+-- Criar alias para arquivo
+ASMCMD> mkalias DATA/PRODDB/DATAFILE/users.258.1234567892 DATA/PRODDB/USERS_DATA
+
+-- Verificar templates de disk group
+ASMCMD> lstmpl -G DATA
+Group_Name  Name          Stripe  Sys  Redund
+DATA        ARCHIVELOG    COARSE  N    MIRROR
+DATA        AUTOBACKUP    COARSE  N    MIRROR
+DATA        DATAFILE      COARSE  Y    MIRROR
+DATA        CONTROLFILE   FINE    Y    HIGH
+DATA        ONLINELOG     FINE    Y    MIRROR
+DATA        TEMPFILE      COARSE  Y    MIRROR</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Rebalanceamento e Gerenciamento de Discos</h3>
+
+        <pre><code class="language-sql">-- Remover disco (triggering rebalance)
+ALTER DISKGROUP dg_data DROP DISK disk3;
+
+-- Remover disco com rebalance controlado (power 2 = mais lento, menos impacto)
+ALTER DISKGROUP dg_data DROP DISK disk3 REBALANCE POWER 2;
+
+-- Monitorar progresso do rebalance
+SELECT group_number, operation, state, power,
+       actual, sofar, est_work, est_rate, est_minutes
+FROM v$asm_operation;
+
+-- Cancelar operação de rebalance
+ALTER DISKGROUP dg_data REBALANCE POWER 0;
+
+-- Rebalancear manualmente após adicionar discos
+ALTER DISKGROUP dg_data REBALANCE POWER 8;
+
+-- Substituir disco defeituoso
+-- 1. Marcar disco como offline
+ALTER DISKGROUP dg_data OFFLINE DISK disk2 TIMEOUT 3600;
+
+-- 2. Substituir disco fisicamente
+
+-- 3. Descobrir novo disco
+ALTER DISKGROUP dg_data CHECK ALL;
+
+-- 4. Adicionar novo disco
+ALTER DISKGROUP dg_data ADD DISK '/dev/oracleasm/disk9';
+
+-- 5. Drop disco antigo
+ALTER DISKGROUP dg_data DROP DISK disk2;
+
+-- Redimensionar disk group (aumentar/diminuir tamanho de discos)
+ALTER DISKGROUP dg_data RESIZE ALL SIZE 500G;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Monitoramento ASM</h3>
+
+        <pre><code class="language-sql">-- Informações gerais dos disk groups
+SELECT name, state, type, total_mb, free_mb,
+       usable_file_mb,
+       ROUND((total_mb - free_mb)/total_mb * 100, 2) pct_used,
+       offline_disks
+FROM v$asm_diskgroup;
+
+-- Estatísticas detalhadas por disco
+SELECT g.name diskgroup,
+       d.path,
+       d.mount_status,
+       d.mode_status,
+       d.state,
+       d.total_mb,
+       d.free_mb,
+       d.reads,
+       d.writes,
+       d.read_time,
+       d.write_time
+FROM v$asm_disk d
+JOIN v$asm_diskgroup g ON d.group_number = g.group_number
+ORDER BY g.name, d.path;
+
+-- Verificar I/O performance por disk
+SELECT g.name diskgroup,
+       d.name disk,
+       d.reads,
+       d.writes,
+       d.read_errs,
+       d.write_errs,
+       ROUND(d.read_time / NULLIF(d.reads, 0), 2) avg_read_ms,
+       ROUND(d.write_time / NULLIF(d.writes, 0), 2) avg_write_ms
+FROM v$asm_disk d
+JOIN v$asm_diskgroup g ON d.group_number = g.group_number
+WHERE d.mount_status = 'CACHED'
+ORDER BY g.name, d.name;
+
+-- Listar todos arquivos ASM e seu tamanho
+SELECT concat('+' || gname, sys_connect_by_path(aname, '/')) full_path,
+       file_type,
+       round(bytes/1024/1024,2) size_mb
+FROM (SELECT g.name gname,
+             a.parent_index pindex,
+             a.name aname,
+             a.reference_index rindex,
+             a.file_type,
+             a.bytes
+      FROM v$asm_file a, v$asm_diskgroup g
+      WHERE g.group_number = a.group_number)
+START WITH pindex = 0
+CONNECT BY PRIOR rindex = pindex;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar disk groups</h4>
+                <p class="text-neutral-400 text-sm">Escolher redundância adequada e configurar failure groups</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar storage</h4>
+                <p class="text-neutral-400 text-sm">Adicionar/remover discos com rebalanceamento online</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar ASMCMD</h4>
+                <p class="text-neutral-400 text-sm">Navegar estrutura ASM e gerenciar arquivos</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Monitorar performance</h4>
+                <p class="text-neutral-400 text-sm">Identificar discos problemáticos e bottlenecks</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Resolver falhas</h4>
+                <p class="text-neutral-400 text-sm">Substituir discos defeituosos sem downtime</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Otimizar layout</h4>
+                <p class="text-neutral-400 text-sm">Planejar disk groups para diferentes workloads</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Best Practices ASM</h3>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Separação de Disk Groups</h4>
+            <p class="text-neutral-300 text-sm">
+              Use disk groups separados para DATA (datafiles), FRA (backups) e REDO (redo logs).
+              Isso isola I/O e facilita gerenciamento independente.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Escolha de AU Size</h4>
+            <p class="text-neutral-300 text-sm">
+              1MB para redo logs (write sequencial), 4MB para datafiles (balanceado), 8MB+ para
+              Data Warehouse (large sequential scans). Não pode ser alterado após criação.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Failure Groups</h4>
+            <p class="text-neutral-300 text-sm">
+              Configure failure groups baseados em pontos únicos de falha físicos: controladores,
+              chassis, power supplies. Evite colocar discos do mesmo hardware no mesmo failure group.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Monitoramento Proativo</h4>
+            <p class="text-neutral-300 text-sm">
+              Monitore espaço livre (alerta em 85%), I/O errors, tempo de rebalance e performance
+              de discos. Configure alertas para disk offline events.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-red-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Oracle RAC</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors">
+        <span>Próximo: Data Guard</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 5: Alta Disponibilidade - Tópico 2</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

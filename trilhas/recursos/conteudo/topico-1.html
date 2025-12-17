@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scripts SQL Essenciais | Recursos | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-amber-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-amber-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Recursos</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 1</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-amber-400">1</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Scripts SQL Essenciais</h1>
+          <p class="text-neutral-400">Scripts de monitoramento, administração e diagnóstico</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Scripts de Monitoramento -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📊</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Scripts de Monitoramento</h2>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Script 1: Uso de Tablespaces -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-amber-400">Uso de Tablespaces</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Monitora o percentual de espaço utilizado em cada tablespace. Use para prevenir problemas de espaço.
+          </p>
+          <pre><code class="language-sql">-- Verifica uso de tablespaces
+SELECT
+    df.tablespace_name,
+    ROUND(df.total_mb, 2) AS total_mb,
+    ROUND(df.total_mb - fs.free_mb, 2) AS used_mb,
+    ROUND(fs.free_mb, 2) AS free_mb,
+    ROUND(((df.total_mb - fs.free_mb) / df.total_mb) * 100, 2) AS pct_used
+FROM
+    (SELECT tablespace_name, SUM(bytes)/1024/1024 AS total_mb
+     FROM dba_data_files
+     GROUP BY tablespace_name) df,
+    (SELECT tablespace_name, SUM(bytes)/1024/1024 AS free_mb
+     FROM dba_free_space
+     GROUP BY tablespace_name) fs
+WHERE df.tablespace_name = fs.tablespace_name
+ORDER BY pct_used DESC;</code></pre>
+        </div>
+
+        <!-- Script 2: Sessões Ativas -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-amber-400">Sessões Ativas</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Lista todas as sessões ativas no banco, mostrando usuário, programa, SQL sendo executado e status.
+          </p>
+          <pre><code class="language-sql">-- Lista sessões ativas com SQL atual
+SELECT
+    s.sid,
+    s.serial#,
+    s.username,
+    s.status,
+    s.machine,
+    s.program,
+    s.logon_time,
+    sq.sql_text
+FROM v$session s
+LEFT JOIN v$sql sq ON s.sql_id = sq.sql_id
+WHERE s.username IS NOT NULL
+  AND s.status = 'ACTIVE'
+ORDER BY s.logon_time DESC;</code></pre>
+        </div>
+
+        <!-- Script 3: Top SQLs por Tempo -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-amber-400">Top SQLs por Tempo de Execução</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Identifica os comandos SQL que consomem mais tempo total de CPU e elapsed time.
+          </p>
+          <pre><code class="language-sql">-- Top 10 SQLs por elapsed time
+SELECT * FROM (
+    SELECT
+        sql_id,
+        executions,
+        ROUND(elapsed_time/1000000, 2) AS elapsed_sec,
+        ROUND(cpu_time/1000000, 2) AS cpu_sec,
+        ROUND(buffer_gets/NULLIF(executions,0), 2) AS gets_per_exec,
+        SUBSTR(sql_text, 1, 100) AS sql_text
+    FROM v$sql
+    WHERE executions > 0
+    ORDER BY elapsed_time DESC
+)
+WHERE ROWNUM <= 10;</code></pre>
+        </div>
+
+        <!-- Script 4: Uso de Memória (SGA/PGA) -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-amber-400">Uso de Memória (SGA/PGA)</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Exibe o uso atual de SGA e PGA, comparando com limites configurados.
+          </p>
+          <pre><code class="language-sql">-- Uso de SGA
+SELECT
+    name,
+    ROUND(value/1024/1024, 2) AS size_mb
+FROM v$sga;
+
+-- Uso de PGA
+SELECT
+    name,
+    ROUND(value/1024/1024, 2) AS size_mb
+FROM v$pgastat
+WHERE name IN ('total PGA inuse', 'total PGA allocated', 'maximum PGA allocated');</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Scripts de Diagnóstico -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔍</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Scripts de Diagnóstico</h2>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Script 5: Identificar Locks -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-cyan-400">Identificar Locks e Bloqueios</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Mostra sessões que estão bloqueando outras e o que está sendo bloqueado.
+          </p>
+          <pre><code class="language-sql">-- Identifica locks e bloqueios
+SELECT
+    l.session_id AS blocking_session,
+    s.username AS blocking_user,
+    s.machine AS blocking_machine,
+    s.program AS blocking_program,
+    l2.session_id AS waiting_session,
+    s2.username AS waiting_user,
+    l.oracle_username,
+    l.os_user_name,
+    o.object_name,
+    DECODE(l.locked_mode,
+        0, 'None',
+        1, 'Null',
+        2, 'Row Share',
+        3, 'Row Exclusive',
+        4, 'Share',
+        5, 'Share Row Exclusive',
+        6, 'Exclusive') AS lock_mode
+FROM v$locked_object l
+JOIN v$session s ON l.session_id = s.sid
+JOIN dba_objects o ON l.object_id = o.object_id
+LEFT JOIN v$lock l2 ON l.session_id = l2.sid
+LEFT JOIN v$session s2 ON l2.id1 = s2.blocking_session
+WHERE s.blocking_session IS NOT NULL;</code></pre>
+        </div>
+
+        <!-- Script 6: Análise de Wait Events -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-cyan-400">Análise de Wait Events</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Top eventos de espera no banco, essencial para troubleshooting de performance.
+          </p>
+          <pre><code class="language-sql">-- Top wait events
+SELECT
+    event,
+    total_waits,
+    ROUND(time_waited/100, 2) AS time_waited_sec,
+    ROUND(average_wait, 2) AS avg_wait_ms,
+    wait_class
+FROM v$system_event
+WHERE wait_class != 'Idle'
+ORDER BY time_waited DESC
+FETCH FIRST 10 ROWS ONLY;</code></pre>
+        </div>
+
+        <!-- Script 7: Objetos Inválidos -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-cyan-400">Objetos Inválidos</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Lista todos os objetos inválidos (procedures, functions, packages, views).
+          </p>
+          <pre><code class="language-sql">-- Verifica objetos inválidos
+SELECT
+    owner,
+    object_type,
+    object_name,
+    status,
+    last_ddl_time
+FROM dba_objects
+WHERE status = 'INVALID'
+  AND owner NOT IN ('SYS', 'SYSTEM', 'XDB', 'MDSYS')
+ORDER BY owner, object_type, object_name;</code></pre>
+        </div>
+
+        <!-- Script 8: Crescimento de Redo Logs -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-cyan-400">Análise de Redo Logs</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Verifica a taxa de geração de redo logs e frequência de switches.
+          </p>
+          <pre><code class="language-sql">-- Switches de redo por hora
+SELECT
+    TO_CHAR(first_time, 'YYYY-MM-DD HH24') AS hour,
+    COUNT(*) AS switches
+FROM v$log_history
+WHERE first_time > SYSDATE - 7
+GROUP BY TO_CHAR(first_time, 'YYYY-MM-DD HH24')
+ORDER BY hour DESC;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Scripts de Administração -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">⚙️</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Scripts de Administração</h2>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Script 9: Informações do Banco -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-purple-400">Informações Gerais do Banco</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Exibe informações básicas do banco: versão, nome, modo de abertura, etc.
+          </p>
+          <pre><code class="language-sql">-- Informações da instância e database
+SELECT
+    instance_name,
+    version,
+    status,
+    database_status,
+    startup_time,
+    host_name
+FROM v$instance;
+
+SELECT
+    name,
+    db_unique_name,
+    dbid,
+    platform_name,
+    log_mode,
+    open_mode,
+    created
+FROM v$database;</code></pre>
+        </div>
+
+        <!-- Script 10: Tamanho do Banco -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-purple-400">Tamanho Total do Banco</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Calcula o tamanho total do banco de dados (datafiles + temp + redo).
+          </p>
+          <pre><code class="language-sql">-- Tamanho total do banco
+SELECT
+    'Datafiles' AS file_type,
+    ROUND(SUM(bytes)/1024/1024/1024, 2) AS size_gb
+FROM dba_data_files
+UNION ALL
+SELECT
+    'Temp Files' AS file_type,
+    ROUND(SUM(bytes)/1024/1024/1024, 2) AS size_gb
+FROM dba_temp_files
+UNION ALL
+SELECT
+    'Redo Logs' AS file_type,
+    ROUND(SUM(bytes)/1024/1024/1024, 2) AS size_gb
+FROM v$log;</code></pre>
+        </div>
+
+        <!-- Script 11: Últimos Backups -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-purple-400">Verificar Últimos Backups</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Lista os backups mais recentes realizados via RMAN.
+          </p>
+          <pre><code class="language-sql">-- Últimos backups RMAN
+SELECT
+    input_type,
+    status,
+    start_time,
+    end_time,
+    ROUND(elapsed_seconds/60, 2) AS elapsed_minutes,
+    ROUND(input_bytes/1024/1024/1024, 2) AS input_gb
+FROM v$rman_backup_job_details
+WHERE start_time > SYSDATE - 7
+ORDER BY start_time DESC;</code></pre>
+        </div>
+
+        <!-- Script 12: Auditoria de Alterações -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="text-lg font-semibold mb-2 text-purple-400">Auditoria de Alterações DDL</h3>
+          <p class="text-neutral-300 text-sm mb-4">
+            Rastreia comandos DDL executados recentemente.
+          </p>
+          <pre><code class="language-sql">-- Auditoria de DDL recentes
+SELECT
+    owner,
+    operation,
+    object_type,
+    object_name,
+    timestamp,
+    sql_text
+FROM dba_ddl_locks
+WHERE owner NOT IN ('SYS', 'SYSTEM')
+ORDER BY timestamp DESC;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dicas de Uso -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">💡</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Dicas de Uso</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Salve os scripts em arquivos .sql</h4>
+              <p class="text-neutral-300 text-sm">Mantenha uma biblioteca organizada de scripts para reutilização rápida.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Use aliases e variáveis</h4>
+              <p class="text-neutral-300 text-sm">Crie scripts parametrizados para maior flexibilidade (ex: aceitar tablespace como parâmetro).</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Agende execução automática</h4>
+              <p class="text-neutral-300 text-sm">Use DBMS_SCHEDULER para executar scripts de monitoramento periodicamente.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Documente suas personalizações</h4>
+              <p class="text-neutral-300 text-sm">Adicione comentários explicando mudanças e casos de uso específicos.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Teste em ambiente de desenvolvimento</h4>
+              <p class="text-neutral-300 text-sm">Sempre teste scripts novos antes de executar em produção.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue explorando</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="index.html" class="flex items-center gap-2 text-neutral-400 hover:text-amber-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Voltar ao Índice</span>
+      </a>
+      <a href="topico-2.html" class="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+        <span>Próximo: Diagramas</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Recursos - Scripts SQL Essenciais</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

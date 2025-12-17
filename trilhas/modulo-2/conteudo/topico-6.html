@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciamento de Tablespaces e Datafiles | Trilha 2 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-cyan-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-cyan-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 2</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 6</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-cyan-400">6</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Gerenciamento de Tablespaces e Datafiles</h1>
+          <p class="text-neutral-400">Criar, expandir, mover tablespaces, OMF, bigfile</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Conceitos -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📚</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Conceitos de Tablespaces e Datafiles</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que são Tablespaces?</h3>
+        <p class="text-neutral-300 mb-4">
+          Um <strong class="text-cyan-400">tablespace</strong> é uma unidade lógica de armazenamento no Oracle Database.
+          É a camada entre os objetos de banco de dados (tabelas, índices) e os arquivos físicos (datafiles).
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Hierarquia de Armazenamento:</h4>
+          <div class="space-y-2 text-neutral-300 text-sm">
+            <div class="flex items-center gap-2">
+              <span class="text-cyan-400">→</span>
+              <strong>Database</strong> (contém múltiplos tablespaces)
+            </div>
+            <div class="flex items-center gap-2 ml-4">
+              <span class="text-purple-400">→</span>
+              <strong>Tablespace</strong> (contém múltiplos datafiles)
+            </div>
+            <div class="flex items-center gap-2 ml-8">
+              <span class="text-orange-400">→</span>
+              <strong>Datafile</strong> (arquivo físico no SO)
+            </div>
+            <div class="flex items-center gap-2 ml-12">
+              <span class="text-emerald-400">→</span>
+              <strong>Segments</strong> (tabela, índice, etc.)
+            </div>
+            <div class="flex items-center gap-2 ml-16">
+              <span class="text-amber-400">→</span>
+              <strong>Extents</strong> (conjunto de blocos contíguos)
+            </div>
+            <div class="flex items-center gap-2 ml-20">
+              <span class="text-red-400">→</span>
+              <strong>Blocks</strong> (menor unidade de I/O)
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-cyan-900/20 p-4 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-2">Tablespace (Lógico)</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Abstração lógica</li>
+              <li>Pode ter múltiplos datafiles</li>
+              <li>Pode crescer adicionando datafiles</li>
+              <li>Unidade de backup/recovery</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-2">Datafile (Físico)</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Arquivo físico no disco</li>
+              <li>Pertence a exatamente um tablespace</li>
+              <li>Pode crescer (AUTOEXTEND)</li>
+              <li>Pode ser movido/renomeado</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Tablespaces Padrão do Oracle</h3>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-2">SYSTEM</h4>
+            <p class="text-neutral-300 text-sm">
+              Contém o dicionário de dados (metadados) do banco. <strong>Essencial</strong> - sem ele o banco não funciona.
+              Nunca armazene dados de usuário aqui.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">SYSAUX</h4>
+            <p class="text-neutral-300 text-sm">
+              Tablespace auxiliar do SYSTEM. Contém componentes como AWR, APEX, Spatial, etc.
+              Reduz a carga no tablespace SYSTEM.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-400 mb-2">USERS</h4>
+            <p class="text-neutral-300 text-sm">
+              Tablespace padrão para objetos de usuários. Pequeno, apenas para propósito de exemplo.
+              Em produção, crie tablespaces específicos por aplicação.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">TEMP</h4>
+            <p class="text-neutral-300 text-sm">
+              Tablespace temporário para operações de ordenação, hash joins, CREATE INDEX, etc.
+              Usa TEMPFILEs (não datafiles) - mais leve, sem redo.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-amber-400 mb-2">UNDOTBS1</h4>
+            <p class="text-neutral-300 text-sm">
+              Armazena informações de undo (desfazer) para rollback de transações e read consistency.
+              Essencial para ACID.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Criando Tablespaces -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">➕</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Criando Tablespaces</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criação Básica</h3>
+
+        <pre><code class="language-sql">-- Criar tablespace simples com um datafile
+CREATE TABLESPACE dados_app
+  DATAFILE '/u02/oradata/ORCL/dados_app01.dbf' SIZE 100M;
+
+-- Criar tablespace com AUTOEXTEND (crescimento automático)
+CREATE TABLESPACE dados_vendas
+  DATAFILE '/u02/oradata/ORCL/vendas01.dbf'
+  SIZE 100M
+  AUTOEXTEND ON
+  NEXT 10M        -- Cresce em incrementos de 10MB
+  MAXSIZE 2G;     -- Tamanho máximo
+
+-- Criar tablespace com múltiplos datafiles
+CREATE TABLESPACE dados_historico
+  DATAFILE '/u02/oradata/ORCL/hist01.dbf' SIZE 500M,
+           '/u03/oradata/ORCL/hist02.dbf' SIZE 500M,
+           '/u04/oradata/ORCL/hist03.dbf' SIZE 500M;
+
+-- Criar tablespace permanente com opções avançadas
+CREATE TABLESPACE dados_producao
+  DATAFILE '/u02/oradata/ORCL/prod01.dbf' SIZE 1G AUTOEXTEND ON
+  EXTENT MANAGEMENT LOCAL        -- Gerenciamento local de extents (padrão)
+  SEGMENT SPACE MANAGEMENT AUTO  -- Gerenciamento automático de espaço (ASSM)
+  DEFAULT COMPRESS FOR OLTP;     -- Compressão OLTP padrão</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tablespace Temporário</h3>
+
+        <pre><code class="language-sql">-- Criar tablespace temporário
+CREATE TEMPORARY TABLESPACE temp2
+  TEMPFILE '/u02/oradata/ORCL/temp02.dbf' SIZE 500M
+  AUTOEXTEND ON
+  NEXT 50M
+  MAXSIZE 2G;
+
+-- Definir como default temp tablespace
+ALTER DATABASE DEFAULT TEMPORARY TABLESPACE temp2;
+
+-- Ver tablespace temporário padrão
+SELECT property_name, property_value
+FROM database_properties
+WHERE property_name = 'DEFAULT_TEMP_TABLESPACE';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Tablespace Undo</h3>
+
+        <pre><code class="language-sql">-- Criar tablespace undo
+CREATE UNDO TABLESPACE undotbs2
+  DATAFILE '/u02/oradata/ORCL/undotbs02.dbf' SIZE 500M
+  AUTOEXTEND ON;
+
+-- Trocar para novo undo tablespace (dinâmico)
+ALTER SYSTEM SET undo_tablespace = undotbs2;
+
+-- Verificar undo tablespace ativo
+SHOW PARAMETER undo_tablespace;
+
+-- Após migração bem-sucedida, pode-se dropar o antigo
+DROP TABLESPACE undotbs1 INCLUDING CONTENTS AND DATAFILES;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Expandindo Tablespaces -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📈</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Expandindo Tablespaces</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Três Formas de Expandir</h3>
+
+        <div class="space-y-4">
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">1. Adicionar Novo Datafile</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Forma mais comum. Distribui I/O entre múltiplos datafiles.
+            </p>
+            <pre><code class="language-sql">ALTER TABLESPACE dados_app
+  ADD DATAFILE '/u02/oradata/ORCL/dados_app02.dbf' SIZE 200M
+  AUTOEXTEND ON
+  NEXT 10M
+  MAXSIZE 1G;</code></pre>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">2. Redimensionar Datafile Existente</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Aumenta o tamanho de um datafile existente.
+            </p>
+            <pre><code class="language-sql">-- Aumentar para tamanho específico
+ALTER DATABASE DATAFILE '/u02/oradata/ORCL/dados_app01.dbf' RESIZE 500M;
+
+-- Ou redimensionar usando file_id
+ALTER DATABASE DATAFILE 5 RESIZE 500M;</code></pre>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">3. Habilitar/Modificar AUTOEXTEND</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Permite crescimento automático quando necessário.
+            </p>
+            <pre><code class="language-sql">-- Habilitar autoextend em datafile existente
+ALTER DATABASE DATAFILE '/u02/oradata/ORCL/dados_app01.dbf'
+  AUTOEXTEND ON
+  NEXT 50M
+  MAXSIZE UNLIMITED;  -- Cuidado com UNLIMITED!
+
+-- Desabilitar autoextend
+ALTER DATABASE DATAFILE '/u02/oradata/ORCL/dados_app01.dbf'
+  AUTOEXTEND OFF;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Monitorando Espaço</h3>
+
+        <pre><code class="language-sql">-- Ver uso de espaço por tablespace
+SELECT
+    t.tablespace_name,
+    ROUND(SUM(d.bytes)/1024/1024, 2) AS total_mb,
+    ROUND(SUM(CASE WHEN f.bytes IS NOT NULL THEN f.bytes ELSE 0 END)/1024/1024, 2) AS free_mb,
+    ROUND((SUM(d.bytes) - SUM(CASE WHEN f.bytes IS NOT NULL THEN f.bytes ELSE 0 END))/1024/1024, 2) AS used_mb,
+    ROUND(((SUM(d.bytes) - SUM(CASE WHEN f.bytes IS NOT NULL THEN f.bytes ELSE 0 END)) / SUM(d.bytes)) * 100, 2) AS pct_used
+FROM dba_tablespaces t
+LEFT JOIN dba_data_files d ON t.tablespace_name = d.tablespace_name
+LEFT JOIN dba_free_space f ON d.file_id = f.file_id
+WHERE t.contents = 'PERMANENT'
+GROUP BY t.tablespace_name
+ORDER BY pct_used DESC;
+
+-- Ver datafiles e seu uso
+SELECT
+    file_name,
+    tablespace_name,
+    ROUND(bytes/1024/1024, 2) AS size_mb,
+    ROUND(maxbytes/1024/1024, 2) AS maxsize_mb,
+    autoextensible,
+    status
+FROM dba_data_files
+ORDER BY tablespace_name, file_id;
+
+-- Alertar sobre tablespaces com mais de 85% de uso
+SELECT
+    tablespace_name,
+    ROUND((used_space/total_space) * 100, 2) AS pct_used
+FROM (
+    SELECT
+        d.tablespace_name,
+        SUM(d.bytes) AS total_space,
+        SUM(d.bytes) - SUM(NVL(f.bytes, 0)) AS used_space
+    FROM dba_data_files d
+    LEFT JOIN dba_free_space f ON d.file_id = f.file_id
+    GROUP BY d.tablespace_name
+)
+WHERE (used_space/total_space) > 0.85
+ORDER BY pct_used DESC;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 4: Movendo e Renomeando -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🚚</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Movendo e Renomeando Datafiles</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Movendo Datafiles (Banco Online)</h3>
+        <p class="text-neutral-300 mb-4">
+          A partir do Oracle 12c, é possível mover datafiles com o banco online.
+        </p>
+
+        <pre><code class="language-sql">-- Mover datafile (Oracle 12c+, banco ONLINE)
+ALTER DATABASE MOVE DATAFILE '/u02/oradata/ORCL/dados_app01.dbf'
+  TO '/u03/oradata/ORCL/dados_app01.dbf';
+
+-- Oracle move automaticamente o arquivo e atualiza control file!</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Movendo Datafiles (Banco Offline - 11g e anteriores)</h3>
+
+        <pre><code class="language-sql">-- 1. Fazer tablespace offline
+ALTER TABLESPACE dados_app OFFLINE NORMAL;
+
+-- 2. Mover arquivo fisicamente no SO (fora do SQL)
+-- No Linux/Unix:
+-- $ mv /u02/oradata/ORCL/dados_app01.dbf /u03/oradata/ORCL/dados_app01.dbf
+
+-- 3. Atualizar control file
+ALTER TABLESPACE dados_app
+  RENAME DATAFILE '/u02/oradata/ORCL/dados_app01.dbf'
+  TO '/u03/oradata/ORCL/dados_app01.dbf';
+
+-- 4. Colocar tablespace online novamente
+ALTER TABLESPACE dados_app ONLINE;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Movendo Tablespaces SYSTEM/SYSAUX</h3>
+        <p class="text-neutral-300 mb-4">
+          Tablespaces de sistema requerem que o banco esteja em modo MOUNT.
+        </p>
+
+        <pre><code class="language-sql">-- 1. Shutdown do banco
+SHUTDOWN IMMEDIATE;
+
+-- 2. Startup em modo MOUNT
+STARTUP MOUNT;
+
+-- 3. Copiar arquivo no SO
+-- $ cp /u02/oradata/ORCL/system01.dbf /u03/oradata/ORCL/system01.dbf
+
+-- 4. Renomear no control file
+ALTER DATABASE RENAME FILE '/u02/oradata/ORCL/system01.dbf'
+  TO '/u03/oradata/ORCL/system01.dbf';
+
+-- 5. Abrir o banco
+ALTER DATABASE OPEN;
+
+-- 6. Remover arquivo antigo (após verificar que tudo está OK)
+-- $ rm /u02/oradata/ORCL/system01.dbf</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 5: Oracle Managed Files (OMF) -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🤖</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Oracle Managed Files (OMF)</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é OMF?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-cyan-400">Oracle Managed Files (OMF)</strong> permite que o Oracle gerencie
+          automaticamente os nomes e localização de arquivos. Você não precisa especificar nomes de datafiles -
+          o Oracle cria e exclui arquivos automaticamente.
+        </p>
+
+        <div class="bg-cyan-900/20 rounded-lg p-4 border border-cyan-500/30 mb-4">
+          <h4 class="font-semibold text-cyan-400 mb-2">Vantagens do OMF:</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>Simplifica criação de tablespaces e datafiles</li>
+            <li>Nomenclatura padrão e consistente</li>
+            <li>Exclusão automática de arquivos ao dropar tablespace</li>
+            <li>Reduz erros humanos com nomes de arquivo</li>
+          </ul>
+        </div>
+
+        <pre><code class="language-sql">-- Configurar localização padrão para OMF
+ALTER SYSTEM SET db_create_file_dest = '/u02/oradata' SCOPE = BOTH;
+
+-- Para arquivos de controle
+ALTER SYSTEM SET db_create_online_log_dest_1 = '/u02/oradata' SCOPE = SPFILE;
+
+-- Para recovery (FRA)
+ALTER SYSTEM SET db_recovery_file_dest = '/u03/fra' SCOPE = BOTH;
+ALTER SYSTEM SET db_recovery_file_dest_size = 50G SCOPE = BOTH;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Usando OMF</h3>
+
+        <pre><code class="language-sql">-- Criar tablespace SEM especificar datafile (usa OMF)
+CREATE TABLESPACE dados_omf_test;
+-- Oracle cria automaticamente algo como: /u02/oradata/ORCL/datafile/o1_mf_dados_om_k2h8xp6t_.dbf
+
+-- Adicionar datafile sem especificar nome
+ALTER TABLESPACE dados_omf_test ADD DATAFILE;
+-- Oracle cria automaticamente o nome
+
+-- Dropar tablespace (arquivos são excluídos automaticamente!)
+DROP TABLESPACE dados_omf_test INCLUDING CONTENTS AND DATAFILES;
+-- Com OMF, os datafiles são apagados do SO automaticamente
+
+-- Ver arquivos criados via OMF
+SELECT file_name, tablespace_name, bytes/1024/1024 AS size_mb
+FROM dba_data_files
+WHERE file_name LIKE '%o1_mf%'
+ORDER BY tablespace_name;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 6: Bigfile Tablespaces -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📦</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Bigfile Tablespaces</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Smallfile vs Bigfile</h3>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-cyan-900/20 p-4 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">Smallfile Tablespace (Padrão)</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Pode ter até <strong>1022 datafiles</strong></li>
+              <li>Cada datafile até 4 milhões de blocos</li>
+              <li>Tamanho máximo datafile: ~32 GB (8KB blocos)</li>
+              <li>Melhor para ambientes tradicionais</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">Bigfile Tablespace</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Tem <strong>apenas 1 datafile</strong></li>
+              <li>Datafile pode ter até 4 bilhões de blocos</li>
+              <li>Tamanho máximo: ~128 TB (32KB blocos)</li>
+              <li>Ideal para very large databases (VLDB)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30">
+          <h4 class="font-semibold text-amber-400 mb-2">Quando Usar Bigfile?</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>Very Large Databases (VLDB) com tablespaces > 100 GB</li>
+            <li>Ambientes com Automatic Storage Management (ASM)</li>
+            <li>Reduzir quantidade de arquivos a gerenciar</li>
+            <li>Simplificar administração em ambientes muito grandes</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando Bigfile Tablespace</h3>
+
+        <pre><code class="language-sql">-- Criar bigfile tablespace
+CREATE BIGFILE TABLESPACE dados_big
+  DATAFILE '/u02/oradata/ORCL/dados_big01.dbf' SIZE 10G
+  AUTOEXTEND ON
+  NEXT 1G
+  MAXSIZE 100G;
+
+-- Definir tipo padrão (BIGFILE ou SMALLFILE)
+ALTER DATABASE SET DEFAULT BIGFILE TABLESPACE;
+
+-- Verificar tipo de um tablespace
+SELECT tablespace_name, bigfile
+FROM dba_tablespaces
+ORDER BY tablespace_name;
+
+-- Expandir bigfile tablespace (apenas resize, não pode adicionar datafile!)
+ALTER DATABASE DATAFILE '/u02/oradata/ORCL/dados_big01.dbf' RESIZE 50G;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Alterando Tablespace para Bigfile</h3>
+
+        <div class="bg-red-900/20 rounded-lg p-4 border border-red-500/30 mb-4">
+          <h4 class="font-semibold text-red-400 mb-2">⚠️ Atenção</h4>
+          <p class="text-neutral-300 text-sm">
+            <strong>Não é possível</strong> converter um tablespace SMALLFILE para BIGFILE diretamente!
+            É necessário criar um novo tablespace BIGFILE e mover os objetos.
+          </p>
+        </div>
+
+        <pre><code class="language-sql">-- Processo para "converter" (na verdade, migrar):
+
+-- 1. Criar novo tablespace BIGFILE
+CREATE BIGFILE TABLESPACE dados_app_big
+  DATAFILE '/u02/oradata/ORCL/dados_app_big01.dbf' SIZE 5G
+  AUTOEXTEND ON;
+
+-- 2. Mover tabelas para novo tablespace
+ALTER TABLE minha_tabela MOVE TABLESPACE dados_app_big;
+
+-- 3. Reconstruir índices (ficam inválidos após MOVE)
+ALTER INDEX idx_minha_tabela REBUILD TABLESPACE dados_app_big;
+
+-- Ou script para mover todos os objetos:
+BEGIN
+  FOR rec IN (SELECT table_name FROM dba_tables
+              WHERE tablespace_name = 'DADOS_APP'
+              AND owner = 'MYUSER') LOOP
+    EXECUTE IMMEDIATE 'ALTER TABLE myuser.' || rec.table_name ||
+                      ' MOVE TABLESPACE dados_app_big';
+  END LOOP;
+END;
+/
+
+-- 4. Após migração completa, dropar tablespace antigo
+DROP TABLESPACE dados_app INCLUDING CONTENTS AND DATAFILES;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 7: Operações Adicionais -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔧</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Operações Adicionais</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciamento de Tablespaces</h3>
+
+        <pre><code class="language-sql">-- Colocar tablespace OFFLINE
+ALTER TABLESPACE dados_app OFFLINE NORMAL;
+-- OFFLINE NORMAL: checkpoint + close files (mais seguro)
+-- OFFLINE TEMPORARY: close files sem checkpoint (rápido, requer recovery)
+-- OFFLINE IMMEDIATE: força offline imediatamente (requer recovery)
+
+-- Colocar tablespace ONLINE
+ALTER TABLESPACE dados_app ONLINE;
+
+-- Fazer tablespace READ ONLY (útil para dados históricos)
+ALTER TABLESPACE dados_historico READ ONLY;
+
+-- Voltar para READ WRITE
+ALTER TABLESPACE dados_historico READ WRITE;
+
+-- Dropar tablespace (sem remover arquivos)
+DROP TABLESPACE dados_app INCLUDING CONTENTS;
+-- Arquivos ficam no disco - você precisa apagá-los manualmente
+
+-- Dropar tablespace (removendo arquivos do SO)
+DROP TABLESPACE dados_app INCLUDING CONTENTS AND DATAFILES;
+-- Remove arquivos automaticamente do SO
+
+-- Dropar tablespace com constraints referenciando objetos nele
+DROP TABLESPACE dados_app INCLUDING CONTENTS AND DATAFILES CASCADE CONSTRAINTS;
+
+-- Alterar default tablespace de usuário
+ALTER USER myuser DEFAULT TABLESPACE dados_app QUOTA UNLIMITED ON dados_app;
+
+-- Definir quota (limite de espaço) para usuário
+ALTER USER myuser QUOTA 500M ON dados_app;
+
+-- Ver quotas de usuários
+SELECT username, tablespace_name, bytes/1024/1024 AS used_mb, max_bytes/1024/1024 AS quota_mb
+FROM dba_ts_quotas
+ORDER BY username, tablespace_name;
+
+-- Listar todos os tablespaces
+SELECT tablespace_name, status, contents, extent_management, segment_space_management
+FROM dba_tablespaces
+ORDER BY tablespace_name;
+
+-- Ver objetos em um tablespace
+SELECT owner, segment_name, segment_type, bytes/1024/1024 AS size_mb
+FROM dba_segments
+WHERE tablespace_name = 'DADOS_APP'
+ORDER BY bytes DESC;</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🎯</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar tablespaces</h4>
+                <p class="text-neutral-400 text-sm">Permanentes, temporários, undo, com opções avançadas</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Expandir tablespaces</h4>
+                <p class="text-neutral-400 text-sm">Adicionar datafiles, resize, autoextend</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Monitorar espaço</h4>
+                <p class="text-neutral-400 text-sm">Consultar uso, identificar tablespaces cheios</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Mover datafiles</h4>
+                <p class="text-neutral-400 text-sm">Online (12c+) e offline (11g)</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar OMF</h4>
+                <p class="text-neutral-400 text-sm">Configurar e criar tablespaces com Oracle Managed Files</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Entender bigfile</h4>
+                <p class="text-neutral-400 text-sm">Diferenças, quando usar, criar bigfile tablespaces</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar tablespaces</h4>
+                <p class="text-neutral-400 text-sm">Online/offline, read only, drop, quotas</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Consultar dicionário de dados</h4>
+                <p class="text-neutral-400 text-sm">DBA_TABLESPACES, DBA_DATA_FILES, DBA_FREE_SPACE</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl border border-cyan-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-5.html" class="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Parâmetros de Inicialização</span>
+      </a>
+      <a href="index.html" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+        <span>Voltar ao Índice</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 2: Administração Básica Oracle - Tópico 6</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

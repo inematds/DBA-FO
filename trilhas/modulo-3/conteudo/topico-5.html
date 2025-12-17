@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segurança e Auditoria | Trilha 3 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#C74634',dark:{900:'#0f172a',800:'#1e293b',700:'#334155',600:'#475569'}}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>body{font-family:'Inter',sans-serif}.dark body{background-color:#0f172a}pre code{border-radius:.5rem}.hljs{background:#1e293b!important;padding:1.5rem!important}</style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex justify-between items-center">
+      <a href="../../../index.html" class="flex items-center space-x-3">
+        <span class="text-2xl">🗄️</span>
+        <span class="text-xl font-bold text-primary">Oracle DBA</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-r from-purple-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-purple-400">5</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Segurança e Auditoria</h1>
+          <p class="text-neutral-400">Privilégios, roles, profiles, unified audit, TDE, data masking</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">📖</span></div>
+        <h2 class="text-xl font-bold text-purple-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Modelo de Segurança Oracle</h3>
+        
+        <div class="space-y-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Privilégios de Sistema</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Permitem executar operações específicas no banco. Exemplos:<br>
+              <code class="bg-dark-900 px-2 py-1 rounded">CREATE SESSION, CREATE TABLE, ALTER SYSTEM, DROP ANY TABLE</code>
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>200+ privilégios de sistema disponíveis</li>
+              <li>Prefixo ANY: ação em qualquer schema (muito poderoso!)</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Privilégios de Objeto</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Permitem executar operações em objetos específicos:<br>
+              <code class="bg-dark-900 px-2 py-1 rounded">SELECT, INSERT, UPDATE, DELETE, EXECUTE, ALTER, INDEX</code>
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Granularidade fina (por tabela, coluna, procedure)</li>
+              <li>WITH GRANT OPTION: permite repassar privilégio</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Roles</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Agrupamento de privilégios para facilitar gestão. Roles predefinidos:<br>
+              <strong>DBA:</strong> Administração completa<br>
+              <strong>CONNECT:</strong> Conectar e criar sessão<br>
+              <strong>RESOURCE:</strong> Criar objetos básicos<br>
+              <strong>SELECT_CATALOG_ROLE:</strong> Consultar dicionário de dados
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Profiles</h4>
+            <p class="text-neutral-300 text-sm">
+              Limites de recursos e políticas de senha:<br>
+              <strong>Recursos:</strong> SESSIONS_PER_USER, CPU_PER_SESSION, CONNECT_TIME<br>
+              <strong>Senhas:</strong> FAILED_LOGIN_ATTEMPTS, PASSWORD_LIFE_TIME, PASSWORD_REUSE_TIME
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Recursos de Segurança Avançada</h3>
+        
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">TDE (Transparent Data Encryption)</h4>
+            <p class="text-neutral-300 text-sm">
+              Criptografia transparente de dados em repouso (datafiles, backups).
+              Protege contra roubo de mídia física.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Unified Audit</h4>
+            <p class="text-neutral-300 text-sm">
+              Auditoria consolidada (12c+) que registra todas atividades
+              em uma única trilha (SYS.AUD$UNIFIED).
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Data Redaction</h4>
+            <p class="text-neutral-300 text-sm">
+              Mascara dados sensíveis em tempo real para usuários não autorizados
+              (ex: mostrar apenas últimos 4 dígitos de CPF).
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">VPD (Virtual Private Database)</h4>
+            <p class="text-neutral-300 text-sm">
+              Row-level security dinâmico. Adiciona predicados WHERE automaticamente
+              baseado em contexto do usuário.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">🛠️</span></div>
+        <h2 class="text-xl font-bold text-emerald-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciamento de Usuários e Privilégios</h3>
+        <pre><code class="language-sql">-- Criar usuário
+CREATE USER app_user IDENTIFIED BY Welcome1
+  DEFAULT TABLESPACE users
+  TEMPORARY TABLESPACE temp
+  QUOTA 100M ON users;
+
+-- Conceder privilégios de sistema
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO app_user;
+
+-- Conceder privilégios de objeto
+GRANT SELECT, INSERT, UPDATE, DELETE ON hr.employees TO app_user;
+GRANT SELECT ON hr.departments TO app_user;
+GRANT EXECUTE ON hr.get_salary TO app_user;
+
+-- Conceder com WITH GRANT OPTION (permite repassar)
+GRANT SELECT ON hr.employees TO app_user WITH GRANT OPTION;
+
+-- Criar e atribuir role
+CREATE ROLE app_role;
+GRANT CREATE SESSION, CREATE TABLE TO app_role;
+GRANT app_role TO app_user;
+
+-- Revogar privilégios
+REVOKE DELETE ON hr.employees FROM app_user;
+REVOKE CREATE TABLE FROM app_user;
+
+-- Ver privilégios de usuário
+SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE = 'APP_USER';
+SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'APP_USER';
+SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'APP_USER';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Profiles e Políticas de Senha</h3>
+        <pre><code class="language-sql">-- Criar profile com política de senha forte
+CREATE PROFILE secure_profile LIMIT
+  -- Limites de recursos
+  SESSIONS_PER_USER          2
+  CPU_PER_SESSION            UNLIMITED
+  CONNECT_TIME               480        -- 8 horas
+  IDLE_TIME                  30         -- 30 minutos
+  -- Políticas de senha
+  FAILED_LOGIN_ATTEMPTS      5
+  PASSWORD_LIFE_TIME         90         -- dias
+  PASSWORD_REUSE_TIME        365        -- dias antes de reusar
+  PASSWORD_REUSE_MAX         5          -- quantas senhas diferentes antes de reusar
+  PASSWORD_LOCK_TIME         1          -- dia(s) de bloqueio
+  PASSWORD_GRACE_TIME        7          -- dias de aviso antes de expirar
+  PASSWORD_VERIFY_FUNCTION   ora12c_strong_verify_function;
+
+-- Atribuir profile ao usuário
+ALTER USER app_user PROFILE secure_profile;
+
+-- Ver profiles
+SELECT * FROM DBA_PROFILES WHERE PROFILE = 'SECURE_PROFILE';
+
+-- Criar função de verificação customizada
+CREATE OR REPLACE FUNCTION custom_password_verify
+(username VARCHAR2, password VARCHAR2, old_password VARCHAR2)
+RETURN BOOLEAN IS
+BEGIN
+  -- Mínimo 12 caracteres
+  IF LENGTH(password) < 12 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Senha deve ter no mínimo 12 caracteres');
+  END IF;
+  
+  -- Deve conter letra maiúscula, minúscula, número e caractere especial
+  IF NOT REGEXP_LIKE(password, '[A-Z]') OR
+     NOT REGEXP_LIKE(password, '[a-z]') OR
+     NOT REGEXP_LIKE(password, '[0-9]') OR
+     NOT REGEXP_LIKE(password, '[^A-Za-z0-9]') THEN
+    RAISE_APPLICATION_ERROR(-20002, 'Senha deve conter maiúscula, minúscula, número e especial');
+  END IF;
+  
+  -- Não pode conter username
+  IF INSTR(UPPER(password), UPPER(username)) > 0 THEN
+    RAISE_APPLICATION_ERROR(-20003, 'Senha não pode conter username');
+  END IF;
+  
+  RETURN TRUE;
+END;
+/</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">TDE - Transparent Data Encryption</h3>
+        <pre><code class="language-sql">-- Configurar Oracle Wallet (armazena master key)
+-- No sqlnet.ora adicionar:
+-- ENCRYPTION_WALLET_LOCATION = (SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=/u01/app/oracle/wallet)))
+
+-- Criar e abrir wallet
+ADMINISTER KEY MANAGEMENT CREATE KEYSTORE '/u01/app/oracle/wallet' IDENTIFIED BY Welcome1;
+ADMINISTER KEY MANAGEMENT SET KEYSTORE OPEN IDENTIFIED BY Welcome1;
+
+-- Criar master encryption key
+ADMINISTER KEY MANAGEMENT SET KEY IDENTIFIED BY Welcome1 WITH BACKUP;
+
+-- Criptografar tablespace inteira
+CREATE TABLESPACE secure_data
+  DATAFILE '/u01/app/oracle/oradata/secure01.dbf' SIZE 100M
+  ENCRYPTION USING 'AES256'
+  DEFAULT STORAGE(ENCRYPT);
+
+-- Criptografar tablespace existente
+ALTER TABLESPACE users ENCRYPTION ONLINE USING 'AES256' ENCRYPT;
+
+-- Criptografar colunas específicas
+CREATE TABLE customers (
+  customer_id   NUMBER PRIMARY KEY,
+  name          VARCHAR2(100),
+  ssn           VARCHAR2(11) ENCRYPT USING 'AES256',  -- Coluna criptografada
+  credit_card   VARCHAR2(16) ENCRYPT USING 'AES256',
+  address       VARCHAR2(200)
+);
+
+-- Verificar objetos criptografados
+SELECT TABLESPACE_NAME, ENCRYPTED FROM DBA_TABLESPACES;
+SELECT TABLE_NAME, COLUMN_NAME, ENCRYPTION_ALG FROM DBA_ENCRYPTED_COLUMNS;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Unified Audit</h3>
+        <pre><code class="language-sql">-- Verificar se Unified Audit está habilitado
+SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing';
+
+-- Criar política de auditoria
+CREATE AUDIT POLICY critical_operations
+  ACTIONS DELETE ON hr.employees,
+          UPDATE ON hr.employees,
+          EXECUTE ON hr.adjust_salary;
+
+-- Habilitar política
+AUDIT POLICY critical_operations BY app_user;
+AUDIT POLICY critical_operations BY USERS WITH GRANTED ROLES dba;
+
+-- Auditar todos os privilégios de sistema
+CREATE AUDIT POLICY system_privs_audit
+  PRIVILEGES CREATE ANY TABLE, DROP ANY TABLE, ALTER SYSTEM;
+AUDIT POLICY system_privs_audit;
+
+-- Auditar logins e logouts
+AUDIT POLICY ora_logon_failures;  -- Política predefinida
+AUDIT POLICY ora_account_mgmt;    -- Gestão de contas
+
+-- Consultar trilha de auditoria
+SELECT EVENT_TIMESTAMP, DBUSERNAME, ACTION_NAME, 
+       OBJECT_SCHEMA, OBJECT_NAME, SQL_TEXT
+FROM UNIFIED_AUDIT_TRAIL
+WHERE DBUSERNAME = 'APP_USER'
+ORDER BY EVENT_TIMESTAMP DESC
+FETCH FIRST 20 ROWS ONLY;
+
+-- Limpar auditoria antiga (dados acumulam rapidamente!)
+BEGIN
+  DBMS_AUDIT_MGMT.CLEAN_AUDIT_TRAIL(
+    audit_trail_type => DBMS_AUDIT_MGMT.AUDIT_TRAIL_UNIFIED,
+    use_last_arch_timestamp => FALSE
+  );
+END;
+/</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Data Redaction</h3>
+        <pre><code class="language-sql">-- Redação parcial (mascara parte dos dados)
+BEGIN
+  DBMS_REDACT.ADD_POLICY(
+    object_schema => 'HR',
+    object_name   => 'EMPLOYEES',
+    policy_name   => 'mask_ssn',
+    column_name   => 'SSN',
+    function_type => DBMS_REDACT.PARTIAL,
+    function_parameters => 'VVVFVVFVVVV,XXX-XX-####,*,1,6',  -- Mostra apenas últimos 4 dígitos
+    expression    => 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') != ''HR_ADMIN'''
+  );
+END;
+/
+
+-- Redação completa (substitui por valor fixo)
+BEGIN
+  DBMS_REDACT.ADD_POLICY(
+    object_schema => 'HR',
+    object_name   => 'EMPLOYEES',
+    policy_name   => 'hide_salary',
+    column_name   => 'SALARY',
+    function_type => DBMS_REDACT.FULL,
+    expression    => 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') NOT IN (''HR_ADMIN'',''PAYROLL'')'
+  );
+END;
+/
+
+-- Testar redação
+-- Como usuário sem privilégio:
+SELECT EMPLOYEE_ID, NAME, SSN, SALARY FROM HR.EMPLOYEES;
+-- Resultado: SSN mostra XXX-XX-1234, SALARY mostra 0
+
+-- Como HR_ADMIN:
+SELECT EMPLOYEE_ID, NAME, SSN, SALARY FROM HR.EMPLOYEES;
+-- Resultado: Dados reais visíveis
+
+-- Ver políticas de redação
+SELECT OBJECT_OWNER, OBJECT_NAME, POLICY_NAME, EXPRESSION
+FROM REDACTION_POLICIES;</code></pre>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">✅</span></div>
+        <h2 class="text-xl font-bold text-cyan-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Competências Adquiridas</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Gestão de Privilégios</h4>
+              <p class="text-neutral-400 text-sm">Criar usuários, atribuir roles e privilégios</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Políticas de Senha</h4>
+              <p class="text-neutral-400 text-sm">Criar profiles com regras fortes</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">TDE</h4>
+              <p class="text-neutral-400 text-sm">Criptografar dados sensíveis</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Unified Audit</h4>
+              <p class="text-neutral-400 text-sm">Configurar e analisar auditoria</p></div></div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Data Redaction</h4>
+              <p class="text-neutral-400 text-sm">Mascarar dados em tempo real</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Princípio do Menor Privilégio</h4>
+              <p class="text-neutral-400 text-sm">Conceder apenas permissões necessárias</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Compliance</h4>
+              <p class="text-neutral-400 text-sm">Atender regulações (LGPD, GDPR, SOX)</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Investigação de Incidentes</h4>
+              <p class="text-neutral-400 text-sm">Rastrear atividades suspeitas</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-amber-900/30 to-red-900/30 rounded-xl border border-amber-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-2 text-amber-400">Boas Práticas de Segurança</h3>
+        <ul class="text-neutral-300 space-y-2">
+          <li><strong>✓</strong> Nunca use contas genéricas - crie usuário individual para cada pessoa</li>
+          <li><strong>✓</strong> Desabilite contas padrão (SCOTT, HR) em produção</li>
+          <li><strong>✓</strong> Implemente senha forte e rotação periódica</li>
+          <li><strong>✓</strong> Use TDE para dados sensíveis (PCI-DSS, LGPD, GDPR)</li>
+          <li><strong>✓</strong> Habilite auditoria em todas operações críticas</li>
+          <li><strong>✓</strong> Revise privilégios regularmente - remova o que não é usado</li>
+          <li><strong>✓</strong> Separe ambientes (dev/test/prod) com usuários diferentes</li>
+          <li><strong>✓</strong> Nunca compartilhe credenciais de SYS ou SYSTEM</li>
+          <li><strong>✓</strong> Monitore logins falhados e atividades anormais</li>
+          <li><strong>✓</strong> Mantenha backups de audit trail em local seguro</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-4.html" class="flex items-center gap-2 text-neutral-400 hover:text-purple-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span>Anterior: Multitenant</span></a>
+      <a href="index.html" class="flex items-center gap-2 text-purple-400 hover:text-purple-300">
+        <span>Voltar ao Índice</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 3: Admin Avançado - Tópico 5</p>
+    </div>
+  </footer>
+
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

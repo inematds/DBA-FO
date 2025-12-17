@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criando um Database com DBCA | Trilha 2 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-cyan-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-cyan-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 2</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 3</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-cyan-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Criando um Database com DBCA</h1>
+          <p class="text-neutral-400">DBCA, templates, CREATE DATABASE manual</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: DBCA Overview -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🎨</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Database Configuration Assistant (DBCA)</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é o DBCA?</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-cyan-400">Database Configuration Assistant (DBCA)</strong> é uma ferramenta gráfica
+          da Oracle que facilita a criação, configuração, e exclusão de bancos de dados. É a forma mais comum e
+          recomendada de criar um banco de dados Oracle.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Funcionalidades do DBCA:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Criar Banco de Dados:</strong> Usando templates ou configuração customizada</li>
+            <li><strong>Configurar Opções:</strong> Modificar parâmetros de bancos existentes</li>
+            <li><strong>Excluir Banco:</strong> Remover completamente um banco e seus arquivos</li>
+            <li><strong>Gerenciar Templates:</strong> Criar templates personalizados para padronização</li>
+            <li><strong>Gerenciar Pluggable Databases (PDBs):</strong> Em bancos multitenant (12c+)</li>
+          </ul>
+        </div>
+
+        <div class="bg-cyan-900/20 rounded-lg p-4 border border-cyan-500/30">
+          <h4 class="font-semibold text-cyan-400 mb-2">Iniciando o DBCA</h4>
+          <pre><code class="language-shell"># Modo gráfico
+dbca
+
+# Modo silencioso (sem interface gráfica)
+dbca -silent -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbName ORCL \
+  -sid ORCL \
+  -sysPassword SysPass123 \
+  -systemPassword SystemPass123</code></pre>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Passos da Criação com DBCA (Modo Gráfico)</h3>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">1</span>
+              <h4 class="font-semibold text-neutral-100">Operação</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Selecione "Create a database"</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">2</span>
+              <h4 class="font-semibold text-neutral-100">Modo de Criação</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Advanced Configuration (mais controle) ou Typical Configuration (rápido)</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">3</span>
+              <h4 class="font-semibold text-neutral-100">Template</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">General Purpose, Data Warehouse, ou Custom Database</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">4</span>
+              <h4 class="font-semibold text-neutral-100">Identificação</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Global Database Name e SID (ex: PROD.empresa.com e PROD)</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">5</span>
+              <h4 class="font-semibold text-neutral-100">Localização de Armazenamento</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">File System ou ASM (Automatic Storage Management)</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">6</span>
+              <h4 class="font-semibold text-neutral-100">Configuração de Recovery</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Fast Recovery Area, Archive Mode</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">7</span>
+              <h4 class="font-semibold text-neutral-100">Componentes</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Oracle Sample Schemas, Oracle JVM, Oracle Text, Oracle Spatial</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">8</span>
+              <h4 class="font-semibold text-neutral-100">Parâmetros de Memória</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">SGA, PGA, Memory Management (AMM ou ASMM)</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">9</span>
+              <h4 class="font-semibold text-neutral-100">Character Set</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">AL32UTF8 (padrão, Unicode), WE8ISO8859P1 (Latin-1)</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-sm font-bold">10</span>
+              <h4 class="font-semibold text-neutral-100">Senhas</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">Senha única para todos ou senhas individuais (SYS, SYSTEM, DBSNMP)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Templates -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📑</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Templates do DBCA</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de Templates</h3>
+        <p class="text-neutral-300 mb-4">
+          O DBCA oferece templates pré-configurados que aceleram a criação de bancos de dados com características
+          específicas. Há dois tipos: templates com estrutura e templates sem estrutura.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">Templates com Estrutura</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Contêm datafiles pré-criados. A criação é <strong>muito rápida</strong> pois apenas copia os arquivos.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm space-y-1">
+              <li>Seed Database Template</li>
+              <li>Criação em minutos</li>
+              <li>Menos flexibilidade</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 p-4 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">Templates sem Estrutura</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Apenas definições de configuração. DBCA executa <strong>CREATE DATABASE</strong> completo.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm space-y-1">
+              <li>General Purpose, Data Warehouse</li>
+              <li>Criação mais demorada</li>
+              <li>Máxima flexibilidade</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-2">General Purpose or Transaction Processing</h4>
+            <p class="text-neutral-300 text-sm">
+              Template mais comum. Otimizado para ambientes OLTP (Online Transaction Processing) com muitas
+              transações pequenas e rápidas. Equilibra memória e desempenho.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Data Warehouse</h4>
+            <p class="text-neutral-300 text-sm">
+              Otimizado para análise de dados (OLAP). Foca em consultas complexas sobre grandes volumes de dados.
+              Maior buffer cache, sort areas maiores.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-400 mb-2">Custom Database</h4>
+            <p class="text-neutral-300 text-sm">
+              Template em branco. Você define todos os parâmetros manualmente. Útil para requisitos muito específicos.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Criando um Template Personalizado</h3>
+        <p class="text-neutral-300 mb-4">
+          Você pode criar seus próprios templates para padronizar criação de bancos em sua organização.
+        </p>
+
+        <pre><code class="language-shell"># Criar template a partir de banco existente
+dbca -silent -createTemplateFromDB \
+  -sourceDB ORCL \
+  -templateName MeuTemplate \
+  -sysDBAUserName sys \
+  -sysDBAPassword SysPass123
+
+# Criar template a partir de template existente (modificado)
+dbca -silent -createTemplate \
+  -templateName NovoTemplate \
+  -sourceTemplate General_Purpose.dbc
+
+# Templates ficam armazenados em:
+ls -lh $ORACLE_HOME/assistants/dbca/templates/</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: DBCA Modo Silencioso -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🤖</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">DBCA em Modo Silencioso</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criação Automatizada</h3>
+        <p class="text-neutral-300 mb-4">
+          O modo silencioso permite criar bancos de dados via linha de comando, ideal para scripts e automação.
+        </p>
+
+        <pre><code class="language-shell"># Exemplo completo de criação silenciosa
+dbca -silent -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbName PROD \
+  -sid PROD \
+  -sysPassword OracleSys123 \
+  -systemPassword OracleSys123 \
+  -datafileDestination /u02/oradata \
+  -recoveryAreaDestination /u03/fra \
+  -storageType FS \
+  -characterSet AL32UTF8 \
+  -nationalCharacterSet AL16UTF16 \
+  -totalMemory 4096 \
+  -databaseType MULTIPURPOSE \
+  -emConfiguration NONE
+
+# Criar com mais opções
+dbca -silent -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbName DEV.empresa.local \
+  -sid DEV \
+  -createAsContainerDatabase true \
+  -numberOfPDBs 2 \
+  -pdbName PDB \
+  -pdbAdminPassword PdbPass123 \
+  -sysPassword SysPass123 \
+  -systemPassword SysPass123 \
+  -datafileDestination /u02/oradata \
+  -redoLogFileSize 100 \
+  -recoveryAreaDestination /u03/fra \
+  -recoveryAreaSize 10240 \
+  -storageType FS \
+  -memoryMgmtType AUTO_SGA \
+  -totalMemory 2048 \
+  -databaseType OLTP \
+  -automaticMemoryManagement false \
+  -characterSet AL32UTF8 \
+  -nationalCharacterSet AL16UTF16 \
+  -listeners LISTENER \
+  -sampleSchema true \
+  -emConfiguration NONE</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Excluir Banco com DBCA</h3>
+
+        <pre><code class="language-shell"># Excluir banco de dados (modo silencioso)
+dbca -silent -deleteDatabase \
+  -sourceDB TESTDB \
+  -sid TESTDB \
+  -sysDBAUserName sys \
+  -sysDBAPassword SysPass123
+
+# Modo gráfico
+dbca
+# Selecione "Delete a database" e escolha o banco</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 4: CREATE DATABASE Manual -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">⚡</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">CREATE DATABASE Manual</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criação Manual do Banco de Dados</h3>
+        <p class="text-neutral-300 mb-4">
+          Para máximo controle, você pode criar um banco de dados manualmente usando o comando CREATE DATABASE.
+          É mais complexo, mas permite entender exatamente o que o DBCA faz nos bastidores.
+        </p>
+
+        <div class="bg-amber-900/20 rounded-lg p-4 border border-amber-500/30 mb-4">
+          <h4 class="font-semibold text-amber-400 mb-2">⚠️ Quando Criar Manualmente?</h4>
+          <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+            <li>Requisitos muito específicos não suportados pelo DBCA</li>
+            <li>Ambientes automatizados com scripts personalizados</li>
+            <li>Aprendizado profundo da arquitetura Oracle</li>
+            <li>Troubleshooting de problemas do DBCA</li>
+          </ul>
+        </div>
+
+        <h4 class="font-semibold text-neutral-100 mb-3">Etapas da Criação Manual:</h4>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h5 class="font-semibold text-cyan-400 mb-2">1. Criar Diretórios</h5>
+            <pre><code class="language-shell">mkdir -p /u02/oradata/MANUALDB
+mkdir -p /u03/fra/MANUALDB
+mkdir -p /u01/app/oracle/admin/MANUALDB/adump</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h5 class="font-semibold text-cyan-400 mb-2">2. Criar Arquivo de Parâmetros (initMANUALDB.ora)</h5>
+            <pre><code class="language-shell">cat > $ORACLE_HOME/dbs/initMANUALDB.ora <<EOF
+db_name=MANUALDB
+db_block_size=8192
+sga_target=1G
+pga_aggregate_target=512M
+processes=300
+open_cursors=300
+undo_tablespace=UNDOTBS1
+control_files=(/u02/oradata/MANUALDB/control01.ctl,
+               /u02/oradata/MANUALDB/control02.ctl)
+db_recovery_file_dest=/u03/fra
+db_recovery_file_dest_size=10G
+compatible=19.0.0
+audit_file_dest=/u01/app/oracle/admin/MANUALDB/adump
+EOF</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h5 class="font-semibold text-cyan-400 mb-2">3. Definir Variável de Ambiente e Iniciar Instância</h5>
+            <pre><code class="language-shell">export ORACLE_SID=MANUALDB
+
+sqlplus / as sysdba <<EOF
+STARTUP NOMOUNT PFILE='$ORACLE_HOME/dbs/initMANUALDB.ora';
+EOF</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h5 class="font-semibold text-cyan-400 mb-2">4. Executar CREATE DATABASE</h5>
+            <pre><code class="language-sql">CREATE DATABASE MANUALDB
+  USER SYS IDENTIFIED BY SysPass123
+  USER SYSTEM IDENTIFIED BY SystemPass123
+  LOGFILE GROUP 1 ('/u02/oradata/MANUALDB/redo01a.log',
+                    '/u02/oradata/MANUALDB/redo01b.log') SIZE 100M,
+          GROUP 2 ('/u02/oradata/MANUALDB/redo02a.log',
+                    '/u02/oradata/MANUALDB/redo02b.log') SIZE 100M,
+          GROUP 3 ('/u02/oradata/MANUALDB/redo03a.log',
+                    '/u02/oradata/MANUALDB/redo03b.log') SIZE 100M
+  MAXLOGFILES 5
+  MAXLOGMEMBERS 5
+  MAXLOGHISTORY 1
+  MAXDATAFILES 100
+  CHARACTER SET AL32UTF8
+  NATIONAL CHARACTER SET AL16UTF16
+  EXTENT MANAGEMENT LOCAL
+  DATAFILE '/u02/oradata/MANUALDB/system01.dbf' SIZE 500M REUSE AUTOEXTEND ON
+  SYSAUX DATAFILE '/u02/oradata/MANUALDB/sysaux01.dbf' SIZE 500M REUSE AUTOEXTEND ON
+  DEFAULT TABLESPACE users
+    DATAFILE '/u02/oradata/MANUALDB/users01.dbf' SIZE 100M REUSE AUTOEXTEND ON
+  DEFAULT TEMPORARY TABLESPACE temp
+    TEMPFILE '/u02/oradata/MANUALDB/temp01.dbf' SIZE 100M REUSE AUTOEXTEND ON
+  UNDO TABLESPACE undotbs1
+    DATAFILE '/u02/oradata/MANUALDB/undotbs01.dbf' SIZE 200M REUSE AUTOEXTEND ON;</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h5 class="font-semibold text-cyan-400 mb-2">5. Executar Scripts Pós-Criação</h5>
+            <pre><code class="language-sql">-- Criar dicionário de dados
+@?/rdbms/admin/catalog.sql
+@?/rdbms/admin/catproc.sql
+
+-- Criar views do dicionário para usuário SYSTEM
+CONNECT SYSTEM/SystemPass123
+@?/sqlplus/admin/pupbld.sql
+
+-- Habilitar modo ARCHIVELOG (opcional, mas recomendado)
+CONNECT / AS SYSDBA
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+ALTER DATABASE ARCHIVELOG;
+ALTER DATABASE OPEN;
+
+-- Criar SPFILE a partir do PFILE
+CREATE SPFILE FROM PFILE='$ORACLE_HOME/dbs/initMANUALDB.ora';
+
+-- Verificar criação
+SELECT name, open_mode, log_mode FROM v$database;
+SELECT tablespace_name, status FROM dba_tablespaces;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Script Completo de Criação Manual</h3>
+        <p class="text-neutral-300 mb-4">
+          Script consolidado para criar um banco manualmente:
+        </p>
+
+        <pre><code class="language-shell">#!/bin/bash
+# create_manual_db.sh
+
+export ORACLE_SID=MANUALDB
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/dbhome_1
+
+# Criar diretórios
+mkdir -p /u02/oradata/MANUALDB
+mkdir -p /u03/fra/MANUALDB
+mkdir -p /u01/app/oracle/admin/MANUALDB/adump
+
+# Criar PFILE
+cat > $ORACLE_HOME/dbs/initMANUALDB.ora <<'EOF'
+db_name=MANUALDB
+db_block_size=8192
+memory_target=2G
+processes=300
+open_cursors=300
+undo_tablespace=UNDOTBS1
+control_files=(/u02/oradata/MANUALDB/control01.ctl,/u02/oradata/MANUALDB/control02.ctl)
+db_recovery_file_dest=/u03/fra
+db_recovery_file_dest_size=10G
+compatible=19.0.0
+audit_file_dest=/u01/app/oracle/admin/MANUALDB/adump
+EOF
+
+# Criar banco
+sqlplus / as sysdba <<'EOSQL'
+STARTUP NOMOUNT;
+
+CREATE DATABASE MANUALDB
+  USER SYS IDENTIFIED BY SysPass123
+  USER SYSTEM IDENTIFIED BY SystemPass123
+  LOGFILE GROUP 1 ('/u02/oradata/MANUALDB/redo01.log') SIZE 100M,
+          GROUP 2 ('/u02/oradata/MANUALDB/redo02.log') SIZE 100M,
+          GROUP 3 ('/u02/oradata/MANUALDB/redo03.log') SIZE 100M
+  CHARACTER SET AL32UTF8
+  NATIONAL CHARACTER SET AL16UTF16
+  DATAFILE '/u02/oradata/MANUALDB/system01.dbf' SIZE 500M AUTOEXTEND ON
+  SYSAUX DATAFILE '/u02/oradata/MANUALDB/sysaux01.dbf' SIZE 500M AUTOEXTEND ON
+  DEFAULT TABLESPACE users DATAFILE '/u02/oradata/MANUALDB/users01.dbf' SIZE 100M AUTOEXTEND ON
+  DEFAULT TEMPORARY TABLESPACE temp TEMPFILE '/u02/oradata/MANUALDB/temp01.dbf' SIZE 100M
+  UNDO TABLESPACE undotbs1 DATAFILE '/u02/oradata/MANUALDB/undotbs01.dbf' SIZE 200M AUTOEXTEND ON;
+
+@?/rdbms/admin/catalog.sql
+@?/rdbms/admin/catproc.sql
+
+CONNECT SYSTEM/SystemPass123
+@?/sqlplus/admin/pupbld.sql
+
+CONNECT / AS SYSDBA
+CREATE SPFILE FROM PFILE;
+SHUTDOWN IMMEDIATE;
+STARTUP;
+
+SELECT name, open_mode FROM v$database;
+EOSQL
+
+echo "Database MANUALDB created successfully!"</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar banco com DBCA</h4>
+                <p class="text-neutral-400 text-sm">Usar interface gráfica e modo silencioso</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Escolher templates apropriados</h4>
+                <p class="text-neutral-400 text-sm">General Purpose, Data Warehouse, Custom</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar parâmetros essenciais</h4>
+                <p class="text-neutral-400 text-sm">Memória, character set, storage, recovery</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar banco manualmente</h4>
+                <p class="text-neutral-400 text-sm">Usar CREATE DATABASE para máximo controle</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Executar scripts pós-criação</h4>
+                <p class="text-neutral-400 text-sm">catalog.sql, catproc.sql, pupbld.sql</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar templates</h4>
+                <p class="text-neutral-400 text-sm">Criar templates personalizados para padronização</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl border border-cyan-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Instalação do Oracle</span>
+      </a>
+      <a href="topico-4.html" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+        <span>Próximo: Startup e Shutdown</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 2: Administração Básica Oracle - Tópico 3</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

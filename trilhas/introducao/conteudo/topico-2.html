@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Papel do DBA Oracle | Trilha 0 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-blue-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 0</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-blue-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">O Papel do DBA Oracle</h1>
+          <p class="text-neutral-400">Responsabilidades, carreira e certificações</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-blue-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que faz um DBA Oracle?</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-blue-400">Database Administrator (DBA)</strong> é o profissional responsável
+          por garantir que os bancos de dados Oracle funcionem de forma confiável, segura e eficiente.
+          É o guardião dos dados críticos da organização, atuando em todas as fases do ciclo de vida do banco.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          Um DBA Oracle não apenas mantém o banco funcionando - ele otimiza performance, previne problemas,
+          garante disponibilidade 24/7, protege dados sensíveis e planeja a capacidade futura.
+          É uma posição estratégica que combina habilidades técnicas profundas com compreensão de negócio.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-3">Responsabilidades Principais:</h4>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <div class="flex items-start gap-2">
+                <span class="text-blue-400 mt-1">⚙️</span>
+                <div>
+                  <strong class="text-neutral-100">Instalação e Configuração</strong>
+                  <p class="text-neutral-400 text-sm">Instalar Oracle, criar databases, configurar parâmetros</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-cyan-400 mt-1">📊</span>
+                <div>
+                  <strong class="text-neutral-100">Monitoramento e Performance</strong>
+                  <p class="text-neutral-400 text-sm">Analisar performance, identificar gargalos, otimizar queries</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-purple-400 mt-1">🔒</span>
+                <div>
+                  <strong class="text-neutral-100">Segurança</strong>
+                  <p class="text-neutral-400 text-sm">Gerenciar usuários, privilégios, auditoria, criptografia</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-red-400 mt-1">🛡️</span>
+                <div>
+                  <strong class="text-neutral-100">Backup e Recovery</strong>
+                  <p class="text-neutral-400 text-sm">Estratégias de backup, testes de restore, disaster recovery</p>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-start gap-2">
+                <span class="text-orange-400 mt-1">⚡</span>
+                <div>
+                  <strong class="text-neutral-100">Troubleshooting</strong>
+                  <p class="text-neutral-400 text-sm">Resolver incidentes, analisar logs, diagnosticar falhas</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-emerald-400 mt-1">🔄</span>
+                <div>
+                  <strong class="text-neutral-100">Manutenção e Patching</strong>
+                  <p class="text-neutral-400 text-sm">Aplicar patches, atualizar versões, manutenções preventivas</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-amber-400 mt-1">📈</span>
+                <div>
+                  <strong class="text-neutral-100">Planejamento de Capacidade</strong>
+                  <p class="text-neutral-400 text-sm">Prever crescimento, dimensionar recursos, gerenciar storage</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-pink-400 mt-1">🤝</span>
+                <div>
+                  <strong class="text-neutral-100">Suporte a Desenvolvedores</strong>
+                  <p class="text-neutral-400 text-sm">Revisar código SQL, otimizar queries, orientar modelagem</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de DBA Oracle</h3>
+        <p class="text-neutral-300 mb-4">
+          A função de DBA pode ser especializada conforme o foco da atuação:
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-blue-900/20 rounded-lg p-4 border-l-4 border-blue-500">
+            <h4 class="font-semibold text-blue-400 mb-2">DBA de Produção</h4>
+            <p class="text-neutral-300 text-sm">
+              Foco em <strong>disponibilidade e estabilidade</strong>. Monitora bancos 24/7, resolve incidentes,
+              executa backups, aplica patches. Trabalha em regime de plantão. Prioriza segurança e confiabilidade.
+            </p>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">DBA de Desenvolvimento</h4>
+            <p class="text-neutral-300 text-sm">
+              Foco em <strong>modelagem e performance de queries</strong>. Trabalha próximo aos desenvolvedores,
+              revisa código SQL/PL-SQL, otimiza estruturas, cria ambientes de desenvolvimento/teste.
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">DBA de Performance (Tuning)</h4>
+            <p class="text-neutral-300 text-sm">
+              Especialista em <strong>otimização</strong>. Analisa AWR reports, otimiza queries lentas,
+              ajusta parâmetros de memória, cria índices estratégicos, resolve gargalos complexos.
+            </p>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">DBA de Sistemas (Infraestrutura)</h4>
+            <p class="text-neutral-300 text-sm">
+              Foco em <strong>arquitetura e infraestrutura</strong>. Instala Oracle, configura RAC/Data Guard,
+              gerencia storage, planeja DR (Disaster Recovery), projeta arquiteturas de alta disponibilidade.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Um Dia na Vida de um DBA Oracle</h3>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-blue-400">09:00</span> Início do Dia - Health Check
+            </h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Revisar alertas noturnos, verificar status dos backups, analisar tablespaces com pouco espaço,
+              checar processos travados ou sessões bloqueadas.
+            </p>
+            <pre><code class="language-sql">-- Verificar tablespaces com >80% de uso
+SELECT tablespace_name, ROUND(used_percent, 2) AS pct_used
+FROM dba_tablespace_usage_metrics
+WHERE used_percent > 80
+ORDER BY used_percent DESC;
+
+-- Verificar sessões bloqueadas
+SELECT s1.username AS blocking_user, s2.username AS blocked_user
+FROM v$lock l1, v$session s1, v$lock l2, v$session s2
+WHERE s1.sid = l1.sid AND s2.sid = l2.sid
+  AND l1.block = 1 AND l2.request > 0;</code></pre>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-cyan-400">10:00</span> Atendimento a Incidentes
+            </h4>
+            <p class="text-neutral-300 text-sm">
+              Desenvolvedores reportam query lenta. DBA analisa plano de execução, identifica falta de índice,
+              cria índice apropriado e monitora melhoria.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-purple-400">11:30</span> Manutenção Planejada
+            </h4>
+            <p class="text-neutral-300 text-sm">
+              Executar reorganização de tabelas fragmentadas, coletar estatísticas desatualizadas,
+              revisar e implementar mudanças de DDL aprovadas.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-orange-400">14:00</span> Análise de Performance
+            </h4>
+            <p class="text-neutral-300 text-sm">
+              Revisar AWR report do dia anterior, identificar top SQL por tempo de CPU,
+              trabalhar com desenvolvedores para otimizar queries problemáticas.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-red-400">15:30</span> Reuniões e Planejamento
+            </h4>
+            <p class="text-neutral-300 text-sm">
+              Participar de reunião de mudanças, avaliar impacto de nova aplicação no banco,
+              estimar necessidade de recursos, planejar estratégia de migração.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-neutral-100 mb-2 flex items-center gap-2">
+              <span class="text-amber-400">17:00</span> Documentação e Automação
+            </h4>
+            <p class="text-neutral-300 text-sm">
+              Atualizar runbooks, criar scripts de automação para tarefas repetitivas,
+              documentar procedimentos de recovery, preparar relatórios gerenciais.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Habilidades Essenciais do DBA</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-blue-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-3">Habilidades Técnicas</h4>
+            <ul class="space-y-1 text-neutral-300 text-sm">
+              <li>✓ SQL avançado e PL/SQL</li>
+              <li>✓ Arquitetura Oracle Database</li>
+              <li>✓ Backup/Recovery com RMAN</li>
+              <li>✓ Performance Tuning</li>
+              <li>✓ Segurança e Auditoria</li>
+              <li>✓ RAC e Data Guard</li>
+              <li>✓ Shell scripting (Bash/PowerShell)</li>
+              <li>✓ Sistemas operacionais (Linux/Windows)</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-3">Habilidades Comportamentais</h4>
+            <ul class="space-y-1 text-neutral-300 text-sm">
+              <li>✓ Resolução de problemas sob pressão</li>
+              <li>✓ Comunicação clara e técnica</li>
+              <li>✓ Trabalho em equipe</li>
+              <li>✓ Gestão de tempo e prioridades</li>
+              <li>✓ Atenção a detalhes</li>
+              <li>✓ Aprendizado contínuo</li>
+              <li>✓ Pensamento crítico e analítico</li>
+              <li>✓ Paciência e persistência</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Carreira e Progressão Profissional</h3>
+
+        <div class="space-y-4 mb-6">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">DBA Júnior (0-2 anos)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Atua sob supervisão, executa tarefas básicas: monitoramento, backups de rotina, criação de usuários,
+              suporte básico a desenvolvedores. Foco em aprender e ganhar experiência.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Faixa salarial (Brasil):</strong> R$ 4.000 - R$ 7.000
+            </p>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">DBA Pleno (2-5 anos)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Trabalha com autonomia, resolve problemas complexos, participa de projetos de migração/atualização,
+              otimiza performance, implementa alta disponibilidade. Já possui certificação OCA ou OCP.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Faixa salarial (Brasil):</strong> R$ 8.000 - R$ 14.000
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">DBA Sênior (5+ anos)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Especialista técnico, lidera projetos críticos, arquiteta soluções de alta disponibilidade,
+              mentora DBAs júnior/pleno, participa de decisões estratégicas. Certificação OCP ou OCM.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Faixa salarial (Brasil):</strong> R$ 15.000 - R$ 25.000+
+            </p>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">Arquiteto de Banco de Dados / Especialista</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Profissional de nível mais alto, projeta arquiteturas corporativas, define padrões e políticas,
+              resolve problemas extremamente complexos, lidera transformação digital.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Faixa salarial (Brasil):</strong> R$ 20.000 - R$ 40.000+
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Certificações Oracle</h3>
+        <p class="text-neutral-300 mb-4">
+          As certificações Oracle validam suas habilidades e aumentam significativamente empregabilidade e salário:
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-blue-400">OCA - Oracle Certified Associate</h4>
+              <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">Nível Básico</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Certifica conhecimentos fundamentais de SQL e administração Oracle. Ideal para iniciantes.
+              Requer aprovação em 1-2 exames (depende da versão do Oracle).
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Impacto salarial:</strong> +15-20% em relação a não certificados
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-cyan-400">OCP - Oracle Certified Professional</h4>
+              <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded-full">Nível Avançado</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Certifica habilidades avançadas em administração, backup/recovery, performance tuning.
+              Requer OCA + exame adicional ou curso oficial Oracle.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Impacto salarial:</strong> +25-35% em relação a não certificados
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-purple-400">OCM - Oracle Certified Master</h4>
+              <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">Nível Expert</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              A certificação mais avançada da Oracle. Requer OCP + curso oficial presencial + exame prático hands-on.
+              Menos de 1% dos DBAs têm OCM. Elite da profissão.
+            </p>
+            <p class="text-neutral-400 text-sm">
+              <strong>Impacto salarial:</strong> +50-80% em relação a não certificados
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-lg p-6 border border-blue-500/30 mt-6">
+          <h4 class="font-semibold text-neutral-100 mb-2 text-center">Por que se certificar?</h4>
+          <ul class="text-neutral-300 text-sm space-y-1">
+            <li>✓ Validação internacional de competência técnica</li>
+            <li>✓ Diferencial competitivo em processos seletivos</li>
+            <li>✓ Aumento salarial comprovado</li>
+            <li>✓ Networking com comunidade Oracle global</li>
+            <li>✓ Acesso a recursos exclusivos e eventos Oracle</li>
+            <li>✓ Reconhecimento profissional e credibilidade</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl border border-blue-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-blue-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Sobre o Curso</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+        <span>Próximo: Roteiro de Estudos</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 0: Introdução - Tópico 2</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

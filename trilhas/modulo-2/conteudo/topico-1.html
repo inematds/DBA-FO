@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitetura do Oracle Database | Trilha 2 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-cyan-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-cyan-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 2</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 1</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-cyan-400">1</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Arquitetura do Oracle Database</h1>
+          <p class="text-neutral-400">Instância, SGA, PGA, processos de background</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Conceitos Fundamentais</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é a Arquitetura Oracle?</h3>
+        <p class="text-neutral-300 mb-4">
+          A arquitetura do Oracle Database é composta por duas partes principais que trabalham juntas para fornecer um sistema de gerenciamento
+          de dados robusto e escalável: a <strong class="text-cyan-400">Instância</strong> e o <strong class="text-cyan-400">Banco de Dados</strong>.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          Entender essa arquitetura é fundamental para qualquer DBA, pois permite diagnosticar problemas, otimizar desempenho
+          e tomar decisões informadas sobre configuração e manutenção.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Componentes Principais:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Instância Oracle:</strong> Estrutura de memória (SGA + PGA) e processos em background</li>
+            <li><strong>Banco de Dados:</strong> Arquivos físicos (datafiles, control files, redo logs)</li>
+            <li><strong>Processos de Background:</strong> SMON, PMON, DBWn, LGWR, CKPT, ARCn</li>
+            <li><strong>Áreas de Memória:</strong> Buffer Cache, Shared Pool, Large Pool, Java Pool</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Instância vs Banco de Dados</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-cyan-900/20 p-4 rounded-xl border border-cyan-500/30">
+            <h4 class="font-bold text-cyan-400 mb-3">Instância (Instance)</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Estruturas de <strong>memória (RAM)</strong> e processos em background que gerenciam o acesso aos dados.
+              É <strong>volátil</strong> - desaparece quando o banco é desligado.
+            </p>
+            <div class="bg-dark-700/50 rounded p-2">
+              <p class="text-xs text-neutral-400">SGA + PGA + Processos de Background</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-900/20 p-4 rounded-xl border border-purple-500/30">
+            <h4 class="font-bold text-purple-400 mb-3">Banco de Dados (Database)</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              Conjunto de <strong>arquivos físicos</strong> armazenados em disco que contêm os dados reais.
+              É <strong>persistente</strong> - permanece mesmo com o banco desligado.
+            </p>
+            <div class="bg-dark-700/50 rounded p-2">
+              <p class="text-xs text-neutral-400">Datafiles + Control Files + Redo Logs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: SGA (System Global Area) -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">💾</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">SGA - System Global Area</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é a SGA?</h3>
+        <p class="text-neutral-300 mb-4">
+          A <strong class="text-cyan-400">SGA (System Global Area)</strong> é a área de memória compartilhada mais importante
+          da instância Oracle. Todos os processos de servidor e background podem acessá-la. O tamanho da SGA é um dos
+          principais fatores que afetam o desempenho do banco de dados.
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">Database Buffer Cache</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Armazena cópias de blocos de dados lidos dos datafiles. Quando você faz um SELECT, o Oracle primeiro
+              procura os dados aqui antes de ir ao disco.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Reduz drasticamente o I/O de disco (muito mais lento que memória)</li>
+              <li>Usa algoritmo LRU (Least Recently Used) para gerenciar espaço</li>
+              <li>Parâmetro: <code>DB_CACHE_SIZE</code></li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Shared Pool</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Armazena comandos SQL compilados (cursores), planos de execução e metadados do dicionário de dados.
+              Essencial para evitar recompilações custosas.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>Library Cache:</strong> SQL e PL/SQL já analisados e compilados</li>
+              <li><strong>Data Dictionary Cache:</strong> informações sobre tabelas, índices, usuários</li>
+              <li>Parâmetro: <code>SHARED_POOL_SIZE</code></li>
+            </ul>
+          </div>
+
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">Redo Log Buffer</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Buffer circular que armazena informações sobre mudanças (redo entries) antes de serem escritas nos redo log files.
+              Crítico para recuperação de falhas.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Toda mudança (INSERT, UPDATE, DELETE) gera uma entrada de redo</li>
+              <li>O processo LGWR escreve do buffer para os arquivos de redo log</li>
+              <li>Parâmetro: <code>LOG_BUFFER</code></li>
+            </ul>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Large Pool</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Área opcional usada para operações que necessitam grandes alocações de memória, como backup/recovery (RMAN)
+              e operações paralelas.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Alivia pressão do Shared Pool</li>
+              <li>Parâmetro: <code>LARGE_POOL_SIZE</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Visualizando a SGA</h3>
+        <pre><code class="language-sql">-- Ver tamanho total da SGA
+SELECT * FROM V$SGA;
+
+-- Ver componentes da SGA em detalhes
+SELECT
+    component,
+    current_size/1024/1024 AS size_mb,
+    min_size/1024/1024 AS min_size_mb,
+    max_size/1024/1024 AS max_size_mb
+FROM V$SGA_DYNAMIC_COMPONENTS
+ORDER BY current_size DESC;
+
+-- Ver parâmetros de memória
+SHOW PARAMETER SGA;
+SHOW PARAMETER MEMORY_TARGET;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: PGA (Program Global Area) -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🔒</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">PGA - Program Global Area</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Memória Privada de Cada Sessão</h3>
+        <p class="text-neutral-300 mb-4">
+          A <strong class="text-purple-400">PGA (Program Global Area)</strong> é uma área de memória <strong>privada</strong>
+          alocada para cada processo de servidor ou sessão. Diferente da SGA, a PGA não é compartilhada entre sessões.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Principais Usos da PGA:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Sort Area:</strong> Ordenação de dados (ORDER BY, GROUP BY, DISTINCT)</li>
+            <li><strong>Hash Area:</strong> Operações de hash joins</li>
+            <li><strong>Session Memory:</strong> Variáveis de sessão, cursores privados</li>
+            <li><strong>SQL Work Areas:</strong> Operações de bitmap, merge joins</li>
+          </ul>
+        </div>
+
+        <div class="bg-purple-900/20 rounded-lg p-4 border border-purple-500/30">
+          <h4 class="font-semibold text-purple-400 mb-2">Gerenciamento Automático</h4>
+          <p class="text-neutral-300 text-sm mb-2">
+            O Oracle pode gerenciar automaticamente a PGA através do parâmetro <code>PGA_AGGREGATE_TARGET</code>,
+            que define o total de memória PGA disponível para todas as sessões.
+          </p>
+          <pre><code class="language-sql">-- Configurar gerenciamento automático de PGA
+ALTER SYSTEM SET PGA_AGGREGATE_TARGET = 2G SCOPE=BOTH;
+
+-- Ver uso atual de PGA
+SELECT
+    name,
+    value/1024/1024 AS mb
+FROM V$PGASTAT
+WHERE name IN ('aggregate PGA target parameter',
+               'aggregate PGA auto target',
+               'total PGA allocated');</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: Processos de Background -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">⚙️</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Processos de Background</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Processos Essenciais</h3>
+        <p class="text-neutral-300 mb-4">
+          Os processos de background são executados automaticamente quando a instância é iniciada.
+          Cada um tem uma função específica na manutenção e operação do banco de dados.
+        </p>
+
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded text-xs font-mono font-bold">DBWn</span>
+              <h4 class="font-semibold text-neutral-100">Database Writer</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Escreve blocos modificados (dirty blocks) do buffer cache para os datafiles. Pode haver múltiplos
+              processos (DBW0, DBW1, etc.) para aumentar desempenho.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs font-mono font-bold">LGWR</span>
+              <h4 class="font-semibold text-neutral-100">Log Writer</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Escreve entradas do redo log buffer para os arquivos de redo log online. É crítico - se o LGWR falhar,
+              a instância é abortada. Escreve quando: há COMMIT, buffer está 1/3 cheio, ou a cada 3 segundos.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-mono font-bold">CKPT</span>
+              <h4 class="font-semibold text-neutral-100">Checkpoint</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Sinaliza o DBWn para escrever todos os blocos modificados no disco e atualiza os headers dos datafiles
+              e control files com informações de checkpoint. Reduz o tempo de recovery.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded text-xs font-mono font-bold">SMON</span>
+              <h4 class="font-semibold text-neutral-100">System Monitor</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Realiza recuperação da instância no startup (se necessário), limpa segmentos temporários não utilizados,
+              e coalesca espaço livre em tablespaces.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs font-mono font-bold">PMON</span>
+              <h4 class="font-semibold text-neutral-100">Process Monitor</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Monitora processos de usuário. Se um processo falha, o PMON faz a limpeza: libera locks, rollback
+              de transações não commitadas, libera recursos da SGA.
+            </p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 bg-amber-500/20 text-amber-400 rounded text-xs font-mono font-bold">ARCn</span>
+              <h4 class="font-semibold text-neutral-100">Archiver (Opcional)</h4>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Copia redo log files cheios para um destino de arquivamento (archive logs). Necessário para backup
+              completo e point-in-time recovery. Só existe se o banco estiver em modo ARCHIVELOG.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Visualizando Processos de Background</h3>
+        <pre><code class="language-sql">-- Ver todos os processos de background ativos
+SELECT
+    paddr,
+    name,
+    description
+FROM V$BGPROCESS
+WHERE paddr != '00'
+ORDER BY name;
+
+-- Ver processos do sistema operacional (no Linux/Unix)
+-- Execute no terminal, não no SQL
+!ps -ef | grep ora_</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 5: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Diagnóstico da Instância</h3>
+
+        <pre><code class="language-sql">-- Ver informações gerais da instância
+SELECT
+    instance_name,
+    host_name,
+    version,
+    startup_time,
+    status,
+    database_status,
+    instance_role,
+    archiver,
+    logins
+FROM V$INSTANCE;
+
+-- Ver uso de memória da SGA
+SELECT
+    ROUND(SUM(value)/1024/1024, 2) AS sga_size_mb
+FROM V$SGA;
+
+-- Ver componentes individuais da SGA
+SELECT
+    pool,
+    name,
+    ROUND(bytes/1024/1024, 2) AS size_mb
+FROM V$SGASTAT
+WHERE pool IS NOT NULL
+ORDER BY pool, bytes DESC;
+
+-- Verificar se há contenção de memória
+SELECT
+    name,
+    value
+FROM V$SYSSTAT
+WHERE name IN (
+    'physical reads',
+    'db block gets',
+    'consistent gets'
+);
+
+-- Buffer cache hit ratio (deve ser > 90%)
+SELECT
+    ROUND((1 - (phys.value / (cons.value + gets.value))) * 100, 2) AS buffer_hit_ratio
+FROM
+    V$SYSSTAT phys,
+    V$SYSSTAT cons,
+    V$SYSSTAT gets
+WHERE
+    phys.name = 'physical reads'
+    AND cons.name = 'consistent gets'
+    AND gets.name = 'db block gets';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Ajustando Parâmetros de Memória</h3>
+
+        <pre><code class="language-sql">-- Ver parâmetros de memória atuais
+SHOW PARAMETER MEMORY;
+SHOW PARAMETER SGA;
+SHOW PARAMETER PGA;
+
+-- Habilitar gerenciamento automático de memória (AMM)
+-- Requer restart da instância
+ALTER SYSTEM SET MEMORY_TARGET = 4G SCOPE=SPFILE;
+ALTER SYSTEM SET MEMORY_MAX_TARGET = 4G SCOPE=SPFILE;
+
+-- Ou gerenciamento automático apenas da SGA (ASMM)
+ALTER SYSTEM SET SGA_TARGET = 3G SCOPE=BOTH;
+ALTER SYSTEM SET PGA_AGGREGATE_TARGET = 1G SCOPE=BOTH;
+
+-- Desabilitar AMM e configurar manualmente
+ALTER SYSTEM SET MEMORY_TARGET = 0 SCOPE=SPFILE;
+ALTER SYSTEM SET SGA_TARGET = 0 SCOPE=SPFILE;
+ALTER SYSTEM SET DB_CACHE_SIZE = 2G SCOPE=SPFILE;
+ALTER SYSTEM SET SHARED_POOL_SIZE = 800M SCOPE=SPFILE;
+ALTER SYSTEM SET LARGE_POOL_SIZE = 200M SCOPE=SPFILE;
+
+-- SCOPE options:
+-- MEMORY: apenas na instância atual (perdido no restart)
+-- SPFILE: gravado no arquivo de parâmetros (usado no próximo startup)
+-- BOTH: aplicado imediatamente E gravado no SPFILE</code></pre>
+      </div>
+    </section>
+
+    <!-- Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Diferenciar Instância e Database</h4>
+                <p class="text-neutral-400 text-sm">Compreender a separação entre estruturas de memória e arquivos físicos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Conhecer componentes da SGA</h4>
+                <p class="text-neutral-400 text-sm">Identificar Buffer Cache, Shared Pool, Redo Log Buffer</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Entender o papel da PGA</h4>
+                <p class="text-neutral-400 text-sm">Saber quando e como a memória privada é utilizada</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Identificar processos críticos</h4>
+                <p class="text-neutral-400 text-sm">DBWn, LGWR, CKPT, SMON, PMON e suas funções</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Consultar views de performance</h4>
+                <p class="text-neutral-400 text-sm">Usar V$SGA, V$PGASTAT, V$BGPROCESS, V$INSTANCE</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-cyan-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Ajustar parâmetros de memória</h4>
+                <p class="text-neutral-400 text-sm">Configurar MEMORY_TARGET, SGA_TARGET, PGA_AGGREGATE_TARGET</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 rounded-xl border border-cyan-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="index.html" class="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Voltar ao Índice</span>
+      </a>
+      <a href="topico-2.html" class="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+        <span>Próximo: Instalação do Oracle</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 2: Administração Básica Oracle - Tópico 1</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

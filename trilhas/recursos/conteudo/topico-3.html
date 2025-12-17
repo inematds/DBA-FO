@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links e Referências Essenciais | Recursos | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-amber-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-amber-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Recursos</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 3</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-amber-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Links e Referências Essenciais</h1>
+          <p class="text-neutral-400">Documentação Oracle, comunidades e ferramentas</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Documentação Oficial -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📚</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Documentação Oficial Oracle</h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Oracle Documentation -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📖</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-amber-400">Oracle Database Documentation</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Biblioteca completa de documentação oficial Oracle, incluindo guias de administração,
+                referências SQL, conceitos, tutoriais e release notes.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+                <span class="px-3 py-2 bg-dark-700 text-neutral-400 rounded-lg text-xs">docs.oracle.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Database Administrator's Guide -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">👨‍💼</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-cyan-400">Database Administrator's Guide</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Guia fundamental para administração: gerenciamento de instâncias, tablespaces,
+                usuários, segurança, backup/recovery, performance tuning.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admin/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+                <span class="px-3 py-2 bg-dark-700 text-neutral-400 rounded-lg text-xs">Versão 19c</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SQL Language Reference -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📝</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-emerald-400">SQL Language Reference</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Referência completa da linguagem SQL Oracle: sintaxe de todos os comandos,
+                funções, operadores e exemplos práticos.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+                <span class="px-3 py-2 bg-dark-700 text-neutral-400 rounded-lg text-xs">Essencial</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PL/SQL Language Reference -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">⚙️</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-purple-400">PL/SQL Language Reference</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Documentação completa da linguagem PL/SQL: procedures, functions, packages,
+                triggers, collections e tratamento de exceções.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance Tuning Guide -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">⚡</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-orange-400">Performance Tuning Guide</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Guia oficial de otimização: análise de AWR, tunning de SQL, ajustes de memória,
+                índices, estatísticas e melhores práticas de performance.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/tgdba/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+                <span class="px-3 py-2 bg-dark-700 text-neutral-400 rounded-lg text-xs">Avançado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backup and Recovery User's Guide -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">💾</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2 text-red-400">Backup and Recovery User's Guide</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Guia completo de RMAN (Recovery Manager): estratégias de backup, recovery,
+                duplicate database, flashback e disaster recovery.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
+                  Acessar
+                </a>
+                <span class="px-3 py-2 bg-dark-700 text-neutral-400 rounded-lg text-xs">Crítico</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Comunidades e Fóruns -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">👥</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Comunidades e Fóruns</h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Oracle Community -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🌐</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle Community</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Fórum oficial da Oracle. Tire dúvidas, compartilhe experiências e aprenda com
+                especialistas Oracle do mundo todo.
+              </p>
+              <a href="https://community.oracle.com/customerconnect/categories/database" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stack Overflow -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">💬</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Stack Overflow - Oracle Tag</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Milhares de perguntas e respostas sobre Oracle Database. Excelente para
+                troubleshooting e soluções rápidas.
+              </p>
+              <a href="https://stackoverflow.com/questions/tagged/oracle" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reddit r/oracle -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🔴</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Reddit r/oracle</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Comunidade ativa de DBAs Oracle no Reddit. Discussões, dicas, troubleshooting
+                e novidades sobre Oracle Database.
+              </p>
+              <a href="https://www.reddit.com/r/oracle/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle ACE Program -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🏆</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle ACE Program</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Conheça especialistas Oracle reconhecidos pela comunidade (Oracle ACEs).
+                Siga seus blogs e apresentações para aprender com os melhores.
+              </p>
+              <a href="https://ace.oracle.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Blogs e Sites Técnicos -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✍️</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Blogs e Sites Técnicos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- AskTOM -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🎓</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">AskTOM</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Site oficial onde especialistas Oracle (incluindo Tom Kyte) respondem perguntas
+                técnicas detalhadas sobre Oracle Database.
+              </p>
+              <a href="https://asktom.oracle.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle Base -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📘</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle-Base.com</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Site de Tim Hall (Oracle ACE Director) com artigos, tutoriais e scripts
+                sobre Oracle Database, RAC, Data Guard e mais.
+              </p>
+              <a href="https://oracle-base.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle LiveSQL -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">💻</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle LiveSQL</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Ambiente online gratuito para executar SQL e PL/SQL sem instalar nada.
+                Inclui tutoriais interativos e scripts de exemplo.
+              </p>
+              <a href="https://livesql.oracle.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle Blogs -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📰</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle Blogs</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Blogs oficiais da Oracle com novidades, best practices, case studies e
+                anúncios de novas funcionalidades.
+              </p>
+              <a href="https://blogs.oracle.com/database/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: Ferramentas -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Ferramentas Essenciais</h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- SQL Developer -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🖥️</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle SQL Developer</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                IDE gratuita da Oracle para desenvolvimento e administração. Suporta SQL,
+                PL/SQL, modelagem de dados, import/export e muito mais.
+              </p>
+              <a href="https://www.oracle.com/database/sqldeveloper/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OEM Express -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📊</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle Enterprise Manager (OEM)</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Ferramenta de gerenciamento e monitoramento de bancos Oracle. OEM Express
+                vem incluído gratuitamente com Oracle Database.
+              </p>
+              <div class="bg-dark-700 rounded-lg p-3 mt-2">
+                <p class="text-neutral-400 text-xs">
+                  Acesse via: https://hostname:5500/em
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APEX -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🚀</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle APEX</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Plataforma low-code para desenvolvimento rápido de aplicações web.
+                Gratuito e totalmente integrado ao Oracle Database.
+              </p>
+              <a href="https://apex.oracle.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- DBeaver -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🦫</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">DBeaver</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Cliente SQL universal e gratuito (open-source). Suporta Oracle e diversos
+                outros bancos de dados com interface moderna.
+              </p>
+              <a href="https://dbeaver.io/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 5: Certificação e Treinamento -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🎓</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Certificação e Treinamento</h2>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Oracle University -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">🏫</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle University</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Treinamentos oficiais Oracle e informações sobre certificações OCA, OCP e OCM.
+              </p>
+              <a href="https://education.oracle.com/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oracle Learning Library -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">📚</span>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold mb-2">Oracle Learning Library</h3>
+              <p class="text-neutral-300 text-sm mb-3">
+                Vídeos, tutoriais e workshops gratuitos sobre Oracle Database e tecnologias relacionadas.
+              </p>
+              <a href="https://apexapps.oracle.com/pls/apex/f?p=44785:1" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Acessar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dicas -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">💡</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Dicas para Aproveitar os Recursos</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Organize seus favoritos</h4>
+              <p class="text-neutral-300 text-sm">Crie uma pasta "Oracle DBA" no seu navegador com todos esses links.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Consulte a documentação ANTES de implementar</h4>
+              <p class="text-neutral-300 text-sm">Sempre verifique a doc oficial antes de fazer mudanças em produção.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Participe de comunidades</h4>
+              <p class="text-neutral-300 text-sm">Contribua respondendo dúvidas e compartilhando experiências.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Siga especialistas</h4>
+              <p class="text-neutral-300 text-sm">Acompanhe Oracle ACEs no Twitter/LinkedIn para ficar atualizado.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 mt-1">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Mantenha-se atualizado</h4>
+              <p class="text-neutral-300 text-sm">Leia release notes de novas versões e acompanhe mudanças importantes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-xl border border-amber-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue explorando</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-amber-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Diagramas</span>
+      </a>
+      <a href="index.html" class="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+        <span>Voltar ao Índice</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Recursos - Links e Referências</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

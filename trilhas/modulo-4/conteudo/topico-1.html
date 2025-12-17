@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnóstico com AWR e ASH | Trilha 4 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-orange-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-orange-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 4</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 1</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-orange-400">1</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Diagnóstico com AWR e ASH</h1>
+          <p class="text-neutral-400">AWR reports, ASH, ADDM, Statspack</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">AWR - Automatic Workload Repository</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-orange-400">AWR</strong> é o repositório centralizado de estatísticas de performance do Oracle.
+          A cada hora (padrão), um snapshot é tirado automaticamente, capturando métricas de CPU, I/O, SQL,
+          sessões, waits e muito mais. Esses snapshots são armazenados no banco por 8 dias (padrão).
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Componentes do AWR:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>Snapshots:</strong> Capturas automáticas de estatísticas a cada hora</li>
+            <li><strong>Baselines:</strong> Períodos de referência (ex: horário normal de operação)</li>
+            <li><strong>AWR Reports:</strong> Relatórios comparando dois snapshots</li>
+            <li><strong>Tabelas DBA_HIST_*:</strong> Armazenam histórico de estatísticas</li>
+            <li><strong>MMON:</strong> Processo de background que coleta os dados</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">ASH - Active Session History</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-orange-400">ASH</strong> registra informações detalhadas sobre sessões ativas
+          a cada segundo. Captura: SQL sendo executado, evento de espera, objeto acessado, módulo/programa.
+          Mantém dados em memória (V$ACTIVE_SESSION_HISTORY) e persiste amostras no AWR (DBA_HIST_ACTIVE_SESS_HISTORY).
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-400 mb-2">V$ACTIVE_SESSION_HISTORY</h4>
+            <p class="text-neutral-300 text-sm">
+              Dados em <strong>memória</strong> (última hora). Use para análise em tempo real
+              de problemas de performance acontecendo agora.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-400 mb-2">DBA_HIST_ACTIVE_SESS_HISTORY</h4>
+            <p class="text-neutral-300 text-sm">
+              Dados <strong>persistidos</strong> (últimos 8 dias). Use para análise histórica
+              de problemas que ocorreram no passado.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">ADDM - Automatic Database Diagnostic Monitor</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-orange-400">ADDM</strong> é um advisor que analisa automaticamente dados do AWR
+          e identifica problemas de performance, suas causas e recomenda soluções priorizadas por impacto.
+        </p>
+
+        <div class="space-y-3">
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">Análise Automática</h4>
+            <p class="text-neutral-300 text-sm">
+              ADDM roda automaticamente após cada snapshot AWR, analisando o período entre snapshots.
+              Identifica top SQL, contenção de recursos, problemas de I/O, configuração inadequada.
+            </p>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Recomendações Priorizadas</h4>
+            <p class="text-neutral-300 text-sm">
+              Cada finding mostra: impacto em DB Time, recomendações específicas (criar índice,
+              ajustar parâmetro, fazer tuning de SQL) e benefício esperado.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Gerando AWR Reports</h3>
+
+        <pre><code class="language-sql">-- Conectar como SYSDBA
+CONNECT / AS SYSDBA
+
+-- Listar snapshots disponíveis (últimos 7 dias)
+SELECT snap_id, begin_interval_time, end_interval_time
+FROM dba_hist_snapshot
+ORDER BY snap_id DESC
+FETCH FIRST 20 ROWS ONLY;
+
+-- Gerar AWR Report via SQL*Plus (HTML)
+@?/rdbms/admin/awrrpt.sql
+
+-- Ou gerar via script direto
+@?/rdbms/admin/awrrpti.sql  -- para instância específica (RAC)
+
+-- Gerar AWR Report programaticamente
+SELECT output
+FROM TABLE(DBMS_WORKLOAD_REPOSITORY.AWR_REPORT_HTML(
+    l_dbid      => (SELECT dbid FROM v$database),
+    l_inst_num  => 1,
+    l_bid       => 1000,  -- Snapshot ID inicial
+    l_eid       => 1010   -- Snapshot ID final
+));
+
+-- Criar snapshot manual (útil antes/depois de mudanças)
+EXEC DBMS_WORKLOAD_REPOSITORY.CREATE_SNAPSHOT();
+
+-- Alterar intervalo de snapshot (padrão: 60 minutos)
+EXEC DBMS_WORKLOAD_REPOSITORY.MODIFY_SNAPSHOT_SETTINGS(
+    interval  => 30,   -- minutos
+    retention => 10080 -- minutos (7 dias)
+);
+
+-- Ver configurações atuais
+SELECT * FROM dba_hist_wr_control;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Analisando com ASH</h3>
+
+        <pre><code class="language-sql">-- Ver sessões ativas agora (última hora - memória)
+SELECT
+    sample_time,
+    session_id,
+    session_serial#,
+    user_id,
+    sql_id,
+    event,
+    wait_class,
+    current_obj#,
+    program,
+    module
+FROM v$active_session_history
+WHERE sample_time > SYSDATE - 1/24  -- última hora
+ORDER BY sample_time DESC;
+
+-- Top SQL por tempo de espera (últimas 24h - histórico)
+SELECT
+    sql_id,
+    COUNT(*) AS samples,
+    ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 2) AS pct_activity,
+    event,
+    wait_class
+FROM dba_hist_active_sess_history
+WHERE sample_time > SYSDATE - 1
+GROUP BY sql_id, event, wait_class
+ORDER BY samples DESC
+FETCH FIRST 10 ROWS ONLY;
+
+-- Identificar períodos de contenção (picos de espera)
+SELECT
+    TO_CHAR(sample_time, 'YYYY-MM-DD HH24:MI') AS minute,
+    wait_class,
+    COUNT(*) AS waits
+FROM dba_hist_active_sess_history
+WHERE sample_time BETWEEN TIMESTAMP '2025-12-17 14:00:00'
+                     AND TIMESTAMP '2025-12-17 15:00:00'
+GROUP BY TO_CHAR(sample_time, 'YYYY-MM-DD HH24:MI'), wait_class
+ORDER BY minute, waits DESC;
+
+-- Ver o que um SQL específico estava esperando
+SELECT
+    sample_time,
+    session_id,
+    event,
+    wait_class,
+    current_obj#,
+    (SELECT object_name FROM dba_objects WHERE object_id = current_obj#) AS object_name
+FROM v$active_session_history
+WHERE sql_id = 'g2xb5k8f3zp9n'
+ORDER BY sample_time DESC;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Consultando ADDM Reports</h3>
+
+        <pre><code class="language-sql">-- Listar ADDM tasks disponíveis
+SELECT
+    task_id,
+    task_name,
+    created,
+    status
+FROM dba_advisor_tasks
+WHERE advisor_name = 'ADDM'
+ORDER BY created DESC;
+
+-- Ver findings de um período específico
+SELECT
+    task_name,
+    finding_id,
+    type,
+    message,
+    impact,
+    ROUND(impact_value, 2) AS impact_seconds
+FROM dba_advisor_findings
+WHERE task_name = (
+    SELECT task_name
+    FROM dba_advisor_tasks
+    WHERE advisor_name = 'ADDM'
+    ORDER BY created DESC
+    FETCH FIRST 1 ROW ONLY
+)
+ORDER BY impact_value DESC;
+
+-- Ver recomendações do último ADDM
+SELECT
+    f.message AS finding,
+    r.type AS recommendation_type,
+    r.benefit_type,
+    a.message AS action_message,
+    a.command AS sql_to_execute
+FROM dba_advisor_findings f
+JOIN dba_advisor_recommendations r ON f.task_name = r.task_name
+                                   AND f.finding_id = r.finding_id
+LEFT JOIN dba_advisor_actions a ON r.task_name = a.task_name
+                                AND r.rec_id = a.rec_id
+WHERE f.task_name = (
+    SELECT task_name
+    FROM dba_advisor_tasks
+    WHERE advisor_name = 'ADDM'
+    ORDER BY created DESC
+    FETCH FIRST 1 ROW ONLY
+)
+ORDER BY f.impact_value DESC, r.rec_id;
+
+-- Gerar ADDM report manualmente para um período
+DECLARE
+    l_task_name VARCHAR2(100);
+BEGIN
+    l_task_name := 'ADDM_' || TO_CHAR(SYSDATE, 'YYYYMMDD_HH24MISS');
+
+    DBMS_ADVISOR.CREATE_TASK(
+        advisor_name => 'ADDM',
+        task_name    => l_task_name
+    );
+
+    DBMS_ADVISOR.SET_TASK_PARAMETER(
+        task_name => l_task_name,
+        parameter => 'START_SNAPSHOT',
+        value     => 1000
+    );
+
+    DBMS_ADVISOR.SET_TASK_PARAMETER(
+        task_name => l_task_name,
+        parameter => 'END_SNAPSHOT',
+        value     => 1010
+    );
+
+    DBMS_ADVISOR.EXECUTE_TASK(l_task_name);
+
+    DBMS_OUTPUT.PUT_LINE('ADDM task created: ' || l_task_name);
+END;
+/</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Competências a Dominar</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerar AWR Reports</h4>
+                <p class="text-neutral-400 text-sm">Criar relatórios comparando períodos, interpretar seções principais</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar ASH para troubleshooting</h4>
+                <p class="text-neutral-400 text-sm">Identificar o que sessões estavam fazendo em momentos específicos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Interpretar ADDM findings</h4>
+                <p class="text-neutral-400 text-sm">Entender recomendações e priorizar ações por impacto</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Analisar top SQL</h4>
+                <p class="text-neutral-400 text-sm">Identificar queries que mais consomem recursos</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Diagnosticar wait events</h4>
+                <p class="text-neutral-400 text-sm">Entender por que sessões estão esperando</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar coleta AWR</h4>
+                <p class="text-neutral-400 text-sm">Ajustar intervalo e retenção conforme necessidade</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Principais Seções de um AWR Report</h3>
+
+        <div class="space-y-3 text-sm">
+          <div class="bg-dark-700 rounded-lg p-3">
+            <strong class="text-orange-400">Load Profile:</strong>
+            <span class="text-neutral-300"> Transações/seg, SQL executions, redo size - indica volume de trabalho</span>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3">
+            <strong class="text-orange-400">Top Events:</strong>
+            <span class="text-neutral-300"> Principais wait events e % de DB Time - onde o banco gasta tempo</span>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3">
+            <strong class="text-orange-400">SQL Statistics:</strong>
+            <span class="text-neutral-300"> Top SQL por elapsed time, CPU, I/O, executions - queries problemáticas</span>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3">
+            <strong class="text-orange-400">Instance Efficiency:</strong>
+            <span class="text-neutral-300"> Hit ratios (buffer cache, library cache) - eficiência da memória</span>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3">
+            <strong class="text-orange-400">Segment Statistics:</strong>
+            <span class="text-neutral-300"> Objetos mais acessados - identifica hot objects</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Análise de Performance Histórica</h3>
+          <p class="text-neutral-300 mb-4">
+            O sistema estava lento ontem entre 14h e 15h. Use AWR e ASH para identificar a causa.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-orange-400 hover:text-orange-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. Identificar snapshot IDs do período
+SELECT snap_id, TO_CHAR(begin_interval_time, 'DD-MON HH24:MI')
+FROM dba_hist_snapshot
+WHERE begin_interval_time BETWEEN TIMESTAMP '2025-12-16 14:00:00'
+                             AND TIMESTAMP '2025-12-16 15:00:00'
+ORDER BY snap_id;
+
+-- 2. Top wait events no período
+SELECT event, wait_class, COUNT(*) AS waits
+FROM dba_hist_active_sess_history
+WHERE sample_time BETWEEN TIMESTAMP '2025-12-16 14:00:00'
+                     AND TIMESTAMP '2025-12-16 15:00:00'
+GROUP BY event, wait_class
+ORDER BY waits DESC
+FETCH FIRST 10 ROWS ONLY;
+
+-- 3. Top SQL no período
+SELECT sql_id, COUNT(*) AS samples
+FROM dba_hist_active_sess_history
+WHERE sample_time BETWEEN TIMESTAMP '2025-12-16 14:00:00'
+                     AND TIMESTAMP '2025-12-16 15:00:00'
+GROUP BY sql_id
+ORDER BY samples DESC
+FETCH FIRST 10 ROWS ONLY;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Monitoramento em Tempo Real</h3>
+          <p class="text-neutral-300 mb-4">
+            O banco está lento agora. Use V$ACTIVE_SESSION_HISTORY para descobrir o que está acontecendo.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-orange-400 hover:text-orange-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Sessions ativas e seus wait events
+SELECT
+    session_id,
+    sql_id,
+    event,
+    wait_class,
+    COUNT(*) AS occurrences
+FROM v$active_session_history
+WHERE sample_time > SYSDATE - INTERVAL '5' MINUTE
+GROUP BY session_id, sql_id, event, wait_class
+ORDER BY occurrences DESC;
+
+-- SQL Text dos top SQL IDs
+SELECT sql_id, sql_text
+FROM v$sql
+WHERE sql_id IN (
+    SELECT DISTINCT sql_id
+    FROM v$active_session_history
+    WHERE sample_time > SYSDATE - INTERVAL '5' MINUTE
+);</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-orange-900/30 to-cyan-900/30 rounded-xl border border-orange-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="index.html" class="flex items-center gap-2 text-neutral-400 hover:text-orange-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Voltar ao Índice</span>
+      </a>
+      <a href="topico-2.html" class="flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors">
+        <span>Próximo: Planos de Execução</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 4: Performance e Tuning - Tópico 1</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

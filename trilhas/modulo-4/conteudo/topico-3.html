@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otimização de Índices | Trilha 4 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-r from-orange-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-orange-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 4</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 3</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-orange-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Otimização de Índices</h1>
+          <p class="text-neutral-400">Tipos, criação, manutenção e quando usar</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-orange-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de Índices Oracle</h3>
+
+        <div class="space-y-4">
+          <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <h4 class="font-semibold text-orange-400 mb-2">B-Tree (Padrão)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Estrutura de árvore balanceada. Ideal para alta cardinalidade (muitos valores distintos).
+              Usado em 90% dos casos: colunas de ID, datas, nomes, códigos.
+            </p>
+            <pre><code class="language-sql">CREATE INDEX idx_employees_email ON employees(email);
+CREATE UNIQUE INDEX idx_emp_cpf ON employees(cpf);</code></pre>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Bitmap</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Para baixa cardinalidade (poucos valores distintos). Comum em Data Warehouse.
+              Não use em OLTP (alto custo de manutenção com INSERTs/UPDATEs).
+            </p>
+            <pre><code class="language-sql">-- Bom para: sexo (M/F), status (A/I), departamento (10 valores)
+CREATE BITMAP INDEX idx_emp_gender ON employees(gender);
+CREATE BITMAP INDEX idx_prod_category ON products(category_id);</code></pre>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">Function-Based</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Indexa resultado de função aplicada à coluna. Necessário quando query usa função no WHERE.
+            </p>
+            <pre><code class="language-sql">-- Para queries com UPPER(), LOWER(), TO_DATE(), etc
+CREATE INDEX idx_emp_upper_name ON employees(UPPER(name));
+CREATE INDEX idx_ord_year ON orders(EXTRACT(YEAR FROM order_date));</code></pre>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Composite (Múltiplas Colunas)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Índice em várias colunas. Ordem é CRÍTICA: coluna mais seletiva primeiro.
+              Usado em queries com múltiplos filtros.
+            </p>
+            <pre><code class="language-sql">-- Para: WHERE dept_id = 10 AND status = 'A'
+CREATE INDEX idx_emp_dept_status ON employees(department_id, status);
+
+-- Ordem importa! Este índice serve para:
+-- WHERE department_id = X (usa índice)
+-- WHERE department_id = X AND status = Y (usa índice completo)
+-- WHERE status = Y (NÃO usa o índice - status não é a primeira coluna)</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Monitorando Índices</h3>
+
+        <pre><code class="language-sql">-- Ver todos os índices de uma tabela
+SELECT
+    index_name,
+    index_type,
+    uniqueness,
+    status,
+    num_rows,
+    distinct_keys,
+    blevel,                    -- Profundidade da árvore (ideal: 2-3)
+    leaf_blocks,               -- Blocos folha
+    clustering_factor          -- Quão organizado está (quanto menor, melhor)
+FROM dba_indexes
+WHERE table_name = 'EMPLOYEES';
+
+-- Ver colunas de cada índice
+SELECT
+    index_name,
+    column_name,
+    column_position,
+    descend
+FROM dba_ind_columns
+WHERE table_name = 'EMPLOYEES'
+ORDER BY index_name, column_position;
+
+-- Monitorar uso de índices (12c+)
+ALTER INDEX idx_employees_email MONITORING USAGE;
+
+-- Após algumas horas/dias, verificar
+SELECT * FROM v$object_usage WHERE index_name = 'IDX_EMPLOYEES_EMAIL';
+
+-- Identificar índices não usados (candidatos a DROP)
+SELECT
+    index_name,
+    table_name,
+    used,
+    start_monitoring,
+    end_monitoring
+FROM v$object_usage
+WHERE used = 'NO' AND monitoring = 'YES';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Manutenção de Índices</h3>
+
+        <pre><code class="language-sql">-- Verificar fragmentação
+SELECT
+    index_name,
+    blevel,                               -- > 4 indica problema
+    leaf_blocks,
+    (del_lf_rows / NULLIF(lf_rows, 0)) * 100 AS pct_deleted,  -- > 20% = fragmentado
+    height,
+    pct_used
+FROM dba_ind_statistics
+WHERE table_name = 'EMPLOYEES';
+
+-- Rebuild índice (recria estrutura, otimiza espaço)
+ALTER INDEX idx_employees_email REBUILD ONLINE;  -- ONLINE mantém acesso durante rebuild
+
+-- Rebuild em paralelo (mais rápido)
+ALTER INDEX idx_employees_dept REBUILD ONLINE PARALLEL 4;
+ALTER INDEX idx_employees_dept NOPARALLEL;  -- Volta ao padrão após rebuild
+
+-- Coalesce (reorganiza sem recriar - mais rápido que rebuild)
+ALTER INDEX idx_employees_email COALESCE;
+
+-- Rebuild de todos os índices de uma tablespace
+SELECT 'ALTER INDEX ' || index_name || ' REBUILD ONLINE;'
+FROM dba_indexes
+WHERE tablespace_name = 'USERS'
+  AND status = 'VALID';
+
+-- Atualizar estatísticas de índices
+EXEC DBMS_STATS.GATHER_INDEX_STATS('SCHEMA_NAME', 'IDX_EMPLOYEES_EMAIL');
+
+-- Validar estrutura de índice
+ANALYZE INDEX idx_employees_email VALIDATE STRUCTURE;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Decisões: Criar ou Não Criar?</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Quando CRIAR índice</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Colunas em WHERE frequentes</li>
+              <li>Colunas de JOIN</li>
+              <li>Colunas de ORDER BY</li>
+              <li>Foreign Keys (sempre!)</li>
+              <li>Queries lentas com full scan</li>
+              <li>Tabelas grandes (>100k linhas)</li>
+              <li>Alta seletividade (retorna <5% da tabela)</li>
+            </ul>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">Quando NÃO criar índice</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Tabelas pequenas (<1000 linhas)</li>
+              <li>Colunas com baixa cardinalidade (OLTP)</li>
+              <li>Colunas raramente filtradas</li>
+              <li>Tabela com muitos INSERTs (overhead)</li>
+              <li>Query retorna >10% da tabela</li>
+              <li>Já existe índice composto que serve</li>
+              <li>Índice duplicado/redundante</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Regra de Ouro:</h4>
+          <p class="text-neutral-300 text-sm">
+            Índices aceleram SELECT mas tornam INSERT/UPDATE/DELETE mais lentos (overhead de manutenção).
+            Balanceie conforme workload: OLTP = poucos índices seletivos; DW = mais índices, inclusive bitmaps.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Escolher tipo correto</h4>
+                <p class="text-neutral-400 text-sm">B-tree, bitmap, function-based, composite</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar índices eficientes</h4>
+                <p class="text-neutral-400 text-sm">Ordem correta em composites, ONLINE rebuild</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Monitorar uso</h4>
+                <p class="text-neutral-400 text-sm">Identificar índices não utilizados</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Detectar fragmentação</h4>
+                <p class="text-neutral-400 text-sm">BLEVEL, deleted entries, clustering factor</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Fazer manutenção</h4>
+                <p class="text-neutral-400 text-sm">REBUILD, COALESCE quando necessário</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-orange-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Remover índices desnecessários</h4>
+                <p class="text-neutral-400 text-sm">Reduzir overhead de manutenção</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-orange-900/30 to-cyan-900/30 rounded-xl border border-orange-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Continue sua jornada</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-orange-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Planos de Execução</span>
+      </a>
+      <a href="topico-4.html" class="flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors">
+        <span>Próximo: Tuning de SQL</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 4: Performance e Tuning - Tópico 3</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

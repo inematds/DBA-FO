@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roteiro de Estudos | Trilha 0 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-blue-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 0</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 3</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-blue-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Roteiro de Estudos</h1>
+          <p class="text-neutral-400">Ordem recomendada, pré-requisitos e tempo estimado</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-blue-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Estrutura do Curso: As 6 Trilhas</h3>
+        <p class="text-neutral-300 mb-4">
+          O curso é organizado em <strong class="text-blue-400">trilhas progressivas e interdependentes</strong>.
+          Cada trilha é projetada para construir sobre os conhecimentos da anterior, formando uma base sólida
+          e completa para sua carreira como DBA Oracle.
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-gradient-to-r from-blue-900/20 to-blue-800/20 rounded-lg p-4 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-blue-400 flex items-center gap-2">
+                <span>🎯</span> Trilha 0 - Introdução
+              </h4>
+              <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">2 horas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Visão geral do curso, papel do DBA, carreira e roteiro de estudos.
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Nenhum | <strong>Objetivo:</strong> Orientação inicial
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-emerald-900/20 to-emerald-800/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-emerald-400 flex items-center gap-2">
+                <span>📊</span> Trilha 1 - Fundamentos de BD e SQL
+              </h4>
+              <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">4-6 semanas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Conceitos de BD relacional, modelagem ER, SQL Developer/SQL*Plus, linguagem SQL (DQL, DML, DDL, DCL),
+              comandos práticos (SELECT, INSERT, UPDATE, DELETE), JOINs, funções de agregação e subqueries.
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Trilha 0 | <strong>Objetivo:</strong> Dominar SQL
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-cyan-900/20 to-cyan-800/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-cyan-400 flex items-center gap-2">
+                <span>⚙️</span> Trilha 2 - Administração Básica
+              </h4>
+              <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded-full">6-8 semanas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Arquitetura Oracle (instância, SGA, PGA, processos), instalação, criação de database (DBCA),
+              startup/shutdown, parâmetros de inicialização (SPFILE/PFILE), gerenciamento de tablespaces e datafiles.
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Trilha 1 | <strong>Objetivo:</strong> Administrar bancos Oracle
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-purple-900/20 to-purple-800/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-purple-400 flex items-center gap-2">
+                <span>🔒</span> Trilha 3 - Segurança e Controle de Acesso
+              </h4>
+              <span class="px-3 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">4-5 semanas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Gerenciamento de usuários e schemas, privilégios de sistema e objeto, roles, perfis de senha/recursos,
+              auditoria e Oracle Audit Vault, criptografia (TDE).
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Trilha 2 | <strong>Objetivo:</strong> Implementar segurança robusta
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-orange-900/20 to-orange-800/20 rounded-lg p-4 border-l-4 border-orange-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-orange-400 flex items-center gap-2">
+                <span>⚡</span> Trilha 4 - Performance e Otimização
+              </h4>
+              <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs rounded-full">6-8 semanas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              SQL Tuning (planos de execução, hints, AWR, ASH), gerenciamento de índices, estatísticas,
+              monitoramento e diagnóstico, otimização de memória (SGA/PGA).
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Trilhas 2 e 3 | <strong>Objetivo:</strong> Otimizar performance
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-red-900/20 to-red-800/20 rounded-lg p-4 border-l-4 border-red-500">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-red-400 flex items-center gap-2">
+                <span>🛡️</span> Trilha 5 - Backup, Recovery e Alta Disponibilidade
+              </h4>
+              <span class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full">6-8 semanas</span>
+            </div>
+            <p class="text-neutral-300 text-sm mb-2">
+              Estratégias de backup, RMAN (Recovery Manager), tipos de recovery, Flashback Technologies,
+              Oracle Data Guard, Real Application Clusters (RAC), disaster recovery.
+            </p>
+            <p class="text-neutral-400 text-xs">
+              <strong>Pré-requisitos:</strong> Todas as trilhas anteriores | <strong>Objetivo:</strong> Garantir disponibilidade 24/7
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Por que seguir esta ordem?</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-blue-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-400 mb-2">Progressão Lógica</h4>
+            <p class="text-neutral-300 text-sm">
+              Cada trilha usa conceitos da anterior. Você não pode otimizar SQL sem conhecer SQL.
+              Não pode implementar backup sem entender arquitetura Oracle.
+            </p>
+          </div>
+          <div class="bg-cyan-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-2">Base Sólida</h4>
+            <p class="text-neutral-300 text-sm">
+              Começar pelos fundamentos garante que você não tenha lacunas de conhecimento.
+              DBAs com base fraca sofrem em situações complexas.
+            </p>
+          </div>
+          <div class="bg-purple-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Complexidade Crescente</h4>
+            <p class="text-neutral-300 text-sm">
+              RAC e Data Guard (Trilha 5) são tópicos avançados que exigem domínio completo
+              de administração, segurança e performance.
+            </p>
+          </div>
+          <div class="bg-orange-900/20 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-400 mb-2">Aplicação Imediata</h4>
+            <p class="text-neutral-300 text-sm">
+              Você poderá aplicar cada trilha concluída imediatamente no trabalho,
+              gerando valor antes mesmo de terminar o curso completo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Plano de Estudos Sugerido</h3>
+
+        <div class="space-y-6">
+          <div class="bg-dark-700 rounded-lg p-5">
+            <h4 class="font-semibold text-blue-400 mb-3">Cenário 1: Iniciante Total (4-6 meses)</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              <strong>Perfil:</strong> Sem experiência prévia com Oracle ou bancos de dados.<br>
+              <strong>Dedicação:</strong> 10-15 horas/semana
+            </p>
+            <div class="bg-dark-800 rounded p-3">
+              <ul class="space-y-2 text-neutral-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-400 mt-1">•</span>
+                  <div><strong>Semana 1:</strong> Trilha 0 completa + setup de ambiente Oracle XE</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-400 mt-1">•</span>
+                  <div><strong>Semanas 2-7:</strong> Trilha 1 (SQL) - 2 tópicos por semana + exercícios</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-cyan-400 mt-1">•</span>
+                  <div><strong>Semanas 8-15:</strong> Trilha 2 (Administração) - 1 tópico por semana + labs</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-purple-400 mt-1">•</span>
+                  <div><strong>Semanas 16-20:</strong> Trilha 3 (Segurança) - 1-2 tópicos por semana</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400 mt-1">•</span>
+                  <div><strong>Semanas 21-28:</strong> Trilha 4 (Performance) - 1 tópico por semana + prática intensiva</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-red-400 mt-1">•</span>
+                  <div><strong>Semanas 29-36:</strong> Trilha 5 (Backup/HA) - 1 tópico por semana + simulações</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-5">
+            <h4 class="font-semibold text-cyan-400 mb-3">Cenário 2: Com Base em SQL (3-4 meses)</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              <strong>Perfil:</strong> Conhece SQL básico, trabalha com bancos mas não como DBA.<br>
+              <strong>Dedicação:</strong> 12-18 horas/semana
+            </p>
+            <div class="bg-dark-800 rounded p-3">
+              <ul class="space-y-2 text-neutral-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-400 mt-1">•</span>
+                  <div><strong>Semana 1:</strong> Trilha 0 + revisão rápida da Trilha 1 (focar em tópicos novos)</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-cyan-400 mt-1">•</span>
+                  <div><strong>Semanas 2-8:</strong> Trilha 2 (Administração) - 1 tópico por semana</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-purple-400 mt-1">•</span>
+                  <div><strong>Semanas 9-12:</strong> Trilha 3 (Segurança) - 1-2 tópicos por semana</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400 mt-1">•</span>
+                  <div><strong>Semanas 13-19:</strong> Trilha 4 (Performance)</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-red-400 mt-1">•</span>
+                  <div><strong>Semanas 20-26:</strong> Trilha 5 (Backup/HA)</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-5">
+            <h4 class="font-semibold text-purple-400 mb-3">Cenário 3: Profissional com Experiência (2-3 meses)</h4>
+            <p class="text-neutral-300 text-sm mb-3">
+              <strong>Perfil:</strong> DBA de outro banco (SQL Server, PostgreSQL) ou DBA Oracle júnior.<br>
+              <strong>Dedicação:</strong> 15-20 horas/semana
+            </p>
+            <div class="bg-dark-800 rounded p-3">
+              <ul class="space-y-2 text-neutral-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-400 mt-1">•</span>
+                  <div><strong>Semana 1:</strong> Trilha 0 + scan rápido das Trilhas 1-2 (focar em particularidades Oracle)</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-purple-400 mt-1">•</span>
+                  <div><strong>Semanas 2-5:</strong> Trilha 3 (Segurança Oracle-específica)</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400 mt-1">•</span>
+                  <div><strong>Semanas 6-11:</strong> Trilha 4 (Performance Tuning Oracle)</div>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-red-400 mt-1">•</span>
+                  <div><strong>Semanas 12-18:</strong> Trilha 5 (RMAN, Data Guard, RAC - tópicos avançados)</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Dicas para Estudar Eficientemente</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="bg-blue-900/20 rounded-lg p-4 border-l-4 border-blue-500">
+              <h4 class="font-semibold text-blue-400 mb-2">1. Crie um Cronograma Realista</h4>
+              <p class="text-neutral-300 text-sm">
+                Seja honesto sobre seu tempo disponível. É melhor estudar 1h/dia consistentemente
+                do que 8h no fim de semana esporadicamente.
+              </p>
+            </div>
+
+            <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+              <h4 class="font-semibold text-cyan-400 mb-2">2. Monte seu Laboratório</h4>
+              <p class="text-neutral-300 text-sm">
+                Use Oracle XE (gratuito) ou Oracle Cloud Free Tier. Você PRECISA praticar em um banco real.
+                Não há atalhos aqui - experiência hands-on é essencial.
+              </p>
+            </div>
+
+            <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+              <h4 class="font-semibold text-purple-400 mb-2">3. Faça Todos os Exercícios</h4>
+              <p class="text-neutral-300 text-sm">
+                Os exercícios não são opcionais. Eles consolidam o aprendizado e expõem lacunas
+                de conhecimento que só leitura não revelaria.
+              </p>
+            </div>
+
+            <div class="bg-orange-900/20 rounded-lg p-4 border-l-4 border-orange-500">
+              <h4 class="font-semibold text-orange-400 mb-2">4. Use Revisão Espaçada</h4>
+              <p class="text-neutral-300 text-sm">
+                Revise tópicos anteriores regularmente. Use os flashcards para revisão rápida.
+                Conhecimento não revisado é esquecido rapidamente.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+              <h4 class="font-semibold text-emerald-400 mb-2">5. Documente Sua Jornada</h4>
+              <p class="text-neutral-300 text-sm">
+                Mantenha um caderno ou blog de estudos. Escrever sobre o que aprendeu reforça
+                o conhecimento e cria um recurso valioso para futuras consultas.
+              </p>
+            </div>
+
+            <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+              <h4 class="font-semibold text-red-400 mb-2">6. Participe da Comunidade</h4>
+              <p class="text-neutral-300 text-sm">
+                Fóruns Oracle, grupos LinkedIn, Oracle ACE community. Fazer networking e
+                compartilhar experiências acelera o aprendizado.
+              </p>
+            </div>
+
+            <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500">
+              <h4 class="font-semibold text-amber-400 mb-2">7. Não Pule Etapas</h4>
+              <p class="text-neutral-300 text-sm">
+                Resistir à tentação de pular para tópicos "mais interessantes". A ordem das trilhas
+                é cuidadosamente planejada. Lacunas de conhecimento aparecem depois.
+              </p>
+            </div>
+
+            <div class="bg-pink-900/20 rounded-lg p-4 border-l-4 border-pink-500">
+              <h4 class="font-semibold text-pink-400 mb-2">8. Aplique no Trabalho</h4>
+              <p class="text-neutral-300 text-sm">
+                Se possível, aplique o que aprende em projetos reais. Experiência prática
+                consolida conhecimento muito mais rápido que apenas estudar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Recursos de Apoio ao Estudo</h3>
+
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-blue-900/20 rounded-lg p-4 text-center">
+            <div class="text-3xl mb-2">🗂️</div>
+            <h4 class="font-semibold text-blue-400 mb-2">Flashcards</h4>
+            <p class="text-neutral-300 text-sm">
+              Conceitos-chave para memorização. Ideal para revisão rápida diária (10-15 min).
+            </p>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 text-center">
+            <div class="text-3xl mb-2">📝</div>
+            <h4 class="font-semibold text-cyan-400 mb-2">Quizzes</h4>
+            <p class="text-neutral-300 text-sm">
+              Teste seu conhecimento após cada trilha. Identifique pontos fracos para revisão.
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 text-center">
+            <div class="text-3xl mb-2">📚</div>
+            <h4 class="font-semibold text-purple-400 mb-2">Cheat Sheets</h4>
+            <p class="text-neutral-300 text-sm">
+              Referência rápida de comandos SQL, RMAN, parâmetros importantes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Ao Completar o Roteiro de Estudos</h3>
+
+        <div class="space-y-4 mb-6">
+          <div class="flex items-start gap-3">
+            <span class="text-blue-400 mt-1 text-xl">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Base Sólida e Completa</h4>
+              <p class="text-neutral-400 text-sm">
+                Você terá conhecimento estruturado e profundo de Oracle, sem lacunas críticas.
+                Capaz de atuar em qualquer área de DBA (produção, desenvolvimento, tunning).
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <span class="text-cyan-400 mt-1 text-xl">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Preparação para Certificação</h4>
+              <p class="text-neutral-400 text-sm">
+                Estará preparado para buscar OCA e OCP. O curso cobre todos os tópicos dos exames
+                de certificação Oracle Database Administrator.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <span class="text-purple-400 mt-1 text-xl">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Empregabilidade Elevada</h4>
+              <p class="text-neutral-400 text-sm">
+                DBAs Oracle qualificados estão sempre em demanda. Você terá habilidades valorizadas
+                pelo mercado em bancos, empresas de TI, consultorias.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <span class="text-orange-400 mt-1 text-xl">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Capacidade de Resolver Problemas Complexos</h4>
+              <p class="text-neutral-400 text-sm">
+                Domínio de troubleshooting, tunning, recovery. Confiança para enfrentar incidentes
+                críticos em produção e sair vitorioso.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <span class="text-red-400 mt-1 text-xl">✓</span>
+            <div>
+              <h4 class="font-semibold text-neutral-100">Evolução Contínua</h4>
+              <p class="text-neutral-400 text-sm">
+                Fundação para especializar-se: Cloud (Oracle Cloud Infrastructure), DevOps,
+                Big Data, ou avançar para arquitetura de soluções.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-lg p-6 border border-blue-500/30">
+          <h4 class="font-semibold text-neutral-100 mb-4 text-center text-lg">Linha do Tempo de Conclusão</h4>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+              <div class="text-4xl font-bold text-blue-400 mb-2">4-6</div>
+              <div class="text-sm text-neutral-300 mb-1">meses</div>
+              <div class="text-xs text-neutral-400">Iniciante total<br>(10-15h/semana)</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-bold text-cyan-400 mb-2">3-4</div>
+              <div class="text-sm text-neutral-300 mb-1">meses</div>
+              <div class="text-xs text-neutral-400">Com base em SQL<br>(12-18h/semana)</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-bold text-purple-400 mb-2">2-3</div>
+              <div class="text-sm text-neutral-300 mb-1">meses</div>
+              <div class="text-xs text-neutral-400">Profissional experiente<br>(15-20h/semana)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 rounded-xl border border-emerald-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-3 text-center">Pronto para Começar?</h3>
+        <p class="text-neutral-300 text-center mb-4">
+          Você agora entende a estrutura do curso, o caminho a seguir e o que esperar.
+          O próximo passo é mergulhar na Trilha 1 e começar sua jornada prática!
+        </p>
+        <div class="flex justify-center">
+          <a href="../../modulo-1/index.html" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2">
+            <span>Começar Trilha 1: Fundamentos SQL</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="mb-12">
+      <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl border border-blue-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-4 text-center">Navegação</h3>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="index.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            Ver Conteúdo Completo
+          </a>
+          <a href="../index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors flex items-center gap-2 border border-dark-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            Conteúdo Compacto
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-blue-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: O Papel do DBA</span>
+      </a>
+      <a href="../../modulo-1/conteudo/index.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próxima: Trilha 1</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 0: Introdução - Tópico 3</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

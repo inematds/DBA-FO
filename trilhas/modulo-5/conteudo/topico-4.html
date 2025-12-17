@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitetura MAA - Maximum Availability | Trilha 5 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-r from-red-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-red-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a><span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 5</a><span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a><span>/</span>
+        <span>Tópico 4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-red-400">4</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Arquitetura MAA - Maximum Availability Architecture</h1>
+          <p class="text-neutral-400">Best practices, combinando RAC + Data Guard + ASM</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">📖</span></div>
+        <h2 class="text-xl font-bold text-red-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é MAA?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-red-400">Maximum Availability Architecture (MAA)</strong> é o framework de best practices
+          da Oracle para design, implementação e operação de arquiteturas altamente disponíveis. Combina tecnologias
+          Oracle (RAC, Data Guard, ASM, Flashback, GoldenGate) com processos operacionais para eliminar downtime
+          e minimizar perda de dados.
+        </p>
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Objetivos MAA:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-2">
+            <li><strong>RTO (Recovery Time Objective):</strong> Tempo máximo de downtime aceitável (meta: minutos)</li>
+            <li><strong>RPO (Recovery Point Objective):</strong> Perda de dados aceitável (meta: zero)</li>
+            <li><strong>Disponibilidade 99.99%+:</strong> Menos de 1 hora de downtime por ano</li>
+            <li><strong>Proteção contra falhas:</strong> Hardware, software, site, humanas</li>
+            <li><strong>Manutenção online:</strong> Patches, upgrades sem parar aplicação</li>
+            <li><strong>Continuidade de negócio:</strong> Disaster recovery geográfico</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Arquitetura MAA Típica</h3>
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <pre class="text-neutral-300 text-sm">
+┌─────────────────────────────────────────────────────────────┐
+│                   DATACENTER PRIMÁRIO                       │
+│                                                             │
+│   ┌─────────────────────────────────────┐                  │
+│   │     Oracle RAC (2+ nós)             │                  │
+│   │  ┌─────────┐      ┌─────────┐      │                  │
+│   │  │ Nó 1    │      │ Nó 2    │      │                  │
+│   │  │ Inst 1  │◄────►│ Inst 2  │      │  Interconnect   │
+│   │  └────┬────┘      └────┬────┘      │  (Cache Fusion) │
+│   └───────┼────────────────┼───────────┘                  │
+│           │                │                               │
+│           └────────┬───────┘                               │
+│                    │                                        │
+│           ┌────────▼────────┐                              │
+│           │  ASM Storage    │                              │
+│           │  (Redundância)  │                              │
+│           └────────┬────────┘                              │
+│                    │ Redo Transport (SYNC/ASYNC)           │
+└────────────────────┼─────────────────────────────────────────┘
+                     │
+                     ▼ Network (Dedicated/WAN)
+┌─────────────────────────────────────────────────────────────┐
+│                 DATACENTER STANDBY (DR)                     │
+│                                                             │
+│   ┌─────────────────────────────────────┐                  │
+│   │  Data Guard Standby (Physical)      │                  │
+│   │  Opcional: RAC Standby (2+ nós)     │                  │
+│   │  ┌─────────┐      ┌─────────┐      │                  │
+│   │  │ Nó 1    │      │ Nó 2    │      │                  │
+│   │  │ Inst 1  │◄────►│ Inst 2  │      │  Active Data    │
+│   │  └────┬────┘      └────┬────┘      │  Guard (leitura)│
+│   └───────┼────────────────┼───────────┘                  │
+│           │                │                               │
+│           └────────┬───────┘                               │
+│                    │                                        │
+│           ┌────────▼────────┐                              │
+│           │  ASM Storage    │                              │
+│           │  (Redundância)  │                              │
+│           └─────────────────┘                              │
+└─────────────────────────────────────────────────────────────┘
+          </pre>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400 mb-2">Camadas de Proteção</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside">
+              <li><strong>Local HA:</strong> RAC protege contra falha de servidor</li>
+              <li><strong>Storage:</strong> ASM redundância + storage RAID</li>
+              <li><strong>DR Remoto:</strong> Data Guard em site separado</li>
+              <li><strong>Backup:</strong> RMAN para FRA e storage secundário</li>
+            </ul>
+          </div>
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Tecnologias Chave</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside">
+              <li><strong>RAC:</strong> Escala e HA local</li>
+              <li><strong>ASM:</strong> Storage resiliente e simplificado</li>
+              <li><strong>Data Guard:</strong> Proteção contra desastres</li>
+              <li><strong>Flashback:</strong> Recuperação de erros lógicos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Níveis de Disponibilidade MAA</h3>
+        <div class="space-y-3">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-semibold text-neutral-100">Bronze (99.9%)</h4>
+              <span class="text-amber-400 font-mono">~9h downtime/ano</span>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Single instance + RMAN backup. Sem redundância. RTO: horas, RPO: minutos-horas.
+              Adequado para ambientes não-críticos.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-semibold text-neutral-100">Silver (99.95%)</h4>
+              <span class="text-neutral-400 font-mono">~4h downtime/ano</span>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              Data Guard physical standby + RMAN. RTO: 1-2 horas, RPO: < 1 hora.
+              Proteção DR básica, boa para maioria dos ambientes.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-semibold text-neutral-100">Gold (99.99%)</h4>
+              <span class="text-emerald-400 font-mono">~1h downtime/ano</span>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              RAC primário + Data Guard standby + ASM. RTO: 5-30 minutos, RPO: zero (SYNC).
+              Recomendado para ambientes críticos de produção.
+            </p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-semibold text-neutral-100">Platinum (99.995%)</h4>
+              <span class="text-red-400 font-mono">< 30min downtime/ano</span>
+            </div>
+            <p class="text-neutral-300 text-sm">
+              RAC primário + RAC standby + ASM + Active Data Guard + Fast-Start Failover + GoldenGate.
+              RTO: < 5 minutos, RPO: zero. Para aplicações mission-critical (bancos, bolsas).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">🛠️</span></div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Best Practices MAA</h3>
+        <div class="space-y-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">1. Redundância em Todas as Camadas</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside space-y-1">
+              <li>Múltiplos servidores (RAC), múltiplos disks (ASM), múltiplos sites (DG)</li>
+              <li>Redes redundantes: interconnect, public network, redo transport</li>
+              <li>Power supplies, switches, storage controllers duplicados</li>
+              <li>Sem pontos únicos de falha (SPOF) em toda stack</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">2. Automação e Orquestração</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside space-y-1">
+              <li>Fast-Start Failover automático com Data Guard Observer</li>
+              <li>Application Continuity para replay de transações após failover</li>
+              <li>Connection pooling com detecção rápida de falhas (FAN events)</li>
+              <li>Scripts de recovery e runbooks documentados e testados</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">3. Monitoramento Proativo</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside space-y-1">
+              <li>Enterprise Manager (OEM) para monitoramento centralizado</li>
+              <li>Alertas automáticos para degradação antes de falhas</li>
+              <li>Dashboards de RTO/RPO, lag de replicação, performance</li>
+              <li>Health checks regulares e predição de falhas</li>
+            </ul>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">4. Testes Regulares</h4>
+            <ul class="text-neutral-300 text-sm list-disc list-inside space-y-1">
+              <li>Switchover planejado trimestral para validar DR</li>
+              <li>Testes de failover não-planejado (chaos engineering)</li>
+              <li>Validação de backups com restore completo</li>
+              <li>Simulações de desastres e war games com equipe</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Configuração MAA Gold (Exemplo)</h3>
+        <pre><code class="language-sql">-- Arquitetura Gold: 2-node RAC Primary + 1-node Standby
+
+-- PRIMARY SITE (RAC 2 nós)
+-- Disk Groups ASM:
+--   DATA (NORMAL redundancy): datafiles, control files
+--   FRA (NORMAL redundancy): archive logs, backups
+--   REDO (EXTERNAL redundancy): redo logs em storage de alta performance
+
+-- Parâmetros críticos no PRIMARY:
+ALTER SYSTEM SET cluster_database=TRUE SCOPE=SPFILE;
+ALTER SYSTEM SET log_archive_dest_1='LOCATION=+FRA VALID_FOR=(ALL_LOGFILES,ALL_ROLES)';
+ALTER SYSTEM SET log_archive_dest_2='SERVICE=standbydb SYNC AFFIRM VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=standbydb';
+ALTER SYSTEM SET log_archive_dest_state_2=ENABLE;
+ALTER SYSTEM SET log_archive_max_processes=8;
+ALTER SYSTEM SET db_flashback_retention_target=4320; -- 3 dias
+ALTER DATABASE FLASHBACK ON;
+
+-- STANDBY SITE (single instance ou RAC)
+-- Configuração Data Guard Broker
+CREATE CONFIGURATION maa_dg AS PRIMARY DATABASE IS proddb CONNECT IDENTIFIER IS proddb_scan;
+ADD DATABASE standbydb AS CONNECT IDENTIFIER IS standbydb MAINTAINED AS PHYSICAL;
+ENABLE CONFIGURATION;
+
+-- Habilitar Fast-Start Failover
+ENABLE FAST_START FAILOVER CONDITION "Corrupted Controlfile";
+ENABLE FAST_START FAILOVER CONDITION "Corrupted Dictionary";
+ENABLE FAST_START FAILOVER CONDITION "Datafile Offline";
+SET FAST_START FAILOVER THRESHOLD TO 30; -- segundos
+
+-- Configurar Active Data Guard (read-only queries no standby)
+-- Requer licença Active Data Guard
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+ALTER DATABASE OPEN READ ONLY;
+ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE DISCONNECT;
+
+-- Criar service para queries no standby
+BEGIN
+  DBMS_SERVICE.CREATE_SERVICE(
+    service_name => 'REPORT_SERVICE',
+    network_name => 'REPORT_SERVICE'
+  );
+  DBMS_SERVICE.START_SERVICE(service_name => 'REPORT_SERVICE');
+END;
+/</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Checklist de Implementação MAA</h3>
+        <div class="space-y-2">
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Definir requisitos RTO/RPO com stakeholders de negócio</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Escolher tier MAA apropriado (Bronze/Silver/Gold/Platinum)</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Implementar RAC primário com mínimo 2 nós</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Configurar ASM com redundância apropriada</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Criar Data Guard standby em datacenter remoto</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Configurar Fast-Start Failover com Observer</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Implementar monitoramento com OEM ou similar</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Habilitar Flashback Database para recovery rápido</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Configurar backups RMAN incrementais para FRA</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Documentar runbooks de switchover e failover</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Executar testes de DR trimestrais</span>
+          </div>
+          <div class="flex items-center gap-3 bg-dark-700 rounded-lg p-3">
+            <input type="checkbox" class="w-4 h-4">
+            <span class="text-neutral-300 text-sm">Treinar equipe em procedimentos de recovery</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">✅</span></div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar:</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Projetar arquiteturas MAA</h4>
+                <p class="text-neutral-400 text-sm">Combinar RAC, DG, ASM apropriadamente</p></div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Calcular RTO/RPO</h4>
+                <p class="text-neutral-400 text-sm">Alinhar tecnologia com requisitos de negócio</p></div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Eliminar SPOFs</h4>
+                <p class="text-neutral-400 text-sm">Identificar e mitigar pontos únicos de falha</p></div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Implementar automação</h4>
+                <p class="text-neutral-400 text-sm">Fast-Start Failover, Application Continuity</p></div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Executar DR tests</h4>
+                <p class="text-neutral-400 text-sm">Validar procedimentos regularmente</p></div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 mt-1">✓</span>
+              <div><h4 class="font-semibold text-neutral-100">Atingir 99.99%+ uptime</h4>
+                <p class="text-neutral-400 text-sm">Entregar disponibilidade tier Gold/Platinum</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-red-900/30 to-purple-900/30 rounded-xl border border-red-500/30 p-6">
+        <h3 class="text-lg font-semibold mb-3 text-center">Parabéns! Você completou a Trilha 5</h3>
+        <p class="text-neutral-300 text-center mb-4">
+          Você agora domina as tecnologias de alta disponibilidade Oracle e está preparado para projetar,
+          implementar e operar ambientes mission-critical com disponibilidade 24/7.
+        </p>
+        <div class="flex justify-center gap-3">
+          <a href="index.html" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+            Revisar Trilha
+          </a>
+          <a href="../../recursos/index.html" class="px-6 py-3 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg font-medium transition-colors border border-dark-600">
+            Ver Recursos Adicionais
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-3.html" class="flex items-center gap-2 text-neutral-400 hover:text-red-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span>Anterior: Data Guard</span>
+      </a>
+      <a href="index.html" class="flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors">
+        <span>Voltar ao Índice</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 5: Alta Disponibilidade - Tópico 4</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    if (localStorage.getItem('color-theme') === 'light' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

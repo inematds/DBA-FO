@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitetura Multitenant | Trilha 3 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#C74634',dark:{900:'#0f172a',800:'#1e293b',700:'#334155',600:'#475569'}}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>body{font-family:'Inter',sans-serif}.dark body{background-color:#0f172a}pre code{border-radius:.5rem}.hljs{background:#1e293b!important;padding:1.5rem!important}</style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex justify-between items-center">
+      <a href="../../../index.html" class="flex items-center space-x-3">
+        <span class="text-2xl">🗄️</span>
+        <span class="text-xl font-bold text-primary">Oracle DBA</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="bg-gradient-to-r from-purple-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-purple-400">4</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Arquitetura Multitenant (CDB/PDB)</h1>
+          <p class="text-neutral-400">Container Database, Pluggable Databases, gestão e benefícios</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">📖</span></div>
+        <h2 class="text-xl font-bold text-purple-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é Multitenant?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-purple-400">Multitenant Architecture</strong> (introduzida no Oracle 12c) permite
+          consolidar múltiplos bancos de dados em um único <strong>Container Database (CDB)</strong>.
+          Cada banco é uma <strong>Pluggable Database (PDB)</strong> completamente isolada mas compartilhando
+          processos de background e memória (SGA).
+        </p>
+
+        <div class="space-y-4">
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">CDB (Container Database)</h4>
+            <p class="text-neutral-300 text-sm">
+              O banco "pai" que gerencia os recursos globais. Contém:<br>
+              <strong>CDB$ROOT:</strong> Container raiz com dicionário de dados do CDB<br>
+              <strong>PDB$SEED:</strong> Template para criar novos PDBs<br>
+              <strong>PDBs:</strong> Bancos plugáveis (até 4.096 por CDB no 21c)
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">PDB (Pluggable Database)</h4>
+            <p class="text-neutral-300 text-sm">
+              Banco auto-contido com seus próprios objetos, usuários e esquemas.
+              Comporta-se como banco tradicional mas compartilha infraestrutura do CDB.
+              Pode ser plugged/unplugged facilmente entre CDBs.
+            </p>
+          </div>
+
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Benefícios</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Redução de overhead: 1 SGA/PGA para N bancos</li>
+              <li>Patching/Upgrade centralizado (apenas CDB)</li>
+              <li>Clonagem rápida de PDBs (minutos vs horas)</li>
+              <li>Portabilidade: plug/unplug entre servidores</li>
+              <li>Consolidação: reduz hardware e custos de licenciamento</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Comparação: Non-CDB vs CDB</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead><tr class="bg-purple-900/30">
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Aspecto</th>
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">Non-CDB (Tradicional)</th>
+              <th class="border border-dark-600 px-4 py-2 text-left text-purple-400">CDB/PDB (Multitenant)</th>
+            </tr></thead>
+            <tbody class="text-neutral-300">
+              <tr><td class="border border-dark-600 px-4 py-2 font-semibold">Instâncias</td>
+              <td class="border border-dark-600 px-4 py-2">1 por banco</td>
+              <td class="border border-dark-600 px-4 py-2">1 para múltiplos bancos</td></tr>
+              <tr class="bg-dark-700/50"><td class="border border-dark-600 px-4 py-2 font-semibold">Memória</td>
+              <td class="border border-dark-600 px-4 py-2">SGA duplicada por banco</td>
+              <td class="border border-dark-600 px-4 py-2">SGA compartilhada</td></tr>
+              <tr><td class="border border-dark-600 px-4 py-2 font-semibold">Patching</td>
+              <td class="border border-dark-600 px-4 py-2">Cada banco separadamente</td>
+              <td class="border border-dark-600 px-4 py-2">Uma vez no CDB</td></tr>
+              <tr class="bg-dark-700/50"><td class="border border-dark-600 px-4 py-2 font-semibold">Backup</td>
+              <td class="border border-dark-600 px-4 py-2">Por banco</td>
+              <td class="border border-dark-600 px-4 py-2">CDB completo ou PDB individual</td></tr>
+              <tr><td class="border border-dark-600 px-4 py-2 font-semibold">Clonagem</td>
+              <td class="border border-dark-600 px-4 py-2">Lento (horas)</td>
+              <td class="border border-dark-600 px-4 py-2">Rápido (minutos)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">🛠️</span></div>
+        <h2 class="text-xl font-bold text-emerald-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Criando um CDB</h3>
+        <pre><code class="language-bash"># Usando DBCA em silent mode para criar CDB
+dbca -silent \
+  -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbName ORCL \
+  -sid ORCL \
+  -createAsContainerDatabase true \
+  -numberOfPDBs 1 \
+  -pdbName PDB1 \
+  -pdbAdminPassword Welcome1 \
+  -sysPassword Welcome1 \
+  -systemPassword Welcome1 \
+  -storageType FS \
+  -datafileDestination /u01/app/oracle/oradata \
+  -characterSet AL32UTF8</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Gerenciando PDBs</h3>
+        <pre><code class="language-sql">-- Conectar ao CDB
+CONNECT sys/Welcome1@orcl AS SYSDBA
+
+-- Ver todos os containers
+SELECT CON_ID, NAME, OPEN_MODE FROM V$CONTAINERS;
+
+-- Criar novo PDB a partir do SEED
+CREATE PLUGGABLE DATABASE pdb2
+  ADMIN USER pdb2admin IDENTIFIED BY Welcome1
+  FILE_NAME_CONVERT = ('/pdbseed/', '/pdb2/');
+
+-- Abrir PDB
+ALTER PLUGGABLE DATABASE pdb2 OPEN;
+
+-- Salvar estado (abrir automaticamente no startup)
+ALTER PLUGGABLE DATABASE pdb2 SAVE STATE;
+
+-- Trocar de container (session switch)
+ALTER SESSION SET CONTAINER = pdb2;
+
+-- Fechar PDB
+ALTER PLUGGABLE DATABASE pdb2 CLOSE IMMEDIATE;
+
+-- Excluir PDB
+DROP PLUGGABLE DATABASE pdb2 INCLUDING DATAFILES;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Clonagem de PDB</h3>
+        <pre><code class="language-sql">-- Clonar PDB local (mesmo CDB)
+-- PDB origem deve estar em READ ONLY
+ALTER PLUGGABLE DATABASE pdb1 CLOSE IMMEDIATE;
+ALTER PLUGGABLE DATABASE pdb1 OPEN READ ONLY;
+
+CREATE PLUGGABLE DATABASE pdb1_clone
+  FROM pdb1
+  FILE_NAME_CONVERT = ('/pdb1/', '/pdb1_clone/');
+
+ALTER PLUGGABLE DATABASE pdb1 CLOSE;
+ALTER PLUGGABLE DATABASE pdb1 OPEN;
+ALTER PLUGGABLE DATABASE pdb1_clone OPEN;
+
+-- Clonar PDB via database link (de outro CDB)
+CREATE PLUGGABLE DATABASE pdb_remote_clone
+  FROM pdb1@remote_cdb
+  FILE_NAME_CONVERT = ('/remote/', '/local/');
+
+-- Snapshot cloning (instantâneo com storage CoW)
+CREATE PLUGGABLE DATABASE pdb_snap
+  FROM pdb1 SNAPSHOT COPY;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Plug/Unplug PDB</h3>
+        <pre><code class="language-sql">-- Unplug PDB (gera XML manifest)
+ALTER PLUGGABLE DATABASE pdb1 CLOSE IMMEDIATE;
+ALTER PLUGGABLE DATABASE pdb1 UNPLUG INTO '/tmp/pdb1.xml';
+DROP PLUGGABLE DATABASE pdb1 KEEP DATAFILES;
+
+-- Verificar compatibilidade antes de plug
+SET SERVEROUTPUT ON
+DECLARE
+  compatible BOOLEAN := FALSE;
+BEGIN
+  compatible := DBMS_PDB.CHECK_PLUG_COMPATIBILITY(
+    pdb_descr_file => '/tmp/pdb1.xml'
+  );
+  IF compatible THEN
+    DBMS_OUTPUT.PUT_LINE('PDB is compatible');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('PDB is NOT compatible');
+  END IF;
+END;
+/
+
+-- Plug PDB em novo CDB
+CREATE PLUGGABLE DATABASE pdb1
+  USING '/tmp/pdb1.xml'
+  NOCOPY
+  TEMPFILE REUSE;
+
+ALTER PLUGGABLE DATABASE pdb1 OPEN;
+
+-- Executar script de correção se necessário
+ALTER SESSION SET CONTAINER = pdb1;
+@?/rdbms/admin/noncdb_to_pdb.sql</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Usuários Common vs Local</h3>
+        <pre><code class="language-sql">-- Common User (existe em todos os PDBs, prefixo C##)
+-- Criar no CDB$ROOT
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+CREATE USER c##admin IDENTIFIED BY Welcome1 CONTAINER=ALL;
+GRANT DBA TO c##admin CONTAINER=ALL;
+
+-- Local User (existe apenas em PDB específico)
+ALTER SESSION SET CONTAINER = pdb1;
+CREATE USER app_user IDENTIFIED BY Welcome1;
+GRANT CONNECT, RESOURCE TO app_user;
+
+-- Ver usuários
+SELECT USERNAME, COMMON, CON_ID 
+FROM CDB_USERS 
+WHERE USERNAME IN ('C##ADMIN', 'APP_USER');
+
+-- Resource Manager para PDBs (limitar CPU/IO por PDB)
+BEGIN
+  DBMS_RESOURCE_MANAGER.CREATE_PENDING_AREA;
+  
+  -- Criar plano CDB
+  DBMS_RESOURCE_MANAGER.CREATE_CDB_PLAN(
+    plan => 'cdb_plan',
+    comment => 'CDB Resource Plan'
+  );
+  
+  -- Diretivas (shares de recursos)
+  DBMS_RESOURCE_MANAGER.CREATE_CDB_PLAN_DIRECTIVE(
+    plan => 'cdb_plan',
+    pluggable_database => 'pdb1',
+    shares => 3,
+    utilization_limit => 80  -- max 80% CPU
+  );
+  
+  DBMS_RESOURCE_MANAGER.VALIDATE_PENDING_AREA;
+  DBMS_RESOURCE_MANAGER.SUBMIT_PENDING_AREA;
+END;
+/
+
+-- Ativar plano
+ALTER SYSTEM SET RESOURCE_MANAGER_PLAN = 'cdb_plan';</code></pre>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center"><span class="text-xl">✅</span></div>
+        <h2 class="text-xl font-bold text-cyan-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Criar e Gerenciar CDB/PDB</h4>
+              <p class="text-neutral-400 text-sm">Criar, abrir, fechar e excluir PDBs</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Clonar PDBs</h4>
+              <p class="text-neutral-400 text-sm">Snapshot e remote cloning</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Plug/Unplug</h4>
+              <p class="text-neutral-400 text-sm">Migrar PDBs entre CDBs</p></div></div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Gerenciar Usuários</h4>
+              <p class="text-neutral-400 text-sm">Common vs Local users</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Resource Manager</h4>
+              <p class="text-neutral-400 text-sm">Limitar recursos por PDB</p></div></div>
+            <div class="flex items-start gap-3"><span class="text-purple-400 mt-1">✓</span>
+              <div><h4 class="font-semibold">Troubleshooting</h4>
+              <p class="text-neutral-400 text-sm">Resolver problemas de compatibilidade</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-3.html" class="flex items-center gap-2 text-neutral-400 hover:text-purple-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span>Anterior</span></a>
+      <a href="topico-5.html" class="flex items-center gap-2 text-purple-400 hover:text-purple-300">
+        <span>Próximo</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a>
+    </div>
+  </main>
+
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 3 - Tópico 4</p>
+    </div>
+  </footer>
+
+  <script>hljs.highlightAll();</script>
+</body>
+</html>
