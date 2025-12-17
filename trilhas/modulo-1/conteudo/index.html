@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trilha 1: Fundamentos SQL - Conteúdo Completo | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+
+    .topic-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .topic-content.open { max-height: 2000px; transition: max-height 0.5s ease-in; }
+    .topic-arrow { transition: transform 0.3s ease; }
+    .topic-arrow.open { transform: rotate(180deg); }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; }
+    .modal-overlay.active { display: flex; justify-content: center; align-items: center; }
+    .modal-content { background: #1e293b; border-radius: 1rem; width: 90%; max-width: 900px; max-height: 90vh; overflow: hidden; }
+    .modal-body { max-height: calc(90vh - 60px); overflow-y: auto; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <span>Conteúdo Completo</span>
+      </div>
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-16 h-16 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
+          <span class="text-4xl">📊</span>
+        </div>
+        <div>
+          <span class="text-emerald-400 text-sm font-semibold">TRILHA 1</span>
+          <h1 class="text-3xl font-bold">Fundamentos de BD e SQL Oracle</h1>
+        </div>
+      </div>
+      <p class="text-neutral-400 max-w-2xl">
+        Domine os conceitos essenciais de bancos de dados relacionais e a linguagem SQL.
+        Esta trilha é a base para toda sua carreira como DBA Oracle.
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Topics List -->
+    <div class="space-y-4">
+
+      <!-- Topic 1: Conceitos de BD Relacional -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">1</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Conceitos de Banco de Dados Relacional</h3>
+              <p class="text-sm text-neutral-400">Tabelas, colunas, linhas, chaves primárias e estrangeiras</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <!-- 3 Respostas -->
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  Um <strong>banco de dados relacional</strong> organiza dados em tabelas (como planilhas) com linhas e colunas.
+                  Cada linha é um registro único, cada coluna é um atributo. As tabelas se relacionam através de chaves,
+                  permitindo consultas complexas e integridade dos dados.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>Chave Primária (PK):</strong> Identifica unicamente cada registro (ex: ID do cliente).<br>
+                  <strong>Chave Estrangeira (FK):</strong> Cria relacionamentos entre tabelas (ex: pedido referencia cliente).<br>
+                  Isso garante consistência: não é possível ter um pedido sem um cliente válido.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Ao dominar estes conceitos, você conseguirá projetar estruturas de dados eficientes,
+                  entender esquemas existentes rapidamente e identificar problemas de modelagem
+                  que causam lentidão ou inconsistências.
+                </p>
+              </div>
+            </div>
+            <!-- Botões -->
+            <div class="flex gap-3">
+              <button onclick="openModal('topic1')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-1.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 2: Modelagem de Dados -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">2</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Modelagem de Dados (Entidade-Relacionamento)</h3>
+              <p class="text-sm text-neutral-400">Diagramas ER, entidades, atributos e relacionamentos</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  O <strong>Diagrama Entidade-Relacionamento (DER)</strong> é uma representação visual da estrutura do banco.
+                  <strong>Entidades</strong> são objetos do mundo real (CLIENTES, PRODUTOS).
+                  <strong>Atributos</strong> são suas características.
+                  <strong>Relacionamentos</strong> mostram como as entidades se conectam.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Antes de criar tabelas, desenhe o DER. Identifique: quais entidades existem?
+                  Quais atributos cada uma tem? Como se relacionam (1:1, 1:N, N:N)?
+                  Ferramentas como Oracle SQL Developer Data Modeler facilitam esse processo.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Um bom modelo evita redundância de dados, facilita manutenção e melhora performance.
+                  DBAs que dominam modelagem conseguem otimizar bancos existentes e projetar novos com eficiência.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic2')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-2.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 3: Ambiente Oracle -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">3</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">O Ambiente Oracle: SQL Developer e SQL*Plus</h3>
+              <p class="text-sm text-neutral-400">Ferramentas essenciais para interagir com o banco</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>SQL Developer:</strong> Interface gráfica gratuita da Oracle. Ideal para desenvolvimento,
+                  administração visual, debug de código PL/SQL e exportação/importação de dados.<br>
+                  <strong>SQL*Plus:</strong> Cliente de linha de comando. Essencial para scripts, automação e
+                  situações onde não há interface gráfica disponível.
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  Use SQL Developer para tarefas do dia a dia: escrever queries, visualizar dados, criar objetos.
+                  Use SQL*Plus para scripts de manutenção, startup/shutdown do banco, e quando acessar via SSH.
+                  Ambos executam os mesmos comandos SQL - a diferença é a interface.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Dominar ambas as ferramentas torna você versátil: pode trabalhar em qualquer ambiente,
+                  automatizar tarefas repetitivas e resolver problemas mesmo em servidores sem GUI.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic3')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-3.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 4: Linguagem SQL -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">4</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">A Linguagem SQL: DQL, DML, DDL e DCL</h3>
+              <p class="text-sm text-neutral-400">Categorias de comandos SQL e seus usos</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>DQL:</strong> Consultas (SELECT)<br>
+                  <strong>DML:</strong> Manipulação (INSERT, UPDATE, DELETE)<br>
+                  <strong>DDL:</strong> Definição de estrutura (CREATE, ALTER, DROP)<br>
+                  <strong>DCL:</strong> Controle de acesso (GRANT, REVOKE)
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  No dia a dia, você usará principalmente DQL (80% das operações são consultas).
+                  DML para manutenção de dados. DDL raramente (alterações estruturais planejadas).
+                  DCL é crítico para segurança - controla quem pode fazer o quê no banco.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Entender as categorias ajuda a saber o impacto de cada comando: DML pode ser revertido
+                  com ROLLBACK, DDL faz COMMIT automático. Essa distinção evita erros graves em produção.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic4')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-4.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 5: Comandos SQL na Prática -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">5</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">Comandos SQL na Prática: SELECT, INSERT, UPDATE, DELETE</h3>
+              <p class="text-sm text-neutral-400">Exemplos práticos dos comandos mais usados</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>SELECT:</strong> Busca dados (SELECT * FROM tabela WHERE condição)<br>
+                  <strong>INSERT:</strong> Adiciona registros (INSERT INTO tabela VALUES (...))<br>
+                  <strong>UPDATE:</strong> Modifica registros (UPDATE tabela SET coluna = valor WHERE condição)<br>
+                  <strong>DELETE:</strong> Remove registros (DELETE FROM tabela WHERE condição)
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  SEMPRE use WHERE em UPDATE e DELETE - sem WHERE, afeta TODOS os registros!<br>
+                  Antes de UPDATE/DELETE, faça SELECT com a mesma condição para verificar quais registros serão afetados.
+                  Use COMMIT para confirmar ou ROLLBACK para desfazer.
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Após praticar estes comandos, você conseguirá fazer manutenção de dados com segurança,
+                  extrair informações rapidamente e resolver a maioria das solicitações do dia a dia.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic5')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-5.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 6: JOINs, Funções e Subqueries -->
+      <div class="bg-dark-800 rounded-xl border border-dark-600 overflow-hidden">
+        <button onclick="toggleTopic(this)" class="w-full px-6 py-4 flex items-center justify-between hover:bg-dark-700/50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold">6</div>
+            <div class="text-left">
+              <h3 class="font-semibold text-neutral-100">JOINs, Funções de Agregação e Subqueries</h3>
+              <p class="text-sm text-neutral-400">Consultas avançadas para combinar e analisar dados</p>
+            </div>
+          </div>
+          <svg class="topic-arrow w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="topic-content">
+          <div class="px-6 pb-6 border-t border-dark-600 pt-4">
+            <div class="space-y-4 mb-6">
+              <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 class="font-semibold text-emerald-400 mb-2">📖 Definição</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>JOINs:</strong> Combinam dados de múltiplas tabelas (INNER, LEFT, RIGHT, FULL)<br>
+                  <strong>Funções de Agregação:</strong> COUNT, SUM, AVG, MAX, MIN com GROUP BY<br>
+                  <strong>Subqueries:</strong> Consultas dentro de consultas para filtros complexos
+                </p>
+              </div>
+              <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+                <h4 class="font-semibold text-cyan-400 mb-2">🛠️ Aplicação Prática</h4>
+                <p class="text-neutral-300 text-sm">
+                  <strong>INNER JOIN:</strong> Apenas registros que existem em ambas tabelas<br>
+                  <strong>LEFT JOIN:</strong> Todos da esquerda + matches da direita (útil para encontrar órfãos)<br>
+                  Use GROUP BY com funções de agregação para relatórios (total por departamento, média salarial, etc.)
+                </p>
+              </div>
+              <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">✅ Resultado Esperado</h4>
+                <p class="text-neutral-300 text-sm">
+                  Com JOINs e agregações, você cria relatórios complexos, identifica inconsistências entre tabelas,
+                  e responde perguntas de negócio que envolvem múltiplas fontes de dados.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openModal('topic6')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Ver em Modal
+              </button>
+              <a href="topico-6.html" class="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-neutral-100 rounded-lg text-sm font-medium transition-colors">
+                Página Completa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-12 flex justify-between items-center">
+      <a href="../index.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Voltar para Trilha 1</span>
+      </a>
+      <a href="../../modulo-2/conteudo/index.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próxima: Trilha 2</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Modal Container -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-dark-600">
+        <h3 id="modal-title" class="text-lg font-semibold"></h3>
+        <button onclick="closeModal()" class="p-2 hover:bg-dark-700 rounded-lg transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body p-6">
+        <iframe id="modal-iframe" src="" class="w-full h-[70vh] border-0"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Curso Oracle DBA - Trilha 1: Fundamentos de BD e SQL</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+
+    // Toggle topic
+    function toggleTopic(button) {
+      const content = button.nextElementSibling;
+      const arrow = button.querySelector('.topic-arrow');
+
+      content.classList.toggle('open');
+      arrow.classList.toggle('open');
+    }
+
+    // Modal functions
+    const topicPages = {
+      'topic1': { title: 'Conceitos de Banco de Dados Relacional', url: 'topico-1.html' },
+      'topic2': { title: 'Modelagem de Dados (ER)', url: 'topico-2.html' },
+      'topic3': { title: 'SQL Developer e SQL*Plus', url: 'topico-3.html' },
+      'topic4': { title: 'A Linguagem SQL', url: 'topico-4.html' },
+      'topic5': { title: 'Comandos SQL na Prática', url: 'topico-5.html' },
+      'topic6': { title: 'JOINs, Funções e Subqueries', url: 'topico-6.html' }
+    };
+
+    function openModal(topicId) {
+      const topic = topicPages[topicId];
+      document.getElementById('modal-title').textContent = topic.title;
+      document.getElementById('modal-iframe').src = topic.url;
+      document.getElementById('modal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(event) {
+      if (!event || event.target === document.getElementById('modal-overlay')) {
+        document.getElementById('modal-overlay').classList.remove('active');
+        document.getElementById('modal-iframe').src = '';
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelagem de Dados (Entidade-Relacionamento) | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 2</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">2</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Modelagem de Dados (Entidade-Relacionamento)</h1>
+          <p class="text-neutral-400">Diagramas ER, entidades, atributos e relacionamentos</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é Modelagem de Dados?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">Modelagem de dados</strong> é o processo de criar uma representação visual
+          e lógica das estruturas de dados de um sistema. O <strong>Diagrama Entidade-Relacionamento (DER ou ERD)</strong>
+          é a ferramenta mais utilizada para essa tarefa.
+        </p>
+        <p class="text-neutral-300 mb-4">
+          O modelo ER foi proposto por <strong>Peter Chen</strong> em 1976 e se tornou o padrão da indústria para
+          projetar bancos de dados relacionais. Ele permite visualizar como os dados se organizam antes de criar
+          as tabelas físicas no banco.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Níveis de Abstração:</h4>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">1</span>
+              <div>
+                <h5 class="font-semibold text-neutral-100">Modelo Conceitual</h5>
+                <p class="text-neutral-400 text-sm">Visão de alto nível, foco no negócio. Independente de tecnologia.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded text-xs font-bold">2</span>
+              <div>
+                <h5 class="font-semibold text-neutral-100">Modelo Lógico</h5>
+                <p class="text-neutral-400 text-sm">Define tabelas, colunas, tipos de dados e relacionamentos.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs font-bold">3</span>
+              <div>
+                <h5 class="font-semibold text-neutral-100">Modelo Físico</h5>
+                <p class="text-neutral-400 text-sm">Específico do SGBD (Oracle), inclui índices, partições, tablespaces.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Componentes do Modelo ER</h3>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">Entidades</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Representam <strong>objetos do mundo real</strong> sobre os quais queremos armazenar informações.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>CLIENTE, PRODUTO, PEDIDO</li>
+              <li>FUNCIONARIO, DEPARTAMENTO</li>
+              <li>Representadas por retângulos</li>
+            </ul>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">Atributos</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              São as <strong>características</strong> ou propriedades de uma entidade.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Cliente: nome, cpf, email</li>
+              <li>Produto: codigo, descricao, preco</li>
+              <li>Representados por elipses</li>
+            </ul>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">Relacionamentos</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Definem como as entidades se <strong>conectam</strong> entre si.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li>Cliente FAZ Pedido</li>
+              <li>Funcionário TRABALHA_EM Departamento</li>
+              <li>Representados por losangos</li>
+            </ul>
+          </div>
+
+          <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500">
+            <h4 class="font-semibold text-amber-400 mb-2">Cardinalidade</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Define a <strong>quantidade</strong> de instâncias em um relacionamento.
+            </p>
+            <ul class="list-disc list-inside text-neutral-400 text-sm">
+              <li><strong>1:1</strong> - Um para um</li>
+              <li><strong>1:N</strong> - Um para muitos</li>
+              <li><strong>N:N</strong> - Muitos para muitos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Tipos de Cardinalidade em Detalhe</h3>
+
+        <div class="space-y-6">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-3">1:1 (Um para Um)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Uma instância de A se relaciona com <strong>no máximo uma</strong> instância de B, e vice-versa.
+            </p>
+            <div class="bg-dark-800 rounded p-3 text-sm">
+              <code class="text-cyan-400">FUNCIONARIO</code>
+              <span class="text-neutral-500">──────</span>
+              <span class="text-amber-400">1:1</span>
+              <span class="text-neutral-500">──────</span>
+              <code class="text-cyan-400">CRACHA</code>
+            </div>
+            <p class="text-neutral-400 text-xs mt-2">Cada funcionário tem exatamente um crachá, cada crachá pertence a um funcionário.</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-3">1:N (Um para Muitos)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Uma instância de A pode se relacionar com <strong>várias</strong> instâncias de B.
+            </p>
+            <div class="bg-dark-800 rounded p-3 text-sm">
+              <code class="text-cyan-400">DEPARTAMENTO</code>
+              <span class="text-neutral-500">──────</span>
+              <span class="text-amber-400">1:N</span>
+              <span class="text-neutral-500">──────</span>
+              <code class="text-cyan-400">FUNCIONARIO</code>
+            </div>
+            <p class="text-neutral-400 text-xs mt-2">Um departamento tem vários funcionários, cada funcionário pertence a um departamento.</p>
+          </div>
+
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-3">N:N (Muitos para Muitos)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              Várias instâncias de A podem se relacionar com <strong>várias</strong> instâncias de B.
+            </p>
+            <div class="bg-dark-800 rounded p-3 text-sm">
+              <code class="text-cyan-400">ALUNO</code>
+              <span class="text-neutral-500">──────</span>
+              <span class="text-amber-400">N:N</span>
+              <span class="text-neutral-500">──────</span>
+              <code class="text-cyan-400">DISCIPLINA</code>
+            </div>
+            <p class="text-neutral-400 text-xs mt-2">Um aluno cursa várias disciplinas, uma disciplina tem vários alunos.</p>
+            <p class="text-red-400 text-xs mt-1"><strong>Importante:</strong> Relacionamentos N:N requerem uma tabela associativa no modelo físico!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Caso Prático: Sistema de E-commerce</h3>
+
+        <p class="text-neutral-300 mb-4">
+          Vamos modelar um sistema de e-commerce simples, partindo dos requisitos até o modelo físico no Oracle.
+        </p>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Requisitos de Negócio:</h4>
+          <ul class="list-disc list-inside text-neutral-300 space-y-1">
+            <li>Clientes podem fazer vários pedidos</li>
+            <li>Cada pedido pertence a um único cliente</li>
+            <li>Um pedido contém vários produtos</li>
+            <li>Cada produto pode estar em vários pedidos</li>
+            <li>Produtos são organizados em categorias</li>
+            <li>Uma categoria pode ter várias subcategorias</li>
+          </ul>
+        </div>
+
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Entidades Identificadas:</h4>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm">CLIENTE</span>
+            <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm">PEDIDO</span>
+            <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm">PRODUTO</span>
+            <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm">CATEGORIA</span>
+            <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-sm">ITEM_PEDIDO (associativa)</span>
+          </div>
+        </div>
+
+        <div class="bg-dark-700 rounded-lg p-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Relacionamentos:</h4>
+          <ul class="text-neutral-300 space-y-1 text-sm">
+            <li>CLIENTE <span class="text-amber-400">1:N</span> PEDIDO (um cliente faz vários pedidos)</li>
+            <li>PEDIDO <span class="text-amber-400">N:N</span> PRODUTO (via ITEM_PEDIDO)</li>
+            <li>CATEGORIA <span class="text-amber-400">1:N</span> PRODUTO (uma categoria tem vários produtos)</li>
+            <li>CATEGORIA <span class="text-amber-400">1:N</span> CATEGORIA (autorelacionamento para subcategorias)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Do Modelo ER para o Modelo Físico (Oracle)</h3>
+
+        <pre><code class="language-sql">-- Tabela de Categorias (com autorelacionamento para hierarquia)
+CREATE TABLE categorias (
+    id_categoria      NUMBER(10)    PRIMARY KEY,
+    nome              VARCHAR2(100) NOT NULL,
+    descricao         VARCHAR2(500),
+    categoria_pai_id  NUMBER(10)    REFERENCES categorias(id_categoria),
+    ativo             CHAR(1)       DEFAULT 'S' CHECK (ativo IN ('S', 'N'))
+);
+
+-- Tabela de Clientes
+CREATE TABLE clientes (
+    id_cliente    NUMBER(10)    PRIMARY KEY,
+    nome          VARCHAR2(150) NOT NULL,
+    cpf           CHAR(11)      UNIQUE NOT NULL,
+    email         VARCHAR2(100) UNIQUE NOT NULL,
+    telefone      VARCHAR2(15),
+    data_cadastro DATE          DEFAULT SYSDATE,
+    status        VARCHAR2(20)  DEFAULT 'ATIVO' CHECK (status IN ('ATIVO', 'INATIVO', 'BLOQUEADO'))
+);
+
+-- Tabela de Produtos
+CREATE TABLE produtos (
+    id_produto    NUMBER(10)    PRIMARY KEY,
+    codigo_sku    VARCHAR2(50)  UNIQUE NOT NULL,
+    nome          VARCHAR2(200) NOT NULL,
+    descricao     CLOB,
+    preco         NUMBER(10,2)  NOT NULL CHECK (preco > 0),
+    estoque       NUMBER(10)    DEFAULT 0,
+    categoria_id  NUMBER(10)    NOT NULL REFERENCES categorias(id_categoria),
+    data_cadastro DATE          DEFAULT SYSDATE,
+    ativo         CHAR(1)       DEFAULT 'S' CHECK (ativo IN ('S', 'N'))
+);
+
+-- Tabela de Pedidos
+CREATE TABLE pedidos (
+    id_pedido       NUMBER(10)    PRIMARY KEY,
+    cliente_id      NUMBER(10)    NOT NULL REFERENCES clientes(id_cliente),
+    data_pedido     TIMESTAMP     DEFAULT SYSTIMESTAMP,
+    status          VARCHAR2(20)  DEFAULT 'PENDENTE'
+                    CHECK (status IN ('PENDENTE', 'CONFIRMADO', 'ENVIADO', 'ENTREGUE', 'CANCELADO')),
+    valor_total     NUMBER(12,2),
+    endereco_entrega VARCHAR2(500)
+);
+
+-- Tabela Associativa: Itens do Pedido (resolve relacionamento N:N)
+CREATE TABLE itens_pedido (
+    id_pedido     NUMBER(10)   REFERENCES pedidos(id_pedido),
+    id_produto    NUMBER(10)   REFERENCES produtos(id_produto),
+    quantidade    NUMBER(10)   NOT NULL CHECK (quantidade > 0),
+    preco_unitario NUMBER(10,2) NOT NULL,
+    desconto      NUMBER(5,2)  DEFAULT 0,
+    PRIMARY KEY (id_pedido, id_produto)
+);
+
+-- Índices para melhorar performance
+CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);
+CREATE INDEX idx_pedidos_data ON pedidos(data_pedido);
+CREATE INDEX idx_produtos_categoria ON produtos(categoria_id);
+CREATE INDEX idx_itens_produto ON itens_pedido(id_produto);
+
+-- Comentários nas tabelas (documentação)
+COMMENT ON TABLE clientes IS 'Cadastro de clientes do e-commerce';
+COMMENT ON COLUMN clientes.cpf IS 'CPF do cliente sem formatação';
+COMMENT ON TABLE itens_pedido IS 'Tabela associativa entre pedidos e produtos';</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Normalização: As 3 Formas Normais</h3>
+
+        <div class="space-y-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">1ª Forma Normal (1FN)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Eliminar grupos repetitivos</strong> - cada célula deve conter apenas um valor atômico.
+            </p>
+            <div class="text-xs text-neutral-400">
+              <span class="text-red-400">❌ Errado:</span> telefone = "11999999999, 11888888888"<br>
+              <span class="text-emerald-400">✓ Correto:</span> Criar tabela TELEFONES_CLIENTE separada
+            </div>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">2ª Forma Normal (2FN)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Eliminar dependências parciais</strong> - atributos devem depender de toda a chave primária.
+            </p>
+            <div class="text-xs text-neutral-400">
+              <span class="text-red-400">❌ Errado:</span> ITEM_PEDIDO com nome_produto (depende só de id_produto)<br>
+              <span class="text-emerald-400">✓ Correto:</span> nome_produto fica na tabela PRODUTOS
+            </div>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">3ª Forma Normal (3FN)</h4>
+            <p class="text-neutral-300 text-sm mb-2">
+              <strong>Eliminar dependências transitivas</strong> - atributos não-chave não devem depender de outros atributos não-chave.
+            </p>
+            <div class="text-xs text-neutral-400">
+              <span class="text-red-400">❌ Errado:</span> FUNCIONARIO com cidade e estado (estado depende de cidade)<br>
+              <span class="text-emerald-400">✓ Correto:</span> Criar tabela CIDADES com cidade_id, nome, estado
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Ler diagramas ER</h4>
+                <p class="text-neutral-400 text-sm">Interpretar modelos existentes de qualquer sistema</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Identificar entidades e atributos</h4>
+                <p class="text-neutral-400 text-sm">Extrair requisitos de negócio para modelo de dados</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Definir cardinalidades</h4>
+                <p class="text-neutral-400 text-sm">Escolher 1:1, 1:N ou N:N corretamente</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Converter ER para SQL</h4>
+                <p class="text-neutral-400 text-sm">Transformar modelo lógico em CREATE TABLE</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Aplicar normalização</h4>
+                <p class="text-neutral-400 text-sm">Eliminar redundâncias até 3FN</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar ferramentas</h4>
+                <p class="text-neutral-400 text-sm">Conhecer Oracle SQL Developer Data Modeler</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Identificar Cardinalidades</h3>
+          <p class="text-neutral-300 mb-4">
+            Determine a cardinalidade correta para os seguintes relacionamentos:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>AUTOR e LIVRO (um autor pode escrever vários livros, um livro pode ter vários autores)</li>
+            <li>PAIS e ESTADO (um país tem vários estados, um estado pertence a um país)</li>
+            <li>PESSOA e RG (cada pessoa tem um RG único)</li>
+            <li>MEDICO e PACIENTE (um médico atende vários pacientes, um paciente consulta vários médicos)</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <ol class="list-decimal list-inside text-neutral-300 space-y-2">
+                <li><strong>N:N</strong> - Requer tabela associativa AUTOR_LIVRO</li>
+                <li><strong>1:N</strong> - FK país_id na tabela ESTADO</li>
+                <li><strong>1:1</strong> - Pode ser FK em PESSOA ou tabela separada RG</li>
+                <li><strong>N:N</strong> - Requer tabela associativa CONSULTAS</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Modelar Sistema de Biblioteca</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie o modelo físico (CREATE TABLE) para uma biblioteca com:
+          </p>
+          <ul class="list-disc list-inside text-neutral-400 mb-4">
+            <li>Livros (podem ter múltiplos exemplares)</li>
+            <li>Autores (um livro pode ter vários autores)</li>
+            <li>Usuários (leitores)</li>
+            <li>Empréstimos (controle de quem pegou qual exemplar)</li>
+          </ul>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Autores
+CREATE TABLE autores (
+    id_autor  NUMBER PRIMARY KEY,
+    nome      VARCHAR2(150) NOT NULL,
+    pais      VARCHAR2(50)
+);
+
+-- Livros
+CREATE TABLE livros (
+    id_livro  NUMBER PRIMARY KEY,
+    isbn      VARCHAR2(20) UNIQUE NOT NULL,
+    titulo    VARCHAR2(300) NOT NULL,
+    editora   VARCHAR2(100),
+    ano_pub   NUMBER(4)
+);
+
+-- Relacionamento N:N entre Livros e Autores
+CREATE TABLE livros_autores (
+    id_livro  NUMBER REFERENCES livros(id_livro),
+    id_autor  NUMBER REFERENCES autores(id_autor),
+    PRIMARY KEY (id_livro, id_autor)
+);
+
+-- Exemplares (cada livro pode ter vários exemplares)
+CREATE TABLE exemplares (
+    id_exemplar NUMBER PRIMARY KEY,
+    id_livro    NUMBER NOT NULL REFERENCES livros(id_livro),
+    codigo      VARCHAR2(20) UNIQUE NOT NULL,
+    status      VARCHAR2(20) DEFAULT 'DISPONIVEL'
+                CHECK (status IN ('DISPONIVEL', 'EMPRESTADO', 'MANUTENCAO'))
+);
+
+-- Usuários
+CREATE TABLE usuarios (
+    id_usuario  NUMBER PRIMARY KEY,
+    nome        VARCHAR2(150) NOT NULL,
+    email       VARCHAR2(100) UNIQUE NOT NULL,
+    telefone    VARCHAR2(15)
+);
+
+-- Empréstimos
+CREATE TABLE emprestimos (
+    id_emprestimo   NUMBER PRIMARY KEY,
+    id_exemplar     NUMBER NOT NULL REFERENCES exemplares(id_exemplar),
+    id_usuario      NUMBER NOT NULL REFERENCES usuarios(id_usuario),
+    data_emprestimo DATE DEFAULT SYSDATE,
+    data_prevista   DATE NOT NULL,
+    data_devolucao  DATE
+);</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Normalização</h3>
+          <p class="text-neutral-300 mb-4">
+            A tabela abaixo está desnormalizada. Normalize-a até a 3ª Forma Normal:
+          </p>
+          <pre><code class="language-sql">CREATE TABLE vendas (
+    id_venda          NUMBER,
+    data_venda        DATE,
+    vendedor_nome     VARCHAR2(100),
+    vendedor_cpf      VARCHAR2(14),
+    vendedor_depto    VARCHAR2(50),
+    depto_gerente     VARCHAR2(100),
+    produto_codigo    VARCHAR2(20),
+    produto_nome      VARCHAR2(100),
+    produto_categoria VARCHAR2(50),
+    quantidade        NUMBER,
+    preco_unitario    NUMBER
+);</code></pre>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- Departamentos (3FN: gerente não depende da venda)
+CREATE TABLE departamentos (
+    id_depto   NUMBER PRIMARY KEY,
+    nome       VARCHAR2(50) NOT NULL,
+    gerente    VARCHAR2(100)
+);
+
+-- Vendedores (2FN: dados do vendedor em tabela própria)
+CREATE TABLE vendedores (
+    id_vendedor NUMBER PRIMARY KEY,
+    nome        VARCHAR2(100) NOT NULL,
+    cpf         VARCHAR2(14) UNIQUE NOT NULL,
+    id_depto    NUMBER REFERENCES departamentos(id_depto)
+);
+
+-- Categorias (3FN: categoria independente)
+CREATE TABLE categorias (
+    id_categoria NUMBER PRIMARY KEY,
+    nome         VARCHAR2(50) NOT NULL
+);
+
+-- Produtos (2FN: dados do produto separados)
+CREATE TABLE produtos (
+    id_produto   NUMBER PRIMARY KEY,
+    codigo       VARCHAR2(20) UNIQUE NOT NULL,
+    nome         VARCHAR2(100) NOT NULL,
+    id_categoria NUMBER REFERENCES categorias(id_categoria)
+);
+
+-- Vendas (tabela principal limpa)
+CREATE TABLE vendas (
+    id_venda     NUMBER PRIMARY KEY,
+    data_venda   DATE DEFAULT SYSDATE,
+    id_vendedor  NUMBER REFERENCES vendedores(id_vendedor)
+);
+
+-- Itens da Venda (resolve N:N e armazena preço histórico)
+CREATE TABLE itens_venda (
+    id_venda       NUMBER REFERENCES vendas(id_venda),
+    id_produto     NUMBER REFERENCES produtos(id_produto),
+    quantidade     NUMBER NOT NULL,
+    preco_unitario NUMBER NOT NULL,
+    PRIMARY KEY (id_venda, id_produto)
+);</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-1.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: BD Relacional</span>
+      </a>
+      <a href="topico-3.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: SQL Developer e SQL*Plus</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 2</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

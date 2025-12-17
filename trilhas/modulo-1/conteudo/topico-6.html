@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOINs, Funções de Agregação e Subqueries | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 6</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">6</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">JOINs, Funções de Agregação e Subqueries</h1>
+          <p class="text-neutral-400">Consultas avançadas para combinar e analisar dados</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">JOINs - Combinando Tabelas</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">JOINs</strong> permitem combinar dados de múltiplas tabelas em uma única
+          consulta. São fundamentais para trabalhar com bancos relacionais, onde dados são distribuídos em
+          várias tabelas relacionadas.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400 mb-2">INNER JOIN</h4>
+            <p class="text-neutral-300 text-sm">
+              Retorna apenas registros que têm correspondência em <strong>ambas</strong> as tabelas.
+            </p>
+            <div class="mt-2 flex items-center justify-center">
+              <div class="flex">
+                <div class="w-16 h-16 rounded-full bg-blue-500/30 flex items-center justify-center">A</div>
+                <div class="w-16 h-16 rounded-full bg-red-500/30 -ml-6 flex items-center justify-center">B</div>
+                <div class="absolute w-6 h-16 bg-purple-500/50 ml-5"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400 mb-2">LEFT JOIN (LEFT OUTER)</h4>
+            <p class="text-neutral-300 text-sm">
+              Retorna <strong>todos</strong> da tabela esquerda + correspondentes da direita (ou NULL).
+            </p>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400 mb-2">RIGHT JOIN (RIGHT OUTER)</h4>
+            <p class="text-neutral-300 text-sm">
+              Retorna <strong>todos</strong> da tabela direita + correspondentes da esquerda (ou NULL).
+            </p>
+          </div>
+
+          <div class="bg-amber-900/20 rounded-lg p-4 border-l-4 border-amber-500">
+            <h4 class="font-semibold text-amber-400 mb-2">FULL OUTER JOIN</h4>
+            <p class="text-neutral-300 text-sm">
+              Retorna <strong>todos</strong> de ambas as tabelas, com NULL onde não há correspondência.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Funções de Agregação</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-cyan-400">Funções de agregação</strong> calculam um único valor a partir de um conjunto de registros.
+          São essenciais para relatórios e análises estatísticas.
+        </p>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">COUNT()</code>
+            <p class="text-neutral-400 text-xs mt-1">Conta registros</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">SUM()</code>
+            <p class="text-neutral-400 text-xs mt-1">Soma valores</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">AVG()</code>
+            <p class="text-neutral-400 text-xs mt-1">Média</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">MAX()</code>
+            <p class="text-neutral-400 text-xs mt-1">Valor máximo</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">MIN()</code>
+            <p class="text-neutral-400 text-xs mt-1">Valor mínimo</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-3 text-center">
+            <code class="text-emerald-400 font-bold">LISTAGG()</code>
+            <p class="text-neutral-400 text-xs mt-1">Concatena strings</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Subqueries (Subconsultas)</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-purple-400">Subqueries</strong> são consultas aninhadas dentro de outra consulta.
+          Podem ser usadas em WHERE, FROM, SELECT ou HAVING.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Subquery Escalar</h4>
+            <p class="text-neutral-400 text-sm">Retorna um único valor. Usada em SELECT ou WHERE com operadores =, >, <.</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Subquery de Lista</h4>
+            <p class="text-neutral-400 text-sm">Retorna múltiplos valores. Usada com IN, ANY, ALL.</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Subquery Correlacionada</h4>
+            <p class="text-neutral-400 text-sm">Referencia a consulta externa. Executada para cada linha da principal.</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-400 mb-2">Inline View</h4>
+            <p class="text-neutral-400 text-sm">Subquery no FROM, tratada como tabela temporária.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Setup: Tabelas de Exemplo</h3>
+
+        <pre><code class="language-sql">-- Tabela de Departamentos
+CREATE TABLE departamentos (
+    dept_id    NUMBER PRIMARY KEY,
+    dept_nome  VARCHAR2(50) NOT NULL,
+    gerente_id NUMBER,
+    localizacao VARCHAR2(50)
+);
+
+-- Tabela de Funcionários
+CREATE TABLE funcionarios (
+    func_id      NUMBER PRIMARY KEY,
+    nome         VARCHAR2(100) NOT NULL,
+    cargo        VARCHAR2(50),
+    salario      NUMBER(10,2),
+    dept_id      NUMBER REFERENCES departamentos(dept_id),
+    data_admissao DATE
+);
+
+-- Inserir dados
+INSERT INTO departamentos VALUES (10, 'Tecnologia', 1, 'São Paulo');
+INSERT INTO departamentos VALUES (20, 'Recursos Humanos', 2, 'Rio de Janeiro');
+INSERT INTO departamentos VALUES (30, 'Financeiro', NULL, 'São Paulo');
+INSERT INTO departamentos VALUES (40, 'Marketing', NULL, 'Curitiba');
+
+INSERT INTO funcionarios VALUES (1, 'Carlos Diretor', 'Diretor', 25000, 10, DATE '2010-01-15');
+INSERT INTO funcionarios VALUES (2, 'Ana Gerente', 'Gerente', 12000, 20, DATE '2015-03-20');
+INSERT INTO funcionarios VALUES (3, 'João Desenvolvedor', 'Desenvolvedor', 8000, 10, DATE '2018-07-01');
+INSERT INTO funcionarios VALUES (4, 'Maria Analista', 'Analista', 6000, 10, DATE '2020-02-10');
+INSERT INTO funcionarios VALUES (5, 'Pedro Analista', 'Analista', 5500, 20, DATE '2019-11-15');
+INSERT INTO funcionarios VALUES (6, 'Lucia Estagiaria', 'Estagiário', 1500, NULL, DATE '2023-01-10');
+
+COMMIT;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">JOINs na Prática</h3>
+
+        <pre><code class="language-sql">-- INNER JOIN: Funcionários COM departamento
+SELECT f.nome, f.cargo, f.salario, d.dept_nome
+FROM funcionarios f
+INNER JOIN departamentos d ON f.dept_id = d.dept_id;
+-- Resultado: 5 registros (Lucia não aparece - não tem departamento)
+
+-- LEFT JOIN: TODOS os funcionários, com ou sem departamento
+SELECT f.nome, f.cargo, d.dept_nome
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.dept_id = d.dept_id;
+-- Resultado: 6 registros (Lucia aparece com dept_nome NULL)
+
+-- RIGHT JOIN: TODOS os departamentos, com ou sem funcionários
+SELECT d.dept_nome, f.nome
+FROM funcionarios f
+RIGHT JOIN departamentos d ON f.dept_id = d.dept_id;
+-- Resultado: 7 registros (Financeiro e Marketing aparecem sem funcionários)
+
+-- FULL OUTER JOIN: Combinação de LEFT e RIGHT
+SELECT f.nome, d.dept_nome
+FROM funcionarios f
+FULL OUTER JOIN departamentos d ON f.dept_id = d.dept_id;
+-- Resultado: 8 registros (todos os funcionários + todos os departamentos)
+
+-- Múltiplos JOINs
+SELECT
+    f.nome AS funcionario,
+    f.cargo,
+    d.dept_nome AS departamento,
+    g.nome AS gerente
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.dept_id = d.dept_id
+LEFT JOIN funcionarios g ON d.gerente_id = g.func_id;
+
+-- SELF JOIN: Funcionário e seu gerente (mesma tabela)
+-- Primeiro, adicionar coluna gerente_id em funcionarios
+ALTER TABLE funcionarios ADD gerente_id NUMBER REFERENCES funcionarios(func_id);
+UPDATE funcionarios SET gerente_id = 1 WHERE func_id IN (3, 4);
+UPDATE funcionarios SET gerente_id = 2 WHERE func_id = 5;
+COMMIT;
+
+SELECT
+    f.nome AS funcionario,
+    f.cargo,
+    g.nome AS gerente_direto
+FROM funcionarios f
+LEFT JOIN funcionarios g ON f.gerente_id = g.func_id;
+
+-- Encontrar funcionários SEM departamento (órfãos)
+SELECT f.nome, f.cargo
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.dept_id = d.dept_id
+WHERE d.dept_id IS NULL;
+
+-- Encontrar departamentos SEM funcionários
+SELECT d.dept_nome
+FROM departamentos d
+LEFT JOIN funcionarios f ON d.dept_id = f.dept_id
+WHERE f.func_id IS NULL;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Funções de Agregação com GROUP BY</h3>
+
+        <pre><code class="language-sql">-- COUNT: Contar funcionários
+SELECT COUNT(*) AS total_funcionarios FROM funcionarios;
+SELECT COUNT(dept_id) AS com_departamento FROM funcionarios;  -- Ignora NULL
+SELECT COUNT(DISTINCT dept_id) AS departamentos_diferentes FROM funcionarios;
+
+-- SUM, AVG, MIN, MAX
+SELECT
+    SUM(salario) AS folha_total,
+    AVG(salario) AS media_salarial,
+    MIN(salario) AS menor_salario,
+    MAX(salario) AS maior_salario
+FROM funcionarios;
+
+-- GROUP BY: Agregação por grupo
+SELECT
+    dept_id,
+    COUNT(*) AS qtd_funcionarios,
+    SUM(salario) AS folha_depto,
+    ROUND(AVG(salario), 2) AS media_depto
+FROM funcionarios
+WHERE dept_id IS NOT NULL
+GROUP BY dept_id
+ORDER BY folha_depto DESC;
+
+-- GROUP BY com JOIN para mostrar nome do departamento
+SELECT
+    d.dept_nome,
+    COUNT(f.func_id) AS qtd_funcionarios,
+    NVL(SUM(f.salario), 0) AS folha_total,
+    NVL(ROUND(AVG(f.salario), 2), 0) AS media_salarial
+FROM departamentos d
+LEFT JOIN funcionarios f ON d.dept_id = f.dept_id
+GROUP BY d.dept_nome
+ORDER BY qtd_funcionarios DESC;
+
+-- HAVING: Filtrar grupos (não pode usar WHERE para agregações)
+SELECT
+    dept_id,
+    COUNT(*) AS qtd,
+    AVG(salario) AS media
+FROM funcionarios
+WHERE dept_id IS NOT NULL
+GROUP BY dept_id
+HAVING COUNT(*) >= 2  -- Apenas deptos com 2+ funcionários
+   AND AVG(salario) > 5000
+ORDER BY media DESC;
+
+-- LISTAGG: Concatenar nomes por departamento
+SELECT
+    d.dept_nome,
+    LISTAGG(f.nome, ', ') WITHIN GROUP (ORDER BY f.nome) AS funcionarios
+FROM departamentos d
+LEFT JOIN funcionarios f ON d.dept_id = f.dept_id
+GROUP BY d.dept_nome;
+
+-- Múltiplos níveis de agregação com ROLLUP
+SELECT
+    d.dept_nome,
+    f.cargo,
+    COUNT(*) AS qtd,
+    SUM(f.salario) AS total
+FROM funcionarios f
+JOIN departamentos d ON f.dept_id = d.dept_id
+GROUP BY ROLLUP(d.dept_nome, f.cargo)
+ORDER BY d.dept_nome, f.cargo;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Subqueries (Subconsultas)</h3>
+
+        <pre><code class="language-sql">-- Subquery escalar no WHERE
+-- Funcionários que ganham mais que a média
+SELECT nome, salario
+FROM funcionarios
+WHERE salario > (SELECT AVG(salario) FROM funcionarios);
+
+-- Funcionário com maior salário
+SELECT nome, salario
+FROM funcionarios
+WHERE salario = (SELECT MAX(salario) FROM funcionarios);
+
+-- Subquery de lista com IN
+-- Funcionários em departamentos de São Paulo
+SELECT nome, cargo
+FROM funcionarios
+WHERE dept_id IN (
+    SELECT dept_id
+    FROM departamentos
+    WHERE localizacao = 'São Paulo'
+);
+
+-- Subquery com NOT IN (cuidado com NULL!)
+SELECT nome
+FROM funcionarios
+WHERE dept_id NOT IN (
+    SELECT dept_id FROM departamentos WHERE dept_id IS NOT NULL
+);
+
+-- Subquery correlacionada
+-- Funcionários que ganham mais que a média do seu departamento
+SELECT f1.nome, f1.salario, f1.dept_id
+FROM funcionarios f1
+WHERE f1.salario > (
+    SELECT AVG(f2.salario)
+    FROM funcionarios f2
+    WHERE f2.dept_id = f1.dept_id  -- Correlação com query externa
+);
+
+-- EXISTS: Verifica existência
+-- Departamentos que têm funcionários
+SELECT dept_nome
+FROM departamentos d
+WHERE EXISTS (
+    SELECT 1 FROM funcionarios f WHERE f.dept_id = d.dept_id
+);
+
+-- NOT EXISTS: Departamentos sem funcionários
+SELECT dept_nome
+FROM departamentos d
+WHERE NOT EXISTS (
+    SELECT 1 FROM funcionarios f WHERE f.dept_id = d.dept_id
+);
+
+-- Inline View (Subquery no FROM)
+SELECT dept_nome, qtd_func, media_sal
+FROM (
+    SELECT
+        d.dept_nome,
+        COUNT(f.func_id) AS qtd_func,
+        ROUND(AVG(f.salario), 2) AS media_sal
+    FROM departamentos d
+    LEFT JOIN funcionarios f ON d.dept_id = f.dept_id
+    GROUP BY d.dept_nome
+) subquery
+WHERE qtd_func > 0
+ORDER BY media_sal DESC;
+
+-- WITH clause (CTE - Common Table Expression)
+WITH resumo_depto AS (
+    SELECT
+        dept_id,
+        COUNT(*) AS qtd,
+        AVG(salario) AS media
+    FROM funcionarios
+    WHERE dept_id IS NOT NULL
+    GROUP BY dept_id
+)
+SELECT
+    d.dept_nome,
+    r.qtd AS funcionarios,
+    r.media AS media_salarial
+FROM resumo_depto r
+JOIN departamentos d ON r.dept_id = d.dept_id
+ORDER BY r.media DESC;
+
+-- Subquery no SELECT
+SELECT
+    f.nome,
+    f.salario,
+    (SELECT AVG(salario) FROM funcionarios) AS media_geral,
+    f.salario - (SELECT AVG(salario) FROM funcionarios) AS diferenca_media
+FROM funcionarios f
+ORDER BY diferenca_media DESC;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Consultas Avançadas Combinadas</h3>
+
+        <pre><code class="language-sql">-- Relatório completo: Departamentos com estatísticas
+WITH stats AS (
+    SELECT
+        dept_id,
+        COUNT(*) AS total_func,
+        SUM(salario) AS folha,
+        MIN(salario) AS menor_sal,
+        MAX(salario) AS maior_sal,
+        ROUND(AVG(salario), 2) AS media_sal
+    FROM funcionarios
+    WHERE dept_id IS NOT NULL
+    GROUP BY dept_id
+)
+SELECT
+    d.dept_nome,
+    d.localizacao,
+    NVL(s.total_func, 0) AS funcionarios,
+    NVL(s.folha, 0) AS folha_total,
+    s.menor_sal,
+    s.maior_sal,
+    s.media_sal,
+    CASE
+        WHEN s.total_func IS NULL THEN 'Sem funcionários'
+        WHEN s.total_func < 3 THEN 'Equipe pequena'
+        ELSE 'Equipe completa'
+    END AS status_equipe
+FROM departamentos d
+LEFT JOIN stats s ON d.dept_id = s.dept_id
+ORDER BY s.folha DESC NULLS LAST;
+
+-- Top N por grupo: Top 2 maiores salários por departamento
+SELECT *
+FROM (
+    SELECT
+        f.nome,
+        f.salario,
+        d.dept_nome,
+        ROW_NUMBER() OVER (PARTITION BY f.dept_id ORDER BY f.salario DESC) AS ranking
+    FROM funcionarios f
+    JOIN departamentos d ON f.dept_id = d.dept_id
+)
+WHERE ranking <= 2;
+
+-- Funcionários com salário acima da média do departamento
+SELECT f.nome, f.salario, d.dept_nome, media_dept.media
+FROM funcionarios f
+JOIN departamentos d ON f.dept_id = d.dept_id
+JOIN (
+    SELECT dept_id, AVG(salario) AS media
+    FROM funcionarios
+    GROUP BY dept_id
+) media_dept ON f.dept_id = media_dept.dept_id
+WHERE f.salario > media_dept.media
+ORDER BY d.dept_nome, f.salario DESC;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Tipos de JOIN</h4>
+                <p class="text-neutral-400 text-sm">INNER, LEFT, RIGHT, FULL OUTER, SELF JOIN</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Funções de agregação</h4>
+                <p class="text-neutral-400 text-sm">COUNT, SUM, AVG, MIN, MAX com GROUP BY</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">HAVING vs WHERE</h4>
+                <p class="text-neutral-400 text-sm">Filtrar grupos vs filtrar linhas</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Subqueries</h4>
+                <p class="text-neutral-400 text-sm">Escalar, lista, correlacionada, inline view</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">EXISTS e NOT EXISTS</h4>
+                <p class="text-neutral-400 text-sm">Verificar existência de registros relacionados</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">WITH clause (CTE)</h4>
+                <p class="text-neutral-400 text-sm">Organizar queries complexas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: JOINs</h3>
+          <p class="text-neutral-300 mb-4">
+            Usando as tabelas de exemplo, escreva queries para:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Listar todos os funcionários com o nome do departamento (incluir quem não tem depto)</li>
+            <li>Listar departamentos que não têm nenhum funcionário</li>
+            <li>Listar funcionários junto com o nome do seu gerente direto</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. Funcionários com departamento (LEFT JOIN)
+SELECT f.nome, f.cargo, COALESCE(d.dept_nome, 'Sem departamento') AS departamento
+FROM funcionarios f
+LEFT JOIN departamentos d ON f.dept_id = d.dept_id;
+
+-- 2. Departamentos sem funcionários
+SELECT d.dept_nome
+FROM departamentos d
+LEFT JOIN funcionarios f ON d.dept_id = f.dept_id
+WHERE f.func_id IS NULL;
+-- Alternativa com NOT EXISTS:
+SELECT d.dept_nome
+FROM departamentos d
+WHERE NOT EXISTS (SELECT 1 FROM funcionarios f WHERE f.dept_id = d.dept_id);
+
+-- 3. Funcionários com gerente (SELF JOIN)
+SELECT
+    f.nome AS funcionario,
+    f.cargo,
+    COALESCE(g.nome, 'Sem gerente') AS gerente
+FROM funcionarios f
+LEFT JOIN funcionarios g ON f.gerente_id = g.func_id;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Agregações</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie um relatório que mostre por departamento:
+          </p>
+          <ul class="list-disc list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Nome do departamento</li>
+            <li>Quantidade de funcionários</li>
+            <li>Salário mínimo, máximo e médio</li>
+            <li>Total da folha salarial</li>
+            <li>Apenas departamentos com mais de 1 funcionário</li>
+            <li>Ordenado pelo total da folha (maior primeiro)</li>
+          </ul>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">SELECT
+    d.dept_nome AS departamento,
+    COUNT(f.func_id) AS qtd_funcionarios,
+    MIN(f.salario) AS menor_salario,
+    MAX(f.salario) AS maior_salario,
+    ROUND(AVG(f.salario), 2) AS media_salarial,
+    SUM(f.salario) AS folha_total
+FROM departamentos d
+JOIN funcionarios f ON d.dept_id = f.dept_id
+GROUP BY d.dept_nome
+HAVING COUNT(f.func_id) > 1
+ORDER BY SUM(f.salario) DESC;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Subqueries Avançadas</h3>
+          <p class="text-neutral-300 mb-4">
+            Resolva os seguintes problemas usando subqueries:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Liste funcionários cujo salário está acima da média geral</li>
+            <li>Para cada funcionário, mostre quanto ele ganha a mais (ou menos) que a média do seu departamento</li>
+            <li>Liste o funcionário mais bem pago de cada departamento</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. Acima da média geral
+SELECT nome, salario
+FROM funcionarios
+WHERE salario > (SELECT AVG(salario) FROM funcionarios);
+
+-- 2. Diferença da média do departamento
+SELECT
+    f.nome,
+    f.salario,
+    d.dept_nome,
+    ROUND((SELECT AVG(salario) FROM funcionarios WHERE dept_id = f.dept_id), 2) AS media_depto,
+    ROUND(f.salario - (SELECT AVG(salario) FROM funcionarios WHERE dept_id = f.dept_id), 2) AS diferenca
+FROM funcionarios f
+JOIN departamentos d ON f.dept_id = d.dept_id
+ORDER BY diferenca DESC;
+
+-- 3. Mais bem pago por departamento (várias formas)
+-- Opção 1: Subquery correlacionada
+SELECT f.nome, f.salario, d.dept_nome
+FROM funcionarios f
+JOIN departamentos d ON f.dept_id = d.dept_id
+WHERE f.salario = (
+    SELECT MAX(salario)
+    FROM funcionarios
+    WHERE dept_id = f.dept_id
+);
+
+-- Opção 2: Com ROW_NUMBER (mais elegante)
+SELECT nome, salario, dept_nome
+FROM (
+    SELECT
+        f.nome,
+        f.salario,
+        d.dept_nome,
+        ROW_NUMBER() OVER (PARTITION BY f.dept_id ORDER BY f.salario DESC) AS rn
+    FROM funcionarios f
+    JOIN departamentos d ON f.dept_id = d.dept_id
+)
+WHERE rn = 1;</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-5.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Comandos SQL</span>
+      </a>
+      <a href="index.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Voltar ao Índice da Trilha 1</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 6</p>
+      <p class="text-emerald-500 text-sm mt-2">Parabéns! Você concluiu a Trilha 1!</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

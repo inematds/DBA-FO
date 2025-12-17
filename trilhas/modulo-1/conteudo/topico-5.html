@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos SQL na Prática | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 5</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">5</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Comandos SQL na Prática: SELECT, INSERT, UPDATE, DELETE</h1>
+          <p class="text-neutral-400">Exemplos práticos dos comandos mais usados</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Os 4 Comandos Fundamentais</h3>
+        <p class="text-neutral-300 mb-4">
+          Estes são os comandos SQL mais utilizados no dia a dia. Juntos, eles representam
+          as operações <strong class="text-emerald-400">CRUD</strong> (Create, Read, Update, Delete)
+          que formam a base de qualquer aplicação que interage com banco de dados.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-emerald-900/20 rounded-lg p-4 border-l-4 border-emerald-500">
+            <h4 class="font-semibold text-emerald-400">SELECT (Read)</h4>
+            <p class="text-neutral-300 text-sm">Recupera dados do banco. É o comando mais usado - aproximadamente 80% das operações.</p>
+            <code class="text-xs text-neutral-400 mt-2 block">SELECT colunas FROM tabela WHERE condição</code>
+          </div>
+
+          <div class="bg-cyan-900/20 rounded-lg p-4 border-l-4 border-cyan-500">
+            <h4 class="font-semibold text-cyan-400">INSERT (Create)</h4>
+            <p class="text-neutral-300 text-sm">Adiciona novos registros às tabelas.</p>
+            <code class="text-xs text-neutral-400 mt-2 block">INSERT INTO tabela (colunas) VALUES (valores)</code>
+          </div>
+
+          <div class="bg-purple-900/20 rounded-lg p-4 border-l-4 border-purple-500">
+            <h4 class="font-semibold text-purple-400">UPDATE (Update)</h4>
+            <p class="text-neutral-300 text-sm">Modifica registros existentes. <strong class="text-red-400">Cuidado: sem WHERE afeta todos!</strong></p>
+            <code class="text-xs text-neutral-400 mt-2 block">UPDATE tabela SET coluna = valor WHERE condição</code>
+          </div>
+
+          <div class="bg-red-900/20 rounded-lg p-4 border-l-4 border-red-500">
+            <h4 class="font-semibold text-red-400">DELETE (Delete)</h4>
+            <p class="text-neutral-300 text-sm">Remove registros. <strong class="text-red-400">Cuidado: sem WHERE apaga tudo!</strong></p>
+            <code class="text-xs text-neutral-400 mt-2 block">DELETE FROM tabela WHERE condição</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-red-400 mb-4">⚠️ Regra de Ouro para DBA</h3>
+        <div class="space-y-3 text-neutral-300">
+          <p>
+            <strong>SEMPRE</strong> use WHERE em UPDATE e DELETE. Um comando sem WHERE afeta
+            <strong>TODOS</strong> os registros da tabela.
+          </p>
+          <div class="bg-dark-800 rounded-lg p-4">
+            <p class="text-sm mb-2"><strong>Prática segura:</strong> Antes de executar UPDATE ou DELETE:</p>
+            <ol class="list-decimal list-inside text-sm space-y-1">
+              <li>Execute um SELECT com a mesma condição WHERE</li>
+              <li>Verifique se os registros retornados são os esperados</li>
+              <li>Só então execute o UPDATE/DELETE</li>
+              <li>Use COMMIT apenas após confirmar o resultado</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">SELECT - Consultando Dados</h3>
+
+        <pre><code class="language-sql">-- Setup: Criar tabela de exemplo
+CREATE TABLE funcionarios (
+    id NUMBER PRIMARY KEY,
+    nome VARCHAR2(100),
+    cargo VARCHAR2(50),
+    salario NUMBER(10,2),
+    departamento VARCHAR2(50),
+    data_admissao DATE
+);
+
+-- Inserir dados de exemplo
+INSERT INTO funcionarios VALUES (1, 'João Silva', 'Analista', 5000, 'TI', DATE '2020-03-15');
+INSERT INTO funcionarios VALUES (2, 'Maria Santos', 'Gerente', 8000, 'RH', DATE '2018-05-20');
+INSERT INTO funcionarios VALUES (3, 'Pedro Costa', 'Desenvolvedor', 6000, 'TI', DATE '2021-01-10');
+INSERT INTO funcionarios VALUES (4, 'Ana Oliveira', 'Analista', 5500, 'Financeiro', DATE '2019-08-01');
+INSERT INTO funcionarios VALUES (5, 'Carlos Lima', 'Diretor', 15000, 'TI', DATE '2015-02-28');
+COMMIT;
+
+-- SELECT básico: todas as colunas
+SELECT * FROM funcionarios;
+
+-- SELECT com colunas específicas
+SELECT nome, cargo, salario FROM funcionarios;
+
+-- SELECT com WHERE (filtro)
+SELECT nome, salario
+FROM funcionarios
+WHERE departamento = 'TI';
+
+-- SELECT com múltiplas condições
+SELECT nome, cargo, salario
+FROM funcionarios
+WHERE departamento = 'TI'
+  AND salario > 5000;
+
+-- SELECT com OR
+SELECT nome, departamento
+FROM funcionarios
+WHERE departamento = 'TI'
+   OR departamento = 'RH';
+
+-- Equivalente com IN
+SELECT nome, departamento
+FROM funcionarios
+WHERE departamento IN ('TI', 'RH');
+
+-- SELECT com BETWEEN (intervalo)
+SELECT nome, salario
+FROM funcionarios
+WHERE salario BETWEEN 5000 AND 8000;
+
+-- SELECT com LIKE (padrão)
+SELECT nome FROM funcionarios WHERE nome LIKE 'Jo%';      -- Começa com "Jo"
+SELECT nome FROM funcionarios WHERE nome LIKE '%Silva';   -- Termina com "Silva"
+SELECT nome FROM funcionarios WHERE nome LIKE '%ar%';    -- Contém "ar"
+
+-- SELECT com NULL
+SELECT nome FROM funcionarios WHERE cargo IS NULL;
+SELECT nome FROM funcionarios WHERE cargo IS NOT NULL;
+
+-- SELECT com ORDER BY
+SELECT nome, salario
+FROM funcionarios
+ORDER BY salario DESC;  -- Decrescente
+
+SELECT nome, departamento, salario
+FROM funcionarios
+ORDER BY departamento ASC, salario DESC;  -- Multi-coluna
+
+-- SELECT com alias
+SELECT
+    nome AS "Nome Completo",
+    salario AS "Salário Mensal",
+    salario * 12 AS "Salário Anual"
+FROM funcionarios;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">INSERT - Inserindo Dados</h3>
+
+        <pre><code class="language-sql">-- INSERT básico: especificando todas as colunas
+INSERT INTO funcionarios (id, nome, cargo, salario, departamento, data_admissao)
+VALUES (6, 'Fernanda Rocha', 'Analista', 5200, 'Marketing', DATE '2022-06-01');
+
+-- INSERT sem especificar colunas (ordem deve ser a mesma da tabela)
+INSERT INTO funcionarios
+VALUES (7, 'Ricardo Souza', 'Estagiário', 1500, 'TI', SYSDATE);
+
+-- INSERT parcial (colunas com NULL ou DEFAULT)
+INSERT INTO funcionarios (id, nome, cargo, departamento)
+VALUES (8, 'Luciana Mendes', 'Consultora', 'Externo');
+-- salario ficará NULL, data_admissao também (se não tiver DEFAULT)
+
+-- INSERT com subconsulta
+INSERT INTO funcionarios_backup
+SELECT * FROM funcionarios WHERE departamento = 'TI';
+
+-- INSERT múltiplos registros (Oracle)
+INSERT ALL
+    INTO funcionarios VALUES (9, 'Bruno Alves', 'Analista', 5300, 'TI', SYSDATE)
+    INTO funcionarios VALUES (10, 'Carla Dias', 'Designer', 4800, 'Marketing', SYSDATE)
+SELECT * FROM dual;
+
+-- INSERT com RETURNING (captura valor gerado)
+DECLARE
+    v_id NUMBER;
+BEGIN
+    INSERT INTO funcionarios (id, nome, cargo, salario, departamento, data_admissao)
+    VALUES (seq_func.NEXTVAL, 'Novo Funcionário', 'Analista', 5000, 'TI', SYSDATE)
+    RETURNING id INTO v_id;
+
+    DBMS_OUTPUT.PUT_LINE('ID inserido: ' || v_id);
+END;
+/
+
+COMMIT;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">UPDATE - Atualizando Dados</h3>
+
+        <pre><code class="language-sql">-- PASSO 1: SEMPRE verificar antes com SELECT
+SELECT id, nome, salario
+FROM funcionarios
+WHERE departamento = 'TI';
+
+-- PASSO 2: Se os registros estão corretos, executar UPDATE
+-- UPDATE simples: uma coluna
+UPDATE funcionarios
+SET salario = 5500
+WHERE id = 1;
+
+-- UPDATE múltiplas colunas
+UPDATE funcionarios
+SET salario = 6500,
+    cargo = 'Analista Sênior'
+WHERE id = 1;
+
+-- UPDATE com cálculo
+UPDATE funcionarios
+SET salario = salario * 1.10  -- Aumento de 10%
+WHERE departamento = 'TI';
+
+-- UPDATE com subconsulta
+UPDATE funcionarios f
+SET salario = (
+    SELECT AVG(salario)
+    FROM funcionarios
+    WHERE departamento = f.departamento
+)
+WHERE cargo = 'Estagiário';
+
+-- UPDATE condicional com CASE
+UPDATE funcionarios
+SET salario = CASE
+    WHEN cargo = 'Diretor' THEN salario * 1.05
+    WHEN cargo = 'Gerente' THEN salario * 1.08
+    WHEN cargo = 'Analista' THEN salario * 1.10
+    ELSE salario * 1.07
+END;
+
+-- Verificar resultado
+SELECT id, nome, cargo, salario FROM funcionarios;
+
+-- Se OK, confirmar
+COMMIT;
+
+-- Se NÃO OK, desfazer
+-- ROLLBACK;</code></pre>
+
+        <div class="bg-amber-900/20 border border-amber-500/30 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-amber-400 mb-2">💡 Dica: UPDATE Seguro</h4>
+          <pre><code class="language-sql">-- Antes do UPDATE perigoso, crie um backup
+CREATE TABLE funcionarios_bkp AS SELECT * FROM funcionarios;
+
+-- Execute o UPDATE
+UPDATE funcionarios SET salario = salario * 1.5 WHERE departamento = 'TI';
+
+-- Se algo deu errado, restaure
+-- INSERT INTO funcionarios SELECT * FROM funcionarios_bkp WHERE ...
+-- ou
+-- ROLLBACK; (se ainda não fez COMMIT)</code></pre>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DELETE - Removendo Dados</h3>
+
+        <pre><code class="language-sql">-- PASSO 1: SEMPRE verificar antes com SELECT
+SELECT * FROM funcionarios
+WHERE data_admissao < DATE '2016-01-01';
+
+-- PASSO 2: Se os registros estão corretos, executar DELETE
+-- DELETE simples
+DELETE FROM funcionarios
+WHERE id = 8;
+
+-- DELETE com múltiplas condições
+DELETE FROM funcionarios
+WHERE departamento = 'Externo'
+  AND cargo = 'Consultora';
+
+-- DELETE com subconsulta
+DELETE FROM funcionarios
+WHERE departamento IN (
+    SELECT nome FROM departamentos WHERE ativo = 'N'
+);
+
+-- DELETE com EXISTS
+DELETE FROM funcionarios f
+WHERE NOT EXISTS (
+    SELECT 1 FROM departamentos d
+    WHERE d.nome = f.departamento
+);
+
+-- Verificar resultado
+SELECT COUNT(*) FROM funcionarios;
+
+-- Confirmar ou desfazer
+COMMIT;
+-- ROLLBACK;</code></pre>
+
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-red-400 mb-2">⚠️ PERIGO: DELETE sem WHERE</h4>
+          <pre><code class="language-sql">-- NUNCA faça isso sem ter certeza absoluta:
+DELETE FROM funcionarios;  -- Apaga TODOS os registros!
+
+-- Diferença entre DELETE e TRUNCATE:
+-- DELETE: Pode ser revertido com ROLLBACK, gera log, dispara triggers
+-- TRUNCATE: NÃO pode ser revertido, mais rápido, não dispara triggers
+
+TRUNCATE TABLE funcionarios;  -- DDL: COMMIT automático, sem volta!</code></pre>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Cenário Completo: Fluxo de Trabalho Seguro</h3>
+
+        <pre><code class="language-sql">-- CENÁRIO: Corrigir salários do departamento de TI
+-- Os salários devem ser aumentados em 15% para analistas
+
+-- 1. Criar ponto de salvamento
+SAVEPOINT antes_correcao;
+
+-- 2. Verificar dados atuais
+SELECT id, nome, cargo, salario, departamento
+FROM funcionarios
+WHERE departamento = 'TI' AND cargo = 'Analista';
+-- Resultado: 2 registros (ids 1 e 3)
+
+-- 3. Verificar valor esperado
+SELECT id, nome, salario, salario * 1.15 AS novo_salario
+FROM funcionarios
+WHERE departamento = 'TI' AND cargo = 'Analista';
+
+-- 4. Executar UPDATE
+UPDATE funcionarios
+SET salario = salario * 1.15
+WHERE departamento = 'TI' AND cargo = 'Analista';
+-- "2 rows updated"
+
+-- 5. Verificar resultado
+SELECT id, nome, cargo, salario
+FROM funcionarios
+WHERE departamento = 'TI';
+
+-- 6a. Se CORRETO: Confirmar
+COMMIT;
+DBMS_OUTPUT.PUT_LINE('Correção aplicada com sucesso!');
+
+-- 6b. Se INCORRETO: Reverter
+-- ROLLBACK TO SAVEPOINT antes_correcao;
+-- ou simplesmente
+-- ROLLBACK;</code></pre>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">SELECT completo</h4>
+                <p class="text-neutral-400 text-sm">WHERE, ORDER BY, LIKE, BETWEEN, IN, IS NULL</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">INSERT variado</h4>
+                <p class="text-neutral-400 text-sm">Simples, múltiplo, com subconsulta</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">UPDATE seguro</h4>
+                <p class="text-neutral-400 text-sm">Sempre verificar antes com SELECT</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">DELETE consciente</h4>
+                <p class="text-neutral-400 text-sm">Verificar registros afetados antes</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Transações</h4>
+                <p class="text-neutral-400 text-sm">COMMIT, ROLLBACK, SAVEPOINT</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Práticas seguras</h4>
+                <p class="text-neutral-400 text-sm">Backup antes de operações arriscadas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: SELECT com Filtros</h3>
+          <p class="text-neutral-300 mb-4">
+            Usando a tabela FUNCIONARIOS, escreva queries para:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Listar nome e salário de quem ganha mais de 6000</li>
+            <li>Listar funcionários do TI ou Marketing ordenados por nome</li>
+            <li>Listar funcionários cujo nome contém "Silva" ou "Santos"</li>
+            <li>Listar funcionários admitidos em 2020 ou depois</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. Salário > 6000
+SELECT nome, salario
+FROM funcionarios
+WHERE salario > 6000;
+
+-- 2. TI ou Marketing ordenados
+SELECT nome, departamento
+FROM funcionarios
+WHERE departamento IN ('TI', 'Marketing')
+ORDER BY nome;
+
+-- 3. Nome contém Silva ou Santos
+SELECT nome
+FROM funcionarios
+WHERE nome LIKE '%Silva%' OR nome LIKE '%Santos%';
+
+-- 4. Admitidos em 2020+
+SELECT nome, data_admissao
+FROM funcionarios
+WHERE data_admissao >= DATE '2020-01-01'
+ORDER BY data_admissao;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: CRUD Completo</h3>
+          <p class="text-neutral-300 mb-4">
+            Execute as seguintes operações na tabela FUNCIONARIOS:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Insira um novo funcionário: "Mariana Costa", Analista de Dados, R$ 7000, TI</li>
+            <li>Atualize o cargo de "João Silva" para "Analista Pleno"</li>
+            <li>Aumente em 5% o salário de todos os Analistas</li>
+            <li>Delete o funcionário com menor salário (mas verifique primeiro!)</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. INSERT
+INSERT INTO funcionarios (id, nome, cargo, salario, departamento, data_admissao)
+VALUES (11, 'Mariana Costa', 'Analista de Dados', 7000, 'TI', SYSDATE);
+
+-- 2. UPDATE específico (primeiro verificar)
+SELECT * FROM funcionarios WHERE nome = 'João Silva';
+UPDATE funcionarios SET cargo = 'Analista Pleno' WHERE nome = 'João Silva';
+
+-- 3. UPDATE com cálculo (verificar antes)
+SELECT nome, cargo, salario, salario * 1.05 AS novo_salario
+FROM funcionarios WHERE cargo LIKE '%Analista%';
+
+UPDATE funcionarios
+SET salario = salario * 1.05
+WHERE cargo LIKE '%Analista%';
+
+-- 4. DELETE (verificar ANTES!)
+SELECT * FROM funcionarios
+WHERE salario = (SELECT MIN(salario) FROM funcionarios);
+
+-- Se correto, deletar
+DELETE FROM funcionarios
+WHERE salario = (SELECT MIN(salario) FROM funcionarios);
+
+-- Confirmar todas as mudanças
+COMMIT;</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Transação com SAVEPOINT</h3>
+          <p class="text-neutral-300 mb-4">
+            Simule um processo de ajuste salarial com pontos de salvamento:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>Crie um SAVEPOINT inicial</li>
+            <li>Aumente 10% para TI</li>
+            <li>Crie outro SAVEPOINT</li>
+            <li>Aumente 15% para Gerentes</li>
+            <li>Verifique os resultados</li>
+            <li>Volte ao segundo SAVEPOINT (desfazer aumento dos gerentes)</li>
+            <li>Confirme apenas o aumento do TI</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- 1. SAVEPOINT inicial
+SAVEPOINT inicio;
+
+-- 2. Aumento TI
+UPDATE funcionarios SET salario = salario * 1.10
+WHERE departamento = 'TI';
+
+-- 3. SAVEPOINT após TI
+SAVEPOINT apos_ti;
+
+-- 4. Aumento Gerentes
+UPDATE funcionarios SET salario = salario * 1.15
+WHERE cargo = 'Gerente';
+
+-- 5. Verificar
+SELECT nome, cargo, departamento, salario FROM funcionarios
+ORDER BY departamento, cargo;
+
+-- 6. Voltar ao SAVEPOINT após TI (desfaz aumento gerentes)
+ROLLBACK TO SAVEPOINT apos_ti;
+
+-- Verificar que gerentes voltaram ao valor anterior
+SELECT nome, cargo, salario FROM funcionarios WHERE cargo = 'Gerente';
+
+-- 7. Confirmar apenas TI
+COMMIT;</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-4.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Linguagem SQL</span>
+      </a>
+      <a href="topico-6.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: JOINs e Subqueries</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 5</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Linguagem SQL: DQL, DML, DDL e DCL | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">4</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">A Linguagem SQL: DQL, DML, DDL e DCL</h1>
+          <p class="text-neutral-400">Categorias de comandos SQL e seus usos</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">O que é SQL?</h3>
+        <p class="text-neutral-300 mb-4">
+          <strong class="text-emerald-400">SQL (Structured Query Language)</strong> é a linguagem padrão para
+          interagir com bancos de dados relacionais. Desenvolvida na IBM nos anos 1970, foi padronizada pelo
+          ANSI em 1986 e ISO em 1987. Apesar de existir um padrão, cada SGBD (Oracle, SQL Server, MySQL)
+          possui extensões próprias.
+        </p>
+        <p class="text-neutral-300">
+          O SQL é dividido em <strong>subcategorias</strong> baseadas no tipo de operação:
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-emerald-500/30 rounded-lg flex items-center justify-center text-xl">🔍</div>
+            <div>
+              <h3 class="font-bold text-emerald-400">DQL - Data Query Language</h3>
+              <p class="text-neutral-400 text-sm">Consulta de dados</p>
+            </div>
+          </div>
+          <p class="text-neutral-300 text-sm mb-3">
+            Comandos para <strong>recuperar dados</strong> do banco. Na prática, representa cerca de 80%
+            das operações executadas.
+          </p>
+          <div class="bg-dark-800 rounded-lg p-3">
+            <code class="text-emerald-400 text-sm font-mono">SELECT</code>
+          </div>
+        </div>
+
+        <div class="bg-cyan-900/20 rounded-xl border border-cyan-500/30 p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-cyan-500/30 rounded-lg flex items-center justify-center text-xl">✏️</div>
+            <div>
+              <h3 class="font-bold text-cyan-400">DML - Data Manipulation Language</h3>
+              <p class="text-neutral-400 text-sm">Manipulação de dados</p>
+            </div>
+          </div>
+          <p class="text-neutral-300 text-sm mb-3">
+            Comandos para <strong>modificar dados</strong> nas tabelas. Requerem COMMIT para persistir
+            ou ROLLBACK para desfazer.
+          </p>
+          <div class="bg-dark-800 rounded-lg p-3">
+            <code class="text-cyan-400 text-sm font-mono">INSERT, UPDATE, DELETE, MERGE</code>
+          </div>
+        </div>
+
+        <div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-purple-500/30 rounded-lg flex items-center justify-center text-xl">🏗️</div>
+            <div>
+              <h3 class="font-bold text-purple-400">DDL - Data Definition Language</h3>
+              <p class="text-neutral-400 text-sm">Definição de estrutura</p>
+            </div>
+          </div>
+          <p class="text-neutral-300 text-sm mb-3">
+            Comandos para <strong>criar, alterar e remover objetos</strong> do banco. Executam COMMIT
+            automático (implícito).
+          </p>
+          <div class="bg-dark-800 rounded-lg p-3">
+            <code class="text-purple-400 text-sm font-mono">CREATE, ALTER, DROP, TRUNCATE</code>
+          </div>
+        </div>
+
+        <div class="bg-amber-900/20 rounded-xl border border-amber-500/30 p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-amber-500/30 rounded-lg flex items-center justify-center text-xl">🔐</div>
+            <div>
+              <h3 class="font-bold text-amber-400">DCL - Data Control Language</h3>
+              <p class="text-neutral-400 text-sm">Controle de acesso</p>
+            </div>
+          </div>
+          <p class="text-neutral-300 text-sm mb-3">
+            Comandos para <strong>gerenciar permissões</strong> e controle de acesso. Fundamentais
+            para segurança do banco.
+          </p>
+          <div class="bg-dark-800 rounded-lg p-3">
+            <code class="text-amber-400 text-sm font-mono">GRANT, REVOKE</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">TCL - Transaction Control Language</h3>
+        <p class="text-neutral-300 mb-4">
+          Além das 4 categorias principais, existe o <strong class="text-red-400">TCL</strong> para
+          controle de transações:
+        </p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">COMMIT</h4>
+            <p class="text-neutral-400 text-sm">Confirma as alterações permanentemente</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">ROLLBACK</h4>
+            <p class="text-neutral-400 text-sm">Desfaz alterações desde o último COMMIT</p>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-red-400 mb-2">SAVEPOINT</h4>
+            <p class="text-neutral-400 text-sm">Cria ponto de salvamento intermediário</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DQL - Exemplos de SELECT</h3>
+
+        <pre><code class="language-sql">-- SELECT básico
+SELECT * FROM employees;
+
+-- SELECT com colunas específicas
+SELECT employee_id, first_name, last_name, salary
+FROM employees;
+
+-- SELECT com filtro (WHERE)
+SELECT first_name, last_name, salary
+FROM employees
+WHERE department_id = 50
+  AND salary > 5000;
+
+-- SELECT com ordenação
+SELECT first_name, last_name, hire_date
+FROM employees
+ORDER BY hire_date DESC;
+
+-- SELECT com alias
+SELECT first_name AS "Nome",
+       last_name AS "Sobrenome",
+       salary * 12 AS "Salário Anual"
+FROM employees;
+
+-- SELECT com DISTINCT (valores únicos)
+SELECT DISTINCT department_id
+FROM employees
+WHERE department_id IS NOT NULL;
+
+-- SELECT com ROWNUM (limitar resultados)
+SELECT * FROM employees
+WHERE ROWNUM <= 10;
+
+-- Oracle 12c+: FETCH FIRST
+SELECT * FROM employees
+ORDER BY salary DESC
+FETCH FIRST 5 ROWS ONLY;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DML - INSERT, UPDATE, DELETE</h3>
+
+        <pre><code class="language-sql">-- INSERT: Adicionar novo registro
+INSERT INTO departments (department_id, department_name, location_id)
+VALUES (280, 'Data Science', 1700);
+
+-- INSERT com subconsulta
+INSERT INTO employees_backup
+SELECT * FROM employees WHERE department_id = 50;
+
+-- INSERT multi-row (Oracle)
+INSERT ALL
+    INTO regions (region_id, region_name) VALUES (5, 'Oceania')
+    INTO regions (region_id, region_name) VALUES (6, 'Antarctica')
+SELECT * FROM dual;
+
+-- UPDATE: Modificar registros existentes
+UPDATE employees
+SET salary = salary * 1.10
+WHERE department_id = 50;
+
+-- UPDATE com subconsulta
+UPDATE employees e
+SET salary = (
+    SELECT AVG(salary) * 1.05
+    FROM employees
+    WHERE department_id = e.department_id
+)
+WHERE performance_rating = 'A';
+
+-- DELETE: Remover registros
+DELETE FROM employees
+WHERE employee_id = 999;
+
+-- DELETE com subconsulta
+DELETE FROM employees
+WHERE department_id IN (
+    SELECT department_id FROM departments WHERE location_id = 1700
+);
+
+-- MERGE: Combina INSERT e UPDATE (UPSERT)
+MERGE INTO employees_target t
+USING employees_source s
+ON (t.employee_id = s.employee_id)
+WHEN MATCHED THEN
+    UPDATE SET t.salary = s.salary, t.last_update = SYSDATE
+WHEN NOT MATCHED THEN
+    INSERT (employee_id, first_name, last_name, salary)
+    VALUES (s.employee_id, s.first_name, s.last_name, s.salary);</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DDL - CREATE, ALTER, DROP</h3>
+
+        <pre><code class="language-sql">-- CREATE TABLE
+CREATE TABLE projects (
+    project_id    NUMBER(10) PRIMARY KEY,
+    project_name  VARCHAR2(100) NOT NULL,
+    start_date    DATE DEFAULT SYSDATE,
+    end_date      DATE,
+    budget        NUMBER(12,2),
+    status        VARCHAR2(20) DEFAULT 'ACTIVE'
+                  CHECK (status IN ('ACTIVE', 'COMPLETED', 'CANCELLED'))
+);
+
+-- CREATE INDEX
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE UNIQUE INDEX idx_projects_name ON projects(project_name);
+
+-- CREATE VIEW
+CREATE OR REPLACE VIEW vw_active_projects AS
+SELECT project_id, project_name, budget
+FROM projects
+WHERE status = 'ACTIVE';
+
+-- CREATE SEQUENCE
+CREATE SEQUENCE seq_project_id
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE;
+
+-- ALTER TABLE: Adicionar coluna
+ALTER TABLE projects ADD (manager_id NUMBER(10));
+
+-- ALTER TABLE: Modificar coluna
+ALTER TABLE projects MODIFY (project_name VARCHAR2(200));
+
+-- ALTER TABLE: Renomear coluna
+ALTER TABLE projects RENAME COLUMN budget TO total_budget;
+
+-- ALTER TABLE: Adicionar constraint
+ALTER TABLE projects ADD CONSTRAINT fk_project_manager
+    FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
+
+-- DROP: Remover objetos (CUIDADO!)
+DROP INDEX idx_projects_status;
+DROP VIEW vw_active_projects;
+DROP SEQUENCE seq_project_id;
+DROP TABLE projects CASCADE CONSTRAINTS;  -- Remove com dependências
+
+-- TRUNCATE: Apaga todos os dados (mais rápido que DELETE)
+TRUNCATE TABLE logs;  -- Não pode ser revertido com ROLLBACK!</code></pre>
+
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-red-400 mb-2">⚠️ Atenção: DDL faz COMMIT automático!</h4>
+          <p class="text-neutral-300 text-sm">
+            Comandos DDL executam um COMMIT implícito antes E depois da execução.
+            Isso significa que você <strong>não pode fazer ROLLBACK</strong> de um DROP TABLE ou TRUNCATE!
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">DCL - GRANT e REVOKE</h3>
+
+        <pre><code class="language-sql">-- GRANT: Conceder privilégios
+-- Privilégios de sistema
+GRANT CREATE SESSION TO novo_usuario;
+GRANT CREATE TABLE, CREATE VIEW TO desenvolvedor;
+GRANT DBA TO admin_user;  -- Privilégio poderoso!
+
+-- Privilégios de objeto
+GRANT SELECT ON hr.employees TO relatorios_user;
+GRANT SELECT, INSERT, UPDATE ON hr.departments TO app_user;
+GRANT ALL ON hr.locations TO admin_user;
+
+-- GRANT com WITH GRANT OPTION (pode repassar)
+GRANT SELECT ON hr.employees TO gerente WITH GRANT OPTION;
+
+-- GRANT para roles (grupos de privilégios)
+CREATE ROLE readonly_role;
+GRANT SELECT ON hr.employees TO readonly_role;
+GRANT SELECT ON hr.departments TO readonly_role;
+GRANT readonly_role TO analista1, analista2;
+
+-- GRANT para PUBLIC (todos os usuários)
+GRANT SELECT ON v_public_info TO PUBLIC;
+
+-- REVOKE: Revogar privilégios
+REVOKE CREATE TABLE FROM desenvolvedor;
+REVOKE SELECT ON hr.employees FROM relatorios_user;
+REVOKE readonly_role FROM analista1;
+
+-- Verificar privilégios concedidos
+SELECT * FROM user_tab_privs WHERE table_name = 'EMPLOYEES';
+SELECT * FROM user_sys_privs;
+SELECT * FROM user_role_privs;</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">TCL - Controle de Transações</h3>
+
+        <pre><code class="language-sql">-- Cenário: Transferência bancária
+-- Debitar de uma conta e creditar em outra
+
+-- Início da transação (implícito ao primeiro DML)
+UPDATE contas SET saldo = saldo - 1000 WHERE conta_id = 123;
+UPDATE contas SET saldo = saldo + 1000 WHERE conta_id = 456;
+
+-- Se tudo OK, confirma
+COMMIT;
+
+-- Se algo errado, desfaz tudo
+ROLLBACK;
+
+-- Usando SAVEPOINT para pontos intermediários
+SAVEPOINT antes_bonus;
+UPDATE employees SET salary = salary * 1.05 WHERE department_id = 50;
+
+SAVEPOINT antes_promocao;
+UPDATE employees SET job_id = 'IT_PROG' WHERE employee_id = 107;
+
+-- Ops! Erro na promoção, mas bonus está OK
+ROLLBACK TO SAVEPOINT antes_promocao;
+
+-- Confirma apenas o bonus
+COMMIT;
+
+-- SET TRANSACTION: Configurar propriedades da transação
+SET TRANSACTION READ ONLY;  -- Apenas leitura
+SET TRANSACTION READ WRITE; -- Leitura e escrita (padrão)
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;  -- Máximo isolamento</code></pre>
+
+        <div class="bg-dark-700 rounded-lg p-4 mt-4">
+          <h4 class="font-semibold text-neutral-100 mb-2">Resumo: Comportamento de COMMIT</h4>
+          <table class="w-full text-sm">
+            <tr>
+              <td class="text-neutral-400 py-1">DML (INSERT, UPDATE, DELETE)</td>
+              <td class="text-emerald-400 py-1">Requer COMMIT explícito</td>
+            </tr>
+            <tr>
+              <td class="text-neutral-400 py-1">DDL (CREATE, ALTER, DROP)</td>
+              <td class="text-red-400 py-1">COMMIT automático (não pode desfazer)</td>
+            </tr>
+            <tr>
+              <td class="text-neutral-400 py-1">DCL (GRANT, REVOKE)</td>
+              <td class="text-red-400 py-1">COMMIT automático</td>
+            </tr>
+            <tr>
+              <td class="text-neutral-400 py-1">DQL (SELECT)</td>
+              <td class="text-neutral-400 py-1">Não afeta (apenas leitura)</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Classificar comandos SQL</h4>
+                <p class="text-neutral-400 text-sm">Identificar se é DQL, DML, DDL, DCL ou TCL</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Entender COMMIT/ROLLBACK</h4>
+                <p class="text-neutral-400 text-sm">Saber quando mudanças são permanentes</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Evitar erros críticos</h4>
+                <p class="text-neutral-400 text-sm">Conhecer impacto de DDL e TRUNCATE</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerenciar permissões</h4>
+                <p class="text-neutral-400 text-sm">Usar GRANT e REVOKE adequadamente</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Usar transações</h4>
+                <p class="text-neutral-400 text-sm">Aplicar SAVEPOINT para operações complexas</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Escolher comando certo</h4>
+                <p class="text-neutral-400 text-sm">DELETE vs TRUNCATE, etc.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Classificação de Comandos</h3>
+          <p class="text-neutral-300 mb-4">
+            Classifique cada comando abaixo em DQL, DML, DDL, DCL ou TCL:
+          </p>
+          <ol class="list-decimal list-inside text-neutral-400 mb-4 space-y-1">
+            <li>SELECT * FROM employees</li>
+            <li>UPDATE departments SET location_id = 1800</li>
+            <li>CREATE INDEX idx_salary ON employees(salary)</li>
+            <li>GRANT SELECT ON orders TO analyst</li>
+            <li>ROLLBACK TO SAVEPOINT sp1</li>
+            <li>TRUNCATE TABLE logs</li>
+            <li>MERGE INTO ... WHEN MATCHED THEN UPDATE</li>
+            <li>ALTER TABLE employees ADD bonus NUMBER</li>
+          </ol>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <ol class="list-decimal list-inside text-neutral-300 space-y-1">
+                <li>DQL (Data Query Language)</li>
+                <li>DML (Data Manipulation Language)</li>
+                <li>DDL (Data Definition Language)</li>
+                <li>DCL (Data Control Language)</li>
+                <li>TCL (Transaction Control Language)</li>
+                <li>DDL - apesar de remover dados, é DDL pois faz COMMIT automático</li>
+                <li>DML (Data Manipulation Language)</li>
+                <li>DDL (Data Definition Language)</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Cenário de Transação</h3>
+          <p class="text-neutral-300 mb-4">
+            Analise a sequência de comandos e responda: quais dados foram realmente salvos no banco?
+          </p>
+          <pre><code class="language-sql">INSERT INTO products VALUES (1, 'Produto A', 100);
+SAVEPOINT sp1;
+INSERT INTO products VALUES (2, 'Produto B', 200);
+INSERT INTO products VALUES (3, 'Produto C', 300);
+ROLLBACK TO sp1;
+INSERT INTO products VALUES (4, 'Produto D', 400);
+COMMIT;
+INSERT INTO products VALUES (5, 'Produto E', 500);
+ROLLBACK;</code></pre>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <p class="text-neutral-300 mb-2"><strong>Produtos salvos: 1 e 4</strong></p>
+              <ul class="list-disc list-inside text-neutral-400 space-y-1">
+                <li>Produto A (1): Inserido antes do SAVEPOINT, mantido após ROLLBACK TO sp1</li>
+                <li>Produtos B e C (2, 3): Inseridos após sp1, removidos pelo ROLLBACK TO sp1</li>
+                <li>Produto D (4): Inserido após ROLLBACK, confirmado pelo COMMIT</li>
+                <li>Produto E (5): Inserido após COMMIT, removido pelo ROLLBACK final</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Permissões</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie os comandos para: (a) criar um usuário "reports_user", (b) permitir que ele
+            apenas consulte as tabelas EMPLOYEES e DEPARTMENTS, (c) criar uma role para esse tipo
+            de acesso que possa ser reutilizada.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- (a) Criar usuário
+CREATE USER reports_user IDENTIFIED BY senha123
+    DEFAULT TABLESPACE users
+    QUOTA 10M ON users;
+
+-- Permitir conexão
+GRANT CREATE SESSION TO reports_user;
+
+-- (b) Conceder acesso de leitura
+GRANT SELECT ON hr.employees TO reports_user;
+GRANT SELECT ON hr.departments TO reports_user;
+
+-- (c) Criar role reutilizável
+CREATE ROLE hr_readonly;
+GRANT SELECT ON hr.employees TO hr_readonly;
+GRANT SELECT ON hr.departments TO hr_readonly;
+GRANT SELECT ON hr.jobs TO hr_readonly;
+GRANT SELECT ON hr.locations TO hr_readonly;
+
+-- Atribuir role ao usuário (ao invés de grants individuais)
+GRANT hr_readonly TO reports_user;
+
+-- Outros usuários podem receber a mesma role
+GRANT hr_readonly TO outro_usuario;</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-3.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: SQL Developer e SQL*Plus</span>
+      </a>
+      <a href="topico-5.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Comandos SQL na Prática</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 4</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

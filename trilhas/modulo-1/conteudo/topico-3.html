@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Developer e SQL*Plus | Trilha 1 | Oracle DBA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C74634',
+            dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155', 600: '#475569' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #0f172a; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #f8fafc !important; }
+    html:not(.dark) .bg-dark-800 { background-color: #ffffff !important; }
+    html:not(.dark) .bg-dark-700 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .border-dark-600 { border-color: #e2e8f0 !important; }
+    html:not(.dark) .text-neutral-100 { color: #1e293b !important; }
+    html:not(.dark) .text-neutral-300 { color: #475569 !important; }
+    html:not(.dark) .text-neutral-400 { color: #64748b !important; }
+    pre code { border-radius: 0.5rem; }
+    .hljs { background: #1e293b !important; padding: 1.5rem !important; }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="../../../index.html" class="flex items-center space-x-3">
+          <span class="text-2xl">🗄️</span>
+          <span class="text-xl font-bold text-primary">Oracle DBA</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="../../introducao/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-colors">🎯 T0</a>
+          <a href="../../modulo-1/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">📊 T1</a>
+          <a href="../../modulo-2/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-colors">⚙️ T2</a>
+          <a href="../../modulo-3/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-purple-400 hover:bg-purple-500/20 transition-colors">🔒 T3</a>
+          <a href="../../modulo-4/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-orange-400 hover:bg-orange-500/20 transition-colors">⚡ T4</a>
+          <a href="../../modulo-5/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-red-400 hover:bg-red-500/20 transition-colors">🛡️ T5</a>
+          <a href="../../recursos/index.html" class="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-colors">📚 Recursos</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors">
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+          <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-emerald-900/30 to-dark-800 py-8 border-b border-dark-600">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-2 text-emerald-400 text-sm mb-4">
+        <a href="../../../index.html" class="hover:underline">Início</a>
+        <span>/</span>
+        <a href="../index.html" class="hover:underline">Trilha 1</a>
+        <span>/</span>
+        <a href="index.html" class="hover:underline">Conteúdo</a>
+        <span>/</span>
+        <span>Tópico 3</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+          <span class="text-2xl font-bold text-emerald-400">3</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">O Ambiente Oracle: SQL Developer e SQL*Plus</h1>
+          <p class="text-neutral-400">Ferramentas essenciais para interagir com o banco</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Seção 1: Definição -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400">Definição</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Oracle SQL Developer</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-emerald-400">Oracle SQL Developer</strong> é uma IDE (Ambiente de Desenvolvimento Integrado)
+          gráfica gratuita fornecida pela Oracle. É a ferramenta mais utilizada por desenvolvedores e DBAs para
+          trabalhar com bancos Oracle no dia a dia.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Principais Recursos</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Editor SQL com auto-complete</li>
+              <li>Navegador de objetos (tabelas, views, etc.)</li>
+              <li>Debug de PL/SQL</li>
+              <li>Exportação/Importação de dados</li>
+              <li>Modelagem de dados (Data Modeler)</li>
+              <li>Relatórios e gráficos</li>
+              <li>Suporte a múltiplas conexões</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Quando Usar</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Desenvolvimento de queries complexas</li>
+              <li>Análise visual de dados</li>
+              <li>Debug e testes de procedures</li>
+              <li>Administração visual do banco</li>
+              <li>Criação e alteração de objetos</li>
+              <li>Migração entre bancos</li>
+              <li>Tarefas do dia a dia</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Oracle SQL*Plus</h3>
+        <p class="text-neutral-300 mb-4">
+          O <strong class="text-cyan-400">SQL*Plus</strong> é o cliente de linha de comando original do Oracle,
+          disponível desde as primeiras versões. É uma ferramenta essencial para DBAs, especialmente para
+          automação, scripts e situações onde não há interface gráfica disponível.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-2">Principais Recursos</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Execução de comandos SQL e PL/SQL</li>
+              <li>Comandos de formatação de saída</li>
+              <li>Execução de scripts (.sql)</li>
+              <li>Conexão via linha de comando</li>
+              <li>Startup/Shutdown do banco</li>
+              <li>Variáveis de substituição</li>
+              <li>Spool para arquivos</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-cyan-400 mb-2">Quando Usar</h4>
+            <ul class="list-disc list-inside text-neutral-300 text-sm space-y-1">
+              <li>Acesso remoto via SSH</li>
+              <li>Scripts de automação</li>
+              <li>Startup/Shutdown do banco</li>
+              <li>Recuperação de desastres</li>
+              <li>Ambientes sem GUI</li>
+              <li>Jobs agendados (cron)</li>
+              <li>Servidores de produção</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Comparação: SQL Developer vs SQL*Plus</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr class="bg-dark-700">
+                <th class="border border-dark-600 px-4 py-2 text-left text-neutral-100">Aspecto</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-emerald-400">SQL Developer</th>
+                <th class="border border-dark-600 px-4 py-2 text-left text-cyan-400">SQL*Plus</th>
+              </tr>
+            </thead>
+            <tbody class="text-neutral-300">
+              <tr>
+                <td class="border border-dark-600 px-4 py-2">Interface</td>
+                <td class="border border-dark-600 px-4 py-2">Gráfica (GUI)</td>
+                <td class="border border-dark-600 px-4 py-2">Linha de comando (CLI)</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2">Curva de aprendizado</td>
+                <td class="border border-dark-600 px-4 py-2">Menor (intuitivo)</td>
+                <td class="border border-dark-600 px-4 py-2">Maior (comandos)</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2">Recursos visuais</td>
+                <td class="border border-dark-600 px-4 py-2">Completos</td>
+                <td class="border border-dark-600 px-4 py-2">Básicos (texto)</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2">Automação</td>
+                <td class="border border-dark-600 px-4 py-2">Possível mas limitada</td>
+                <td class="border border-dark-600 px-4 py-2">Excelente</td>
+              </tr>
+              <tr>
+                <td class="border border-dark-600 px-4 py-2">Startup/Shutdown</td>
+                <td class="border border-dark-600 px-4 py-2">Não suporta</td>
+                <td class="border border-dark-600 px-4 py-2">Suporta</td>
+              </tr>
+              <tr class="bg-dark-700/50">
+                <td class="border border-dark-600 px-4 py-2">Acesso remoto</td>
+                <td class="border border-dark-600 px-4 py-2">Precisa de rede</td>
+                <td class="border border-dark-600 px-4 py-2">Funciona via SSH</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Aplicação Prática -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">🛠️</span>
+        </div>
+        <h2 class="text-xl font-bold text-cyan-400">Aplicação Prática</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Configurando Conexões</h3>
+
+        <h4 class="font-semibold text-emerald-400 mb-3">SQL Developer - Nova Conexão</h4>
+        <div class="bg-dark-700 rounded-lg p-4 mb-4">
+          <ol class="list-decimal list-inside text-neutral-300 space-y-2">
+            <li>Abra SQL Developer e clique em <strong>"+"</strong> no painel Connections</li>
+            <li>Preencha os campos:
+              <ul class="list-disc list-inside ml-4 mt-1 text-sm text-neutral-400">
+                <li><strong>Connection Name:</strong> Nome descritivo (ex: DEV_HR)</li>
+                <li><strong>Username:</strong> Seu usuário Oracle</li>
+                <li><strong>Password:</strong> Sua senha</li>
+                <li><strong>Hostname:</strong> IP ou nome do servidor</li>
+                <li><strong>Port:</strong> Geralmente 1521</li>
+                <li><strong>Service name:</strong> Nome do serviço (ex: ORCL, XE)</li>
+              </ul>
+            </li>
+            <li>Clique em <strong>"Test"</strong> para validar</li>
+            <li>Clique em <strong>"Save"</strong> e depois <strong>"Connect"</strong></li>
+          </ol>
+        </div>
+
+        <h4 class="font-semibold text-cyan-400 mb-3">SQL*Plus - Conectando</h4>
+        <pre><code class="language-bash"># Conexão local (mesmo servidor)
+sqlplus usuario/senha
+
+# Conexão com service name
+sqlplus usuario/senha@//servidor:1521/service_name
+
+# Conexão usando TNS alias (configurado no tnsnames.ora)
+sqlplus usuario/senha@TNS_ALIAS
+
+# Conexão como SYSDBA (para tarefas administrativas)
+sqlplus / as sysdba
+sqlplus sys/senha@ORCL as sysdba
+
+# Exemplos práticos
+sqlplus hr/hr@//localhost:1521/XEPDB1
+sqlplus scott/tiger@ORCL</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Comandos Essenciais do SQL*Plus</h3>
+
+        <pre><code class="language-sql">-- Comandos de formatação de saída
+SET LINESIZE 200          -- Largura da linha
+SET PAGESIZE 100          -- Linhas por página
+SET SERVEROUTPUT ON       -- Habilita DBMS_OUTPUT
+SET TIMING ON             -- Mostra tempo de execução
+SET FEEDBACK ON           -- Mostra "X rows selected"
+
+-- Formatação de colunas
+COLUMN nome FORMAT A30               -- Coluna texto com 30 caracteres
+COLUMN salario FORMAT 999,999.99     -- Número formatado
+COLUMN data_admissao FORMAT A12      -- Data como texto
+
+-- Exemplo de uso
+SET LINESIZE 150
+SET PAGESIZE 50
+COLUMN employee_name FORMAT A25
+COLUMN department_name FORMAT A20
+COLUMN salary FORMAT 999,999.99
+
+SELECT e.first_name || ' ' || e.last_name AS employee_name,
+       d.department_name,
+       e.salary
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+WHERE e.salary > 10000
+ORDER BY e.salary DESC;
+
+-- Salvando resultado em arquivo
+SPOOL /tmp/relatorio_salarios.txt
+SELECT * FROM employees WHERE salary > 15000;
+SPOOL OFF
+
+-- Executando scripts externos
+@/caminho/para/script.sql
+START /caminho/para/script.sql
+
+-- Descrevendo estrutura de objetos
+DESC employees
+DESC departments
+
+-- Limpando tela e buffer
+CLEAR SCREEN
+CLEAR BUFFER
+
+-- Editando último comando
+EDIT
+
+-- Saindo do SQL*Plus
+EXIT
+QUIT</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Script de Exemplo: Relatório Formatado</h3>
+
+        <pre><code class="language-sql">-- Arquivo: relatorio_departamentos.sql
+-- Gera relatório de funcionários por departamento
+
+SET ECHO OFF
+SET FEEDBACK OFF
+SET HEADING ON
+SET LINESIZE 150
+SET PAGESIZE 60
+SET TRIMSPOOL ON
+
+-- Título do relatório
+TTITLE CENTER 'RELATÓRIO DE FUNCIONÁRIOS POR DEPARTAMENTO' SKIP 2
+
+-- Rodapé
+BTITLE CENTER 'Página: ' SQL.PNO
+
+-- Formatação das colunas
+COLUMN department_name FORMAT A25 HEADING 'Departamento'
+COLUMN employee_count  FORMAT 999 HEADING 'Qtd Func'
+COLUMN avg_salary      FORMAT 999,999.99 HEADING 'Salário Médio'
+COLUMN total_salary    FORMAT 9,999,999.99 HEADING 'Folha Total'
+
+-- Início do spool
+SPOOL relatorio_departamentos.txt
+
+-- Query principal
+SELECT d.department_name,
+       COUNT(e.employee_id) AS employee_count,
+       AVG(e.salary) AS avg_salary,
+       SUM(e.salary) AS total_salary
+FROM departments d
+LEFT JOIN employees e ON d.department_id = e.department_id
+GROUP BY d.department_name
+ORDER BY total_salary DESC NULLS LAST;
+
+-- Finaliza spool
+SPOOL OFF
+
+-- Limpa formatações
+CLEAR COLUMNS
+TTITLE OFF
+BTITLE OFF
+
+SET FEEDBACK ON
+PROMPT Relatório gerado com sucesso em relatorio_departamentos.txt</code></pre>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">Dicas do SQL Developer</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Atalhos de Teclado</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li><code class="bg-dark-600 px-1 rounded">Ctrl+Enter</code> - Executa instrução</li>
+              <li><code class="bg-dark-600 px-1 rounded">F5</code> - Executa como script</li>
+              <li><code class="bg-dark-600 px-1 rounded">F9</code> - Executa seleção</li>
+              <li><code class="bg-dark-600 px-1 rounded">Ctrl+Space</code> - Auto-complete</li>
+              <li><code class="bg-dark-600 px-1 rounded">Ctrl+F7</code> - Formata SQL</li>
+              <li><code class="bg-dark-600 px-1 rounded">F4</code> - Descreve objeto</li>
+              <li><code class="bg-dark-600 px-1 rounded">Ctrl+Shift+D</code> - Duplica linha</li>
+            </ul>
+          </div>
+          <div class="bg-dark-700 rounded-lg p-4">
+            <h4 class="font-semibold text-emerald-400 mb-2">Recursos Úteis</h4>
+            <ul class="text-neutral-300 text-sm space-y-1">
+              <li><strong>Snippets:</strong> Reutilize código frequente</li>
+              <li><strong>Explain Plan:</strong> Analise performance</li>
+              <li><strong>Compare:</strong> Compare estruturas</li>
+              <li><strong>Export:</strong> CSV, Excel, JSON, SQL</li>
+              <li><strong>DBDoc:</strong> Gere documentação</li>
+              <li><strong>Reports:</strong> Relatórios predefinidos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Resultado Esperado -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">✅</span>
+        </div>
+        <h2 class="text-xl font-bold text-purple-400">Resultado Esperado</h2>
+      </div>
+
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h3 class="text-lg font-semibold mb-4">O que você deve dominar após este tópico:</h3>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Configurar conexões</h4>
+                <p class="text-neutral-400 text-sm">Criar e gerenciar conexões em ambas ferramentas</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Navegar no SQL Developer</h4>
+                <p class="text-neutral-400 text-sm">Usar interface, atalhos e recursos principais</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Operar o SQL*Plus</h4>
+                <p class="text-neutral-400 text-sm">Conectar, executar queries e formatar saída</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Criar scripts reutilizáveis</h4>
+                <p class="text-neutral-400 text-sm">Escrever scripts SQL*Plus profissionais</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Escolher a ferramenta certa</h4>
+                <p class="text-neutral-400 text-sm">Saber quando usar cada ferramenta</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-emerald-400 mt-1">✓</span>
+              <div>
+                <h4 class="font-semibold text-neutral-100">Gerar relatórios</h4>
+                <p class="text-neutral-400 text-sm">Exportar dados formatados para arquivos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+          <span class="text-xl">📝</span>
+        </div>
+        <h2 class="text-xl font-bold text-amber-400">Exercícios Práticos</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 1: Script de Inventário</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie um script SQL*Plus que liste todas as tabelas do usuário atual,
+            mostrando nome, quantidade de linhas e tamanho estimado. O resultado
+            deve ser salvo em um arquivo.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-sql">-- inventario_tabelas.sql
+SET ECHO OFF
+SET FEEDBACK OFF
+SET LINESIZE 120
+SET PAGESIZE 100
+
+TTITLE CENTER 'INVENTÁRIO DE TABELAS DO USUÁRIO' SKIP 2
+BTITLE CENTER 'Gerado em: ' _DATE
+
+COLUMN table_name FORMAT A30 HEADING 'Tabela'
+COLUMN num_rows FORMAT 999,999,999 HEADING 'Num Linhas'
+COLUMN avg_row_len FORMAT 999,999 HEADING 'Tam Médio Linha'
+COLUMN blocks FORMAT 999,999 HEADING 'Blocos'
+COLUMN last_analyzed FORMAT A20 HEADING 'Última Análise'
+
+SPOOL inventario_tabelas.txt
+
+SELECT table_name,
+       num_rows,
+       avg_row_len,
+       blocks,
+       TO_CHAR(last_analyzed, 'DD/MM/YYYY HH24:MI') AS last_analyzed
+FROM user_tables
+ORDER BY num_rows DESC NULLS LAST;
+
+SPOOL OFF
+CLEAR COLUMNS
+TTITLE OFF
+BTITLE OFF
+
+PROMPT Arquivo inventario_tabelas.txt gerado com sucesso!</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 2: Conexão SSH</h3>
+          <p class="text-neutral-300 mb-4">
+            Descreva os passos para se conectar a um banco Oracle em um servidor Linux
+            remoto usando SSH e SQL*Plus, quando não há acesso de rede direta à porta 1521.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4 bg-dark-700 rounded-lg p-4">
+              <pre><code class="language-bash"># 1. Conectar via SSH ao servidor
+ssh usuario@servidor-oracle.empresa.com
+
+# 2. Configurar variáveis de ambiente Oracle
+export ORACLE_HOME=/u01/app/oracle/product/19c/dbhome_1
+export PATH=$ORACLE_HOME/bin:$PATH
+export ORACLE_SID=ORCL
+
+# 3. Conectar ao SQL*Plus localmente
+sqlplus hr/senha
+
+# OU usar túnel SSH para acessar do seu PC:
+# No seu PC local, crie o túnel:
+ssh -L 1521:localhost:1521 usuario@servidor-oracle
+
+# Agora você pode usar SQL Developer conectando em localhost:1521</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <h3 class="font-semibold text-neutral-100 mb-2">Exercício 3: Automatização</h3>
+          <p class="text-neutral-300 mb-4">
+            Crie um script shell (bash) que execute uma verificação de saúde do banco
+            Oracle usando SQL*Plus e salve o resultado com timestamp no nome do arquivo.
+          </p>
+
+          <details class="mt-4">
+            <summary class="cursor-pointer text-emerald-400 hover:text-emerald-300 font-medium">Ver Solução</summary>
+            <div class="mt-4">
+              <pre><code class="language-bash">#!/bin/bash
+# health_check.sh - Script de verificação de saúde do Oracle
+
+# Configurações
+export ORACLE_HOME=/u01/app/oracle/product/19c/dbhome_1
+export PATH=$ORACLE_HOME/bin:$PATH
+export ORACLE_SID=ORCL
+
+# Diretório de saída
+OUTPUT_DIR=/var/log/oracle/health
+mkdir -p $OUTPUT_DIR
+
+# Nome do arquivo com timestamp
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+OUTPUT_FILE=$OUTPUT_DIR/health_check_$TIMESTAMP.log
+
+# Executa SQL*Plus com script inline
+sqlplus -s / as sysdba << EOF > $OUTPUT_FILE
+SET LINESIZE 200
+SET PAGESIZE 100
+SET FEEDBACK OFF
+
+PROMPT ========================================
+PROMPT ORACLE DATABASE HEALTH CHECK
+PROMPT Data: $(date)
+PROMPT ========================================
+
+PROMPT
+PROMPT -- Status da Instância --
+SELECT instance_name, status, database_status FROM v\$instance;
+
+PROMPT
+PROMPT -- Espaço em Tablespaces --
+SELECT tablespace_name,
+       ROUND(used_space * 8192 / 1024 / 1024, 2) AS used_mb,
+       ROUND(tablespace_size * 8192 / 1024 / 1024, 2) AS total_mb,
+       ROUND(used_percent, 2) AS used_pct
+FROM dba_tablespace_usage_metrics
+ORDER BY used_percent DESC;
+
+PROMPT
+PROMPT -- Sessões Ativas --
+SELECT COUNT(*) AS total_sessions,
+       SUM(CASE WHEN status = 'ACTIVE' THEN 1 ELSE 0 END) AS active_sessions
+FROM v\$session
+WHERE type = 'USER';
+
+PROMPT
+PROMPT -- Alertas Recentes --
+SELECT originating_timestamp, message_text
+FROM v\$diag_alert_ext
+WHERE originating_timestamp > SYSDATE - 1
+  AND message_text LIKE '%ORA-%'
+ORDER BY originating_timestamp DESC
+FETCH FIRST 10 ROWS ONLY;
+
+EXIT;
+EOF
+
+echo "Health check concluído. Resultado em: $OUTPUT_FILE"</code></pre>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center pt-8 border-t border-dark-600">
+      <a href="topico-2.html" class="flex items-center gap-2 text-neutral-400 hover:text-emerald-400 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>Anterior: Modelagem ER</span>
+      </a>
+      <a href="topico-4.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+        <span>Próximo: Linguagem SQL</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-dark-700 py-8 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <p class="text-neutral-500 text-sm">Oracle DBA - Trilha 1: Fundamentos de BD e SQL - Tópico 3</p>
+    </div>
+  </footer>
+
+  <script>
+    hljs.highlightAll();
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'light' ||
+        (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.remove('dark');
+      themeToggleDarkIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.add('dark');
+      themeToggleLightIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      themeToggleDarkIcon.classList.toggle('hidden');
+      themeToggleLightIcon.classList.toggle('hidden');
+
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>
